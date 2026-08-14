@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#1b2922"/>
+      <stop offset="55%" stop-color="#101a15"/>
+      <stop offset="100%" stop-color="#070b0a"/>
+    </radialGradient>
+    <radialGradient id="plate" cx="50%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#26332b"/>
+      <stop offset="70%" stop-color="#151f19"/>
+      <stop offset="100%" stop-color="#0b120e"/>
+    </radialGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7ecd4"/>
+      <stop offset="100%" stop-color="#e3cda6"/>
+    </linearGradient>
+    <linearGradient id="burnt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c07a36"/>
+      <stop offset="55%" stop-color="#8f4f1a"/>
+      <stop offset="100%" stop-color="#5f300c"/>
+    </linearGradient>
+    <linearGradient id="crust" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a5a34"/>
+      <stop offset="100%" stop-color="#4f2f17"/>
+    </linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <ellipse cx="400" cy="560" rx="310" ry="112" fill="url(#plate)"/>
+  <ellipse cx="400" cy="560" rx="310" ry="112" fill="none" stroke="#3a4d40" stroke-opacity=".55" stroke-width="2"/>
+  <ellipse cx="415" cy="585" rx="200" ry="46" fill="#000" opacity=".5" filter="url(#soft)"/>
+
+  <!-- cheesecake wedge -->
+  <g stroke-linejoin="round">
+    <!-- cream body -->
+    <polygon points="270,505 270,418 560,360 560,505" fill="url(#cream)" stroke="#c8ab7d" stroke-width="2.5"/>
+    <!-- interior cream texture lines -->
+    <path d="M 292 470 q 120 -18 246 -60" fill="none" stroke="#dcc398" stroke-width="3" opacity=".6"/>
+    <path d="M 292 488 q 120 -18 246 -60" fill="none" stroke="#dcc398" stroke-width="2.5" opacity=".45"/>
+    <!-- burnt top -->
+    <polygon points="270,418 560,360 560,388 270,446" fill="url(#burnt)" stroke="#4e2708" stroke-width="2.5"/>
+    <polygon points="300,410 520,368 540,372 320,414" fill="#ffd9a0" opacity=".22"/>
+    <!-- caramel drip -->
+    <path d="M 300 442 q -4 26 4 34 q 8 6 10 -4 q 2 -16 -2 -32" fill="#9a5a20"/>
+    <!-- crust -->
+    <polygon points="262,505 568,505 568,545 262,545" fill="url(#crust)" stroke="#3c2110" stroke-width="2.5"/>
+    <circle cx="310" cy="524" r="4" fill="#3c2110" opacity=".7"/>
+    <circle cx="380" cy="532" r="3.4" fill="#3c2110" opacity=".7"/>
+    <circle cx="452" cy="522" r="4.4" fill="#3c2110" opacity=".7"/>
+    <circle cx="516" cy="534" r="3.2" fill="#3c2110" opacity=".7"/>
+  </g>
+
+  <!-- mint sprig garnish -->
+  <g transform="translate(430 382)">
+    <path d="M 0 26 q 8 -16 2 -38" fill="none" stroke="#3f7d5c" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="-14" cy="-2" rx="20" ry="10" transform="rotate(-38 -14 -2)" fill="#58b584" stroke="#2f6a49" stroke-width="2"/>
+    <ellipse cx="14" cy="-14" rx="18" ry="9" transform="rotate(28 14 -14)" fill="#6cc79a" stroke="#2f6a49" stroke-width="2"/>
+    <ellipse cx="2" cy="-30" rx="14" ry="8" transform="rotate(-80 2 -30)" fill="#58b584" stroke="#2f6a49" stroke-width="2"/>
+  </g>
+</svg>
