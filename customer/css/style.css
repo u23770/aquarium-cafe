@@ -213,7 +213,7 @@ body[data-nav-style] .nav.scrolled { box-shadow: 0 14px 34px -18px rgb(15 9 3 / 
 body:not([data-nav-sticky="on"]) .nav { position: absolute; }
 body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
 
-.brand { display: inline-flex; align-items: center; gap: .7rem; flex-shrink: 0; }
+.brand { display: inline-flex; align-items: center; gap: .7rem; }
 .brand__mark {
   width: var(--logo-h); height: var(--logo-h);
   display: grid; place-items: center;
@@ -223,7 +223,6 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
   box-shadow: 0 8px 20px -6px rgb(0 0 0 / .4);
   transition: border-radius .5s var(--spring), width .3s, height .3s;
   overflow: hidden;
-  flex-shrink: 0;
 }
 .brand__mark .icon { width: calc(var(--logo-h) * .58); height: calc(var(--logo-h) * .58); }
 .brand__mark.has-logo { border-radius: 22%; background: #fff; padding: 3px; }
@@ -237,7 +236,6 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
   line-height: 1;
   color: var(--nav-text);
   text-transform: uppercase;
-  white-space: nowrap;
 }
 .brand__text small {
   display: block;
@@ -249,11 +247,7 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
   margin-top: .28rem;
 }
 
-.nav__links {
-  display: flex; align-items: center; gap: 1.6rem; margin-inline: auto;
-  flex-shrink: 1;
-  min-width: 0;
-}
+.nav__links { display: flex; align-items: center; gap: 1.6rem; margin-inline: auto; }
 .nav__links a[data-scroll] {
   position: relative;
   font-size: .88rem;
@@ -263,7 +257,6 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
   color: var(--nav-text);
   opacity: .82;
   transition: opacity .25s, color .25s;
-  white-space: nowrap;
 }
 .nav__links a[data-scroll]::after {
   content: '';
@@ -276,10 +269,7 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
 .nav__links a[data-scroll]:hover::after, .nav__links a.is-active::after { right: 0; }
 
 
-.nav__actions {
-  display: flex; align-items: center; gap: .6rem;
-  flex-shrink: 0;
-}
+.nav__actions { display: flex; align-items: center; gap: .6rem; }
 
 .icon-btn {
   position: relative;
@@ -288,7 +278,6 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
   border-radius: 50%;
   color: inherit;
   transition: background .3s, transform .3s var(--spring), color .3s;
-  flex-shrink: 0;
 }
 .icon-btn:hover { background: rgb(255 255 255 / .12); transform: translateY(-2px); }
 .icon-btn__badge {
@@ -305,7 +294,7 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
 .icon-btn.bump { animation: bump .45s var(--spring); }
 @keyframes bump { 30% { transform: scale(1.22) rotate(-6deg); } }
 
-.burger { display: none; width: 42px; height: 42px; position: relative; z-index: 3; flex-shrink: 0; }
+.burger { display: none; width: 42px; height: 42px; position: relative; z-index: 3; }
 .burger span {
   position: absolute; left: 10px; right: 10px; height: 2px;
   border-radius: 2px; background: currentColor;
@@ -1096,26 +1085,8 @@ body[data-card-hover="glow"] .card:hover { box-shadow: 0 0 0 2px var(--c-accent)
 }
 
 @media (max-width: 760px) {
-  .nav {
-    padding-inline: 1.1rem;
-    gap: .5rem;
-  }
-
+  .nav { padding-inline: 1.1rem; }
   .burger { display: block; }
-
-  /* brand text scales down on mobile */
-  .brand__text {
-    font-size: clamp(.75rem, 3.2vw, 1.05rem);
-    letter-spacing: .08em;
-  }
-  .brand__text small {
-    font-size: clamp(.4rem, 1.6vw, .52rem);
-    letter-spacing: .3em;
-  }
-  .brand { gap: .45rem; }
-  .brand__mark { width: clamp(30px, 8vw, 40px); height: clamp(30px, 8vw, 40px); }
-
-  /* nav links become a full-screen burger overlay */
   .nav__links {
     position: fixed; inset: 0; z-index: 2;
     flex-direction: column; justify-content: center;
@@ -1124,68 +1095,9 @@ body[data-card-hover="glow"] .card:hover { box-shadow: 0 0 0 2px var(--c-accent)
     transform: translateY(-100%);
     visibility: hidden;
     transition: transform .5s var(--ease), visibility .5s;
-    margin: 0;
-    padding: 0 2rem;
   }
   .nav.open .nav__links { transform: none; visibility: visible; }
-  .nav__links a[data-scroll] {
-    font-size: 1.5rem;
-    font-family: var(--font-head);
-    opacity: 1;
-    text-align: center;
-  }
-  .nav__links a[data-scroll]::after { display: none; }
-
-  /* nav actions: tighter spacing, but all controls remain visible */
-  .nav__actions { gap: .3rem; }
-
-  /* icon buttons shrink slightly on small screens but remain tappable */
-  .icon-btn {
-    width: clamp(36px, 9vw, 42px);
-    height: clamp(36px, 9vw, 42px);
-  }
-  .icon-btn .icon { width: clamp(1rem, 2.6vw, 1.15rem); height: clamp(1rem, 2.6vw, 1.15rem); }
-
-  /* language button compact on mobile */
-  .lang-btn {
-    font-size: clamp(.65rem, 2vw, .8rem);
-    padding: .35rem .5rem;
-    gap: .15rem;
-  }
-  .lang-btn .icon { width: clamp(.8rem, 2vw, 1rem); height: clamp(.8rem, 2vw, 1rem); }
-
-  /* auth button: hide label on very small screens, show icon only */
-  .auth-btn__label {
-    display: none;
-  }
-  .auth-btn {
-    padding: 0 .45rem !important;
-    width: clamp(34px, 8vw, 40px) !important;
-    justify-content: center !important;
-  }
-  .auth-btn .icon { width: clamp(1rem, 2.6vw, 1.15rem); height: clamp(1rem, 2.6vw, 1.15rem); }
-
-  /* burger button */
-  .burger { width: clamp(34px, 8vw, 42px); height: clamp(34px, 8vw, 42px); }
-  .burger span {
-    left: 8px; right: 8px;
-    height: 2px;
-  }
-  .burger span:nth-child(1) { top: 11px; }
-  .burger span:nth-child(2) { top: 17px; }
-  .burger span:nth-child(3) { top: 23px; }
-  .nav.open .burger span:nth-child(1) { top: 17px; }
-  .nav.open .burger span:nth-child(3) { top: 17px; }
-
-  /* cart badge */
-  .icon-btn__badge {
-    min-width: 16px;
-    height: 16px;
-    font-size: .55rem;
-    padding: 0 4px;
-    top: 0;
-    right: 0;
-  }
+  .nav__links a[data-scroll] { font-size: 1.5rem; font-family: var(--font-head); }
 
   .hero__inner { padding-top: calc(var(--nav-h) + 1.6rem); }
   .hero__stats { gap: 1.6rem; }
@@ -1193,67 +1105,6 @@ body[data-card-hover="glow"] .card:hover { box-shadow: 0 0 0 2px var(--c-accent)
   .hero__scroll { display: none; }
 
   .ci { grid-template-columns: 56px 1fr auto; }
-}
-
-/* ── very small phones (≤ 400px) ── */
-@media (max-width: 400px) {
-  .nav {
-    padding-inline: .7rem;
-    gap: .25rem;
-    height: clamp(60px, 16vw, 78px);
-  }
-  .brand__text {
-    font-size: clamp(.6rem, 3vw, .8rem);
-    letter-spacing: .04em;
-  }
-  .brand__text small { display: none; }
-  .brand { gap: .3rem; }
-  .brand__mark { width: clamp(26px, 7vw, 34px); height: clamp(26px, 7vw, 34px); }
-  .brand__mark .icon { width: clamp(14px, 4vw, 20px); height: clamp(14px, 4vw, 20px); }
-
-  .nav__actions { gap: .15rem; }
-
-  .icon-btn {
-    width: clamp(30px, 8vw, 36px);
-    height: clamp(30px, 8vw, 36px);
-  }
-  .icon-btn .icon { width: clamp(.85rem, 2.4vw, 1rem); height: clamp(.85rem, 2.4vw, 1rem); }
-
-  .lang-btn {
-    font-size: clamp(.55rem, 1.8vw, .7rem);
-    padding: .25rem .35rem;
-  }
-  .lang-btn .icon { width: clamp(.7rem, 1.8vw, .85rem); height: clamp(.7rem, 1.8vw, .85rem); }
-
-  .auth-btn {
-    width: clamp(28px, 7vw, 34px) !important;
-    height: clamp(28px, 7vw, 34px) !important;
-    padding: 0 .35rem !important;
-  }
-  .auth-btn .icon { width: clamp(.85rem, 2.4vw, 1rem); height: clamp(.85rem, 2.4vw, 1rem); }
-
-  .burger {
-    width: clamp(28px, 7vw, 34px);
-    height: clamp(28px, 7vw, 34px);
-  }
-  .burger span {
-    left: 6px; right: 6px;
-    height: 1.5px;
-  }
-  .burger span:nth-child(1) { top: 9px; }
-  .burger span:nth-child(2) { top: 14px; }
-  .burger span:nth-child(3) { top: 19px; }
-  .nav.open .burger span:nth-child(1) { top: 14px; }
-  .nav.open .burger span:nth-child(3) { top: 14px; }
-
-  .icon-btn__badge {
-    min-width: 14px;
-    height: 14px;
-    font-size: .5rem;
-    padding: 0 3px;
-    top: -1px;
-    right: -1px;
-  }
 }
 
 @media (max-width: 560px) {
@@ -2059,3 +1910,228 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
 .tk-edit-current h4,.tk-edit-add h4{margin:10px 0 6px}.tk-edit-empty{opacity:.7;padding:8px}
 .tk-edit-item.is-removed{opacity:.45}.btn--danger{border:0;background:#b42318;color:#fff}
 
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE HEADER OVERRIDE
+   - Keeps the existing visual identity and header controls.
+   - Desktop/mobile use the same compact control layout.
+   - Home / Menu / Contact are opened from the burger menu.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Keep only the requested visible header controls. The install control
+   remains in the DOM/JS but is not displayed inside the main header. */
+/*.nav .install-btn { display: none !important; }
+
+/* Brand remains visible and scales without overflowing small screens. */
+.nav {
+  min-width: 0;
+  gap: clamp(.35rem, 1vw, .75rem);
+  padding-inline: clamp(.65rem, 2.5vw, 1.4rem);
+}
+
+.brand {
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: clamp(.45rem, 1vw, .7rem);
+  overflow: hidden;
+}
+
+.brand__mark {
+  flex: 0 0 auto;
+  width: clamp(34px, 7vw, var(--logo-h));
+  height: clamp(34px, 7vw, var(--logo-h));
+}
+
+.brand__mark .icon {
+  width: 58%;
+  height: 58%;
+}
+
+.brand__text {
+  min-width: 0;
+  font-size: clamp(.78rem, 2.5vw, 1.22rem);
+  letter-spacing: clamp(.06em, .8vw, .14em);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand__text small {
+  font-size: clamp(.42rem, 1.25vw, .58rem);
+  letter-spacing: clamp(.16em, 1.5vw, .52em);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The navigation links are always inside the burger menu. */
+.nav__links {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 4vw, 1.9rem);
+  margin: 0;
+  padding: 5rem 1.5rem 2rem;
+  background: var(--c-navbar);
+  transform: translateY(-100%);
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform .5s var(--ease), visibility .5s;
+}
+
+.nav.open .nav__links {
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.nav__links a[data-scroll] {
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-family: var(--font-head);
+  padding: .45rem .2rem;
+}
+
+/* Requested outside order:
+   burger → sign in → cart → language. */
+.nav__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(.12rem, .7vw, .6rem);
+}
+
+.nav__actions .burger { order: 1; }
+.nav__actions .auth-btn { order: 2; }
+.nav__actions #cartBtn { order: 3; }
+.nav__actions .lang-btn { order: 4; }
+
+/* Burger is always available, not only on mobile. */
+.nav .burger {
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(38px, 9vw, 42px);
+  height: clamp(38px, 9vw, 42px);
+  border: 0;
+  padding: 0;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.nav .burger:hover {
+  background: rgb(255 255 255 / .12);
+}
+
+/* Keep sign-in text on normal screens, but let the control shrink on very
+   narrow phones so the logo and all controls remain visible in portrait. */
+.auth-btn {
+  flex: 0 1 auto;
+  max-width: min(9.5rem, 26vw);
+}
+
+.auth-btn__label {
+  max-width: 9ch;
+}
+
+.icon-btn,
+.lang-btn {
+  flex: 0 0 auto;
+}
+
+.icon-btn {
+  width: clamp(38px, 9vw, 42px);
+  height: clamp(38px, 9vw, 42px);
+}
+
+.lang-btn {
+  min-height: clamp(34px, 8vw, 40px);
+  padding-inline: clamp(.4rem, 1.6vw, .6rem);
+}
+
+/* Prevent the cart badge from being clipped on compact controls. */
+.icon-btn__badge {
+  top: 0;
+  right: -1px;
+}
+
+/* Header spacing for smaller portrait screens. */
+@media (max-width: 760px) {
+  .nav {
+    padding-inline: clamp(.55rem, 3vw, 1.1rem);
+  }
+
+  .hero__inner {
+    padding-top: calc(var(--nav-h) + 1.6rem);
+  }
+}
+
+/* Very narrow phones: keep every requested control visible without
+   horizontal scrolling. The sign-in icon remains, while only its text
+   label is hidden. */
+@media (max-width: 430px) {
+  .brand__text {
+    font-size: clamp(.7rem, 4vw, .9rem);
+    letter-spacing: .045em;
+  }
+
+  .brand__text small {
+    font-size: .39rem;
+    letter-spacing: .11em;
+    margin-top: .22rem;
+  }
+
+  .auth-btn__label {
+    display: none;
+  }
+
+  .auth-btn {
+    width: clamp(38px, 9vw, 42px);
+    padding: 0;
+    justify-content: center;
+  }
+
+  .nav__actions {
+    gap: .08rem;
+  }
+
+  .nav .burger,
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .lang-btn {
+    min-width: 34px;
+    padding-inline: .42rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .brand__mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand__text {
+    font-size: .66rem;
+  }
+
+  .brand__text small {
+    font-size: .35rem;
+  }
+
+  .nav .burger,
+  .icon-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .lang-btn {
+    min-width: 32px;
+    padding-inline: .3rem;
+  }
+}
