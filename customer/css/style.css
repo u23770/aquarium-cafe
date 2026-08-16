@@ -1894,7 +1894,7 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
 .menu-vat-note { margin: .7rem 0 0; padding: .65rem .9rem; border-radius: 12px; font-size: .88rem; font-weight: 700; opacity: .9; text-align: center; background: color-mix(in srgb, var(--c-primary) 10%, var(--c-card)); }
 
 /* v6 mobile-first menu navigation */
-.chips{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:.65rem;scroll-snap-type:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:auto;touch-action:pan-x;scrollbar-width:none;padding-bottom:.35rem;cursor:grab}
+.chips{display:flex;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;gap:.65rem;scroll-snap-type:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:auto;touch-action:pan-x;scrollbar-width:none;padding-bottom:.35rem;cursor:grab}
 .chips::-webkit-scrollbar{display:none}
 .chips:active{cursor:grabbing}
 .chip{flex:0 0 auto;scroll-snap-align:none;white-space:nowrap}
