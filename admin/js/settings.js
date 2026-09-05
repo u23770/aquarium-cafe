@@ -138,6 +138,121 @@ function todoGroup() {
   return el;
 }
 
+/* ---------- order availability (manual pause + opening hours) ---------- */
+const DOW_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+function ensureDay(hours, key) {
+  if (!hours[key] || typeof hours[key] !== 'object') {
+    hours[key] = { enabled: true, open: '08:00', close: '02:00' };
+  }
+  return hours[key];
+}
+
+function availabilityGroup() {
+  const d = state.delivery;
+  const el = C.group(t('avail.title'), 'i-scooter', []);
+  const box = el.querySelector('.cz-group__fields');
+
+  /* status pill + pause / resume (saves immediately, no debounce) */
+  const statusRow = document.createElement('div');
+  statusRow.className = 'ctl__row';
+  statusRow.style.justifyContent = 'space-between';
+  statusRow.style.flexWrap = 'wrap';
+  statusRow.style.gap = '.75rem';
+
+  const statusText = document.createElement('span');
+  statusText.style.fontWeight = '600';
+  const paintStatus = () => {
+    statusText.textContent = d.manual_pause
+      ? ('\u{1F534} ' + t('avail.ordersPaused'))
+      : ('\u{1F7E2} ' + t('avail.acceptingOrders'));
+  };
+  paintStatus();
+
+  const pauseBtn = document.createElement('button');
+  pauseBtn.type = 'button';
+  const paintBtn = () => {
+    pauseBtn.textContent = d.manual_pause ? t('avail.resume') : t('avail.pause');
+    pauseBtn.className = 'btn btn--sm ' + (d.manual_pause ? 'btn--primary' : 'btn--danger');
+  };
+  paintBtn();
+  pauseBtn.addEventListener('click', async () => {
+    pauseBtn.disabled = true;
+    d.manual_pause = !d.manual_pause;
+    paintStatus();
+    paintBtn();
+    clearTimeout(timers.delivery);
+    try {
+      await persist('delivery'); // immediate save — pausing must take effect right away
+    } finally {
+      pauseBtn.disabled = false;
+    }
+  });
+
+  statusRow.appendChild(statusText);
+  statusRow.appendChild(pauseBtn);
+  box.appendChild(statusRow);
+  box.appendChild(note(t('avail.pauseHint')));
+
+  box.appendChild(C.toggleControl({
+    label: t('avail.enableHours'),
+    hint: t('avail.enableHoursHint'),
+    value: d.schedule_enabled,
+    onChange: (v) => { d.schedule_enabled = v; scheduleSave('delivery'); },
+  }));
+
+  const daysWrap = document.createElement('div');
+  daysWrap.className = 'avail-days';
+  DOW_KEYS.forEach((key) => {
+    const day = ensureDay(d.opening_hours, key);
+    const row = document.createElement('div');
+    row.className = 'ctl__row avail-day';
+    row.style.flexWrap = 'wrap';
+
+    const dayName = document.createElement('span');
+    dayName.textContent = t('avail.day.' + key);
+    dayName.style.minWidth = '92px';
+    dayName.style.display = 'inline-block';
+
+    const switchWrap = document.createElement('span');
+    switchWrap.className = 'switch';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = day.enabled !== false;
+    switchWrap.appendChild(cb);
+    switchWrap.appendChild(document.createElement('i'));
+
+    const openInput = document.createElement('input');
+    openInput.type = 'time';
+    openInput.value = day.open || '08:00';
+    openInput.setAttribute('aria-label', t('avail.day.' + key) + ' ' + t('avail.openLabel'));
+
+    const arrow = document.createElement('span');
+    arrow.textContent = '\u2192';
+    arrow.setAttribute('aria-hidden', 'true');
+
+    const closeInput = document.createElement('input');
+    closeInput.type = 'time';
+    closeInput.value = day.close || '02:00';
+    closeInput.setAttribute('aria-label', t('avail.day.' + key) + ' ' + t('avail.closeLabel'));
+
+    cb.addEventListener('change', () => { day.enabled = cb.checked; scheduleSave('delivery'); });
+    openInput.addEventListener('change', () => { day.open = openInput.value || '08:00'; scheduleSave('delivery'); });
+    closeInput.addEventListener('change', () => { day.close = closeInput.value || '02:00'; scheduleSave('delivery'); });
+
+    row.appendChild(dayName);
+    row.appendChild(switchWrap);
+    row.appendChild(openInput);
+    row.appendChild(arrow);
+    row.appendChild(closeInput);
+    daysWrap.appendChild(row);
+  });
+  box.appendChild(daysWrap);
+  box.appendChild(note(t('avail.hoursNote')));
+
+  return el;
+}
+
 /* ---------- main render ---------- */
 export async function renderSettings(view, keepState = false) {
   if (!keepState || !state) {
@@ -156,6 +271,11 @@ export async function renderSettings(view, keepState = false) {
         estimated_minutes: Number(delivery.estimated_minutes ?? 45),
         payment_methods: Array.isArray(delivery.payment_methods) ? delivery.payment_methods : ['cash'],
         note: String(delivery.note ?? ''),
+        manual_pause: !!delivery.manual_pause,
+        schedule_enabled: !!delivery.schedule_enabled,
+        opening_hours: (delivery.opening_hours && typeof delivery.opening_hours === 'object')
+          ? { ...delivery.opening_hours }
+          : {},
       },
       rewards: {
         enabled: rewards.enabled !== false,
@@ -176,6 +296,9 @@ export async function renderSettings(view, keepState = false) {
 
   const wrap = document.createElement('div');
   wrap.className = 'set-grid';
+
+  /* Order Availability */
+  wrap.appendChild(availabilityGroup());
 
   /* Delivery */
   const d = state.delivery;

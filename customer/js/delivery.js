@@ -97,6 +97,54 @@ function feeFor(subtotal) {
   return subSel ? subSel.fee : zoneSel.fee;
 }
 
+/* ═══════════════ order availability (UX mirror — server stays authoritative) ═══════════════
+   Same overnight-safe logic as public._delivery_is_open_now() in Postgres, evaluated
+   against Africa/Cairo local time so the customer sees the same answer the backend will
+   enforce. This is a convenience check only: place_delivery_order() re-validates and is
+   the final word — a race between "open now" and pressing submit is caught server-side. */
+const AVAIL_DOW = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+function cairoNow() {
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Africa/Cairo', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  });
+  const parts = fmt.formatToParts(new Date());
+  const get = (type) => parts.find((p) => p.type === type)?.value || '';
+  const wd = get('weekday').slice(0, 3).toLowerCase();
+  const idx = AVAIL_DOW.indexOf(wd);
+  const h = parseInt(get('hour'), 10) || 0;
+  const m = parseInt(get('minute'), 10) || 0;
+  return { dowIndex: idx < 0 ? 0 : idx, minutes: h * 60 + m };
+}
+
+function dayWindow(cfg) {
+  if (!cfg || cfg.enabled === false) return null;
+  const [oh, om] = String(cfg.open || '').split(':').map(Number);
+  const [ch, cm] = String(cfg.close || '').split(':').map(Number);
+  if (![oh, om, ch, cm].every(Number.isFinite)) return null;
+  return { open: oh * 60 + om, close: ch * 60 + cm };
+}
+
+function isRestaurantOpenNow(hours) {
+  if (!hours || typeof hours !== 'object') return true; // not configured — don't block
+  const { dowIndex, minutes } = cairoNow();
+  const today = AVAIL_DOW[dowIndex];
+  const yesterday = AVAIL_DOW[(dowIndex + 6) % 7];
+
+  const yWin = dayWindow(hours[yesterday]);
+  if (yWin && yWin.close <= yWin.open && minutes < yWin.close) return true;
+
+  const tWin = dayWindow(hours[today]);
+  if (tWin) {
+    if (tWin.close > tWin.open) {
+      if (minutes >= tWin.open && minutes < tWin.close) return true;
+    } else if (minutes >= tWin.open) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /* ═══════════════ automatic (code-less) discount preview ═══════════════
    Client mirror of the server's best-of selection. The client reads
    the readable discounts table purely to PREVIEW; place_delivery_order
@@ -436,6 +484,15 @@ export async function openDeliveryCheckout(cartSnapshot) {
     return;
   }
 
+  if (settings.manualPause) {
+    toast(t('avail.pausedMsg'));
+    return;
+  }
+  if (settings.scheduleEnabled && !isRestaurantOpenNow(settings.openingHours)) {
+    toast(t('avail.closedMsg'));
+    return;
+  }
+
   // payment methods offered by the restaurant
   els.payGroup.querySelectorAll('.dl__payopt').forEach((opt) => {
     const input = opt.querySelector('input');
@@ -557,7 +614,9 @@ async function submit(e) {
     trackedId = order.id;
     toast(t('msg.orderPlaced'));
   } catch (err) {
-    els.error.textContent = err.message || t('auth.err.generic');
+    if (err.message === 'MANUAL_PAUSED') els.error.textContent = t('avail.pausedMsg');
+    else if (err.message === 'RESTAURANT_CLOSED') els.error.textContent = t('avail.closedMsg');
+    else els.error.textContent = err.message || t('auth.err.generic');
   } finally {
     setLoading(false);
   }

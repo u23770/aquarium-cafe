@@ -284,6 +284,10 @@ export async function getDeliverySettings() {
     estimatedMinutes: +(v.estimated_minutes ?? 45),
     paymentMethods: Array.isArray(v.payment_methods) ? v.payment_methods : ['cash'],
     note: v.note ?? '',
+    // order availability — manual pause + opening hours (mirrors DB; DB stays authoritative)
+    manualPause: !!v.manual_pause,
+    scheduleEnabled: !!v.schedule_enabled,
+    openingHours: (v.opening_hours && typeof v.opening_hours === 'object') ? v.opening_hours : null,
   };
 }
 
