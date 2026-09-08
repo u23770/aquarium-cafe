@@ -11,6 +11,7 @@
 // ============================================================
 import { getDeliveryOrders, advanceDelivery, getDrivers } from './api.js';
 import { esc, money, moneyEgp, relTime, exactTime, parseDate, toast, ding } from './ui.js';
+import { printDeliveryOrder } from './print.js';
 import { t, pickLang } from '../shared/i18n.js';
 
 const $ = (id) => document.getElementById(id);
@@ -31,6 +32,10 @@ const NEXT_KEY = {
   'Out for Delivery': 'act.Mark Delivered',
 };
 const CANCELLABLE = new Set(['Received', 'Accepted', 'Preparing', 'Ready', 'Out for Delivery']);
+
+/* print becomes available once the order is locked from customer edits
+   (Preparing onward) and stays available for reprints at every later step */
+const PRINTABLE = new Set(['Preparing', 'Ready', 'Out for Delivery', 'Delivered']);
 
 /* status → css accent key */
 const KEY = {
@@ -163,6 +168,12 @@ function cardHTML(o, i) {
       </button>`;
   }
 
+  const printBtn = PRINTABLE.has(o.status)
+    ? `<button class="d-act d-act--print" data-print="${o.id}" title="${esc(t('act.print'))}">
+         <svg class="icon"><use href="#i-print"/></svg> ${esc(t('act.print'))}
+       </button>`
+    : '';
+
   const cancelBtn = CANCELLABLE.has(o.status)
     ? `<button class="d-act d-act--cancel" data-dv="${o.id}" data-next="Cancelled" ${isBusy ? 'disabled' : ''}>
          <svg class="icon"><use href="#i-ban"/></svg> ${esc(t(o.status === 'Received' ? 'act.reject' : 'act.cancel'))}
@@ -226,6 +237,7 @@ function cardHTML(o, i) {
     ${o.notes ? `<p class="d-card__note"><svg class="icon"><use href="#i-note"/></svg> “${esc(o.notes)}”</p>` : ''}
     ${driverRow}
     ${actions}
+    ${printBtn}
     ${cancelBtn}
     ${done}
   </article>`;
@@ -421,6 +433,18 @@ function onModeSwitch(btn) {
   });
 }
 
+/* ---------- print (available Preparing → Delivered; reprints allowed) ---------- */
+function onPrint(btn) {
+  const id = btn.dataset.print;
+  const order = orders.find((o) => o.id === id);
+  if (!order) { toast(t('toast.printFailed'), 'error'); return; }
+  try {
+    printDeliveryOrder(order);
+  } catch {
+    toast(t('toast.printFailed'), 'error');
+  }
+}
+
 /* ---------- wire once ---------- */
 export function initDelivery() {
   if (wired) return;
@@ -429,6 +453,8 @@ export function initDelivery() {
   $('delvBoard').addEventListener('click', (e) => {
     const modeBtn = e.target.closest('[data-tmode-btn]');
     if (modeBtn) { onModeSwitch(modeBtn); return; }
+    const printBtn = e.target.closest('[data-print]');
+    if (printBtn) { onPrint(printBtn); return; }
     const btn = e.target.closest('[data-dv]');
     if (btn) onAction(btn);
   });

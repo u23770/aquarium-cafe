@@ -27,6 +27,7 @@ const mapDelivery = (o) => ({
   items: Array.isArray(o.items) ? o.items : [],
   subtotal: o.subtotal,
   deliveryFee: o.delivery_fee,
+  vatAmount: +(o.vat_amount ?? 0),
   total: o.total,
   status: o.status,
   driverId: o.driver_id,
