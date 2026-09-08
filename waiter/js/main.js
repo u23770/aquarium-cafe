@@ -117,6 +117,33 @@ $('refreshBtn').addEventListener('click', () => {
 // browsers unlock audio after the first user gesture
 document.addEventListener('pointerdown', () => {}, { once: true });
 
+/* ---------- notification click targeting: ?order=<id> highlights the card
+   (never changes its status — just scrolls to it and flashes an outline) ---------- */
+function highlightOrderFromURL() {
+  const id = new URL(window.location.href).searchParams.get('order');
+  if (!id) return;
+  // strip the param immediately so a manual refresh doesn't re-highlight
+  const clean = new URL(window.location.href);
+  clean.searchParams.delete('order');
+  history.replaceState(null, '', clean.pathname + clean.search + clean.hash);
+
+  let tries = 0;
+  const tryHighlight = () => {
+    const card = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.classList.add('d-card--pulse');
+      setTimeout(() => card.classList.remove('d-card--pulse'), 2600);
+      return;
+    }
+    if (++tries < 20) setTimeout(tryHighlight, 250); // board renders asynchronously
+  };
+  tryHighlight();
+}
+
 /* ---------- boot ---------- */
 initDelivery();
-refreshDelivery('force');
+refreshDelivery('force').then(highlightOrderFromURL);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') highlightOrderFromURL();
+});

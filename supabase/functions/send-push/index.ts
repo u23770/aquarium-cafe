@@ -62,9 +62,14 @@ Deno.serve(async (req) => {
     const st = statusText[record.status] || statusText.Received;
     const payload = isWaiter
       ? {
+          // Scope-relative — the waiter Service Worker resolves this against
+          // its own registration scope (the deployed .../waiter/ path), so it
+          // is correct regardless of which path Vercel serves the app from.
+          // order_id is not sensitive (it's already visible on the waiter
+          // board) and only lets the click scroll to/highlight that card.
           title: "🔔 New delivery order",
           body: `Order #${idLabel} · ${Number(record.total || 0).toFixed(2)} EGP`,
-          url: "../waiter/",
+          url: `./?order=${encodeURIComponent(record.id)}`,
           tag: `waiter-order-${record.id}`
         }
       : {

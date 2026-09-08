@@ -992,3 +992,13 @@ svg.icon-sound, svg.icon-mute { width: 1.05rem; height: 1.05rem; }
     #printSheet .ps-qr__code svg { width: 72px; height: 72px; }
   }
 }
+
+
+/* ---------- notification-click order highlight (Preparing lock unaffected) ---------- */
+@keyframes d-card-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(185, 138, 85, 0); }
+  25% { box-shadow: 0 0 0 4px rgba(185, 138, 85, .55); }
+  50% { box-shadow: 0 0 0 0 rgba(185, 138, 85, 0); }
+  75% { box-shadow: 0 0 0 4px rgba(185, 138, 85, .55); }
+}
+.d-card--pulse { animation: d-card-pulse 2.6s ease-in-out; }
