@@ -24,6 +24,7 @@ import { renderSocials } from './socials.js';
 import { renderDeliveries } from './deliveries.js';
 import { renderDrivers } from './drivers.js';
 import { renderSettings } from './settings.js';
+import { ensureStaffSession } from '../shared/staff-auth.js';
 
 /* ---------- language: boot BEFORE the router renders ---------- */
 initI18n({ dictionary, defaultLang: 'en' });
@@ -117,5 +118,10 @@ async function navigate() {
 window.addEventListener('hashchange', navigate);
 
 /* ---------- boot ---------- */
-initUI();
-navigate();
+/* Gate first: no admin data loads, no privileged Supabase call is
+   made, until a server-verified admin session is in place. */
+(async () => {
+  await ensureStaffSession('admin', 'Aquarium Cafe — Admin Access');
+  initUI();
+  navigate();
+})();

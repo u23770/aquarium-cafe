@@ -10,6 +10,7 @@ import { subscribeDeliveryOrders } from './api.js';
 import { initDelivery, refreshDelivery } from './delivery.js';
 import { toast, soundOn, toggleSound } from './ui.js';
 import { registerPush, autoRegisterGrantedPush } from '../shared/push.js';
+import { ensureStaffSession } from '../shared/staff-auth.js';
 
 const POLL_MS = 15000; // safety net only — Realtime drives instant updates
 
@@ -142,8 +143,13 @@ function highlightOrderFromURL() {
 }
 
 /* ---------- boot ---------- */
-initDelivery();
-refreshDelivery('force').then(highlightOrderFromURL);
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') highlightOrderFromURL();
-});
+/* Gate first: no order data loads, no privileged Supabase call is
+   made, until a server-verified waiter session is in place. */
+(async () => {
+  await ensureStaffSession('waiter', 'Aquarium Cafe — Waiter Access');
+  initDelivery();
+  refreshDelivery('force').then(highlightOrderFromURL);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') highlightOrderFromURL();
+  });
+})();
