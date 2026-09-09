@@ -24,16 +24,16 @@ if (!isConfigured) {
 // localStorage with token auto-refresh — so the guest who signed in
 // yesterday is still signed in today. One shared client serves all apps.
 //
-// v5.1.3 · SESSION ISOLATION:
+// v5.1.3 · SESSION ISOLATION (security, part of the RLS lockdown):
 // the three apps run on the same origin and share one Supabase project,
 // so by default they would share ONE auth bucket — a customer login in
-// the Customer app could otherwise collide with the Admin/Waiter apps'
-// own sessions. Each app therefore gets its OWN storage key.
-// v5.2 · Admin/Waiter now DO authenticate — via shared/staff-auth.js's
-// login-free access-code gate (no email/password, no signup). Their
-// requests go out as `authenticated`, with role enforced server-side
-// by is_admin()/is_staff() (reading staff_profiles), not by the anon
-// role. Per-app storage keys keep that session isolated from Customer.
+// the Customer app would silently flip the Admin/Waiter clients from
+// the `anon` role to `authenticated`, breaking their write policies.
+// Each app therefore gets its OWN storage key: the Customer app keeps
+// its login exactly as before, while Admin/Waiter (which intentionally
+// have no auth code at all) NEVER pick up a session — their requests
+// always go out as `anon`, which is precisely the role their operator
+// write policies are granted to. No Admin/Waiter behavior changes.
 const APPkey = /\/(admin|waiter)\//.test(location.pathname)
   ? (location.pathname.match(/\/(admin|waiter)\//) || [])[1]
   : 'customer';
