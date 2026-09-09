@@ -5,6 +5,7 @@
 //  net. Status moves live in waiter/js/delivery.js.
 // ============================================================
 import { initI18n, toggleLang, langSwitchLabel, t, isRTL, applyI18n } from '../shared/i18n.js';
+import { requireStaffSession } from '../shared/staff-auth.js';
 import { dictionary } from './lang.js';
 import { subscribeDeliveryOrders } from './api.js';
 import { initDelivery, refreshDelivery } from './delivery.js';
@@ -67,22 +68,6 @@ const paintLive = () => setLive(channelHealth.delivery);
 document.addEventListener('lang:changed', paintLive);
 paintLive();
 
-/* ---------- realtime: delivery orders & status changes ---------- */
-let rtDelvTimer = null;
-subscribeDeliveryOrders(
-  () => {
-    clearTimeout(rtDelvTimer);
-    rtDelvTimer = setTimeout(() => refreshDelivery('realtime'), 250);
-  },
-  (status) => {
-    channelHealth.delivery = !(status === 'CHANNEL_ERROR' || status === 'TIMED_OUT');
-    paintLive();
-  }
-);
-
-/* ---------- gentle polling safety net ---------- */
-setInterval(refreshDelivery, POLL_MS);
-
 /* ---------- header: clock, sound, refresh ---------- */
 function tickClock() {
   const now = new Date();
@@ -141,9 +126,32 @@ function highlightOrderFromURL() {
   tryHighlight();
 }
 
-/* ---------- boot ---------- */
-initDelivery();
-refreshDelivery('force').then(highlightOrderFromURL);
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') highlightOrderFromURL();
+/* ---------- boot: gated on staff authentication ----------
+   The delivery board must not initialize — no realtime
+   subscription, no polling, no order fetch — until an active
+   waiter session is verified, either from an existing session
+   or via the access code gate. */
+requireStaffSession('waiter').then(() => {
+  /* ---------- realtime: delivery orders & status changes ---------- */
+  let rtDelvTimer = null;
+  subscribeDeliveryOrders(
+    () => {
+      clearTimeout(rtDelvTimer);
+      rtDelvTimer = setTimeout(() => refreshDelivery('realtime'), 250);
+    },
+    (status) => {
+      channelHealth.delivery = !(status === 'CHANNEL_ERROR' || status === 'TIMED_OUT');
+      paintLive();
+    }
+  );
+
+  /* ---------- gentle polling safety net ---------- */
+  setInterval(refreshDelivery, POLL_MS);
+
+  /* ---------- boot ---------- */
+  initDelivery();
+  refreshDelivery('force').then(highlightOrderFromURL);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') highlightOrderFromURL();
+  });
 });

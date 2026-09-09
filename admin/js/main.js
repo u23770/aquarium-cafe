@@ -7,6 +7,7 @@
 //    Reviews · Socials · Deliveries · Drivers · Settings
 // ============================================================
 import { initI18n, toggleLang, langSwitchLabel, t, applyI18n } from '../shared/i18n.js';
+import { requireStaffSession } from '../shared/staff-auth.js';
 import { dictionary } from './lang.js';
 import { $, initUI } from './ui.js';
 import { renderOverview } from './overview.js';
@@ -116,6 +117,12 @@ async function navigate() {
 
 window.addEventListener('hashchange', navigate);
 
-/* ---------- boot ---------- */
-initUI();
-navigate();
+/* ---------- boot: gated on staff authentication ----------
+   initUI()/navigate() are what actually load and render admin
+   data, so nothing here runs until an active admin session is
+   verified — either from an existing session or via the access
+   code gate. */
+requireStaffSession('admin').then(() => {
+  initUI();
+  navigate();
+});
