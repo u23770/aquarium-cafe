@@ -21,18 +21,18 @@ Customer sessions use a separate browser storage key from staff sessions. Custom
 
 Operator table writes are restricted to authenticated admins. Delivery status transitions are restricted to authenticated staff. Customer-owned data is owner-scoped.
 
+Guest orders use a random tracking capability generated server-side. Only its hash is stored with the order. The customer does not need to see or enter a technical token; the browser keeps the credential locally and uses it behind the scenes for guest tracking, guest edit/cancel, and guest push authorization.
+
 ## Quick start
 
 1. Create a Supabase project.
-2. For a **fresh database**, run `supabase/schema.sql`, then apply the production migrations in chronological order, including:
-   - `20260909_staff_rbac_foundation.sql`
-   - `20260910_production_security_hardening.sql`
-3. Configure `shared/config.js` with the project URL and publishable/anon client key.
+2. For a **fresh database**, run `supabase/schema.sql`, then apply **all** production migrations in chronological order. Do not stop at the historical v5.1 baseline.
+3. Configure each app's `shared/config.js` with the project URL and publishable/anon client key.
 4. Enable Email Auth for customers.
 5. Configure the `staff-session` Edge Function secrets for the admin/waiter access-code flow.
 6. Deploy the `customer/`, `waiter/`, and `admin/` folders over HTTPS.
 
-For an existing v4/v5 database, use the appropriate historical migrations first, then the RBAC/security migrations above. Do not treat the old v5.1.3 anonymous-operator model as a production security model.
+For an existing v4/v5 database, use the appropriate historical migrations first, then continue through the RBAC, security, guest-tracking and latest compatibility migrations. Do not treat the old v5.1.3 anonymous-operator model as a production security model.
 
 ## Money flow
 
@@ -65,6 +65,8 @@ Commission statements are calculated server-side at **5%** of eligible item sale
 - Waiter delivery transitions require an authenticated active staff user.
 - Customer profile/loyalty data is owner-scoped.
 - Sensitive delivery-order reads are no longer public; they are restricted to staff or the authenticated order owner.
+- Guest tracking validates a SHA-256 hash of a random capability token; the guest endpoint exposes only fields needed by the customer tracking/edit UI.
+- Guest mutations and push subscriptions are token-authorized; authenticated customer mutations remain owner-scoped.
 - Internal pricing and operator RPCs are not exposed to anonymous clients.
 - The `service_role` key is never placed in browser code.
 
@@ -75,6 +77,6 @@ Before real orders, run the complete smoke test in `PRODUCTION_CHECKLIST.md`, in
 ## Documentation
 
 - `DATABASE_CHANGES.md` — schema evolution notes
-- `PRODUCTION_CHECKLIST.md` — go-live checklist
+- `PRODUCTION_CHECKLIST.md` — current go-live checklist
 - `QA_REPORT.md` — historical QA results; verify again after the 2026-09-10 security changes
 - `MODIFIED_FILES.md` — change summary
