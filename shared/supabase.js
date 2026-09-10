@@ -1,7 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Supabase client (single shared instance)
-//  Uses the latest @supabase/supabase-js v2 SDK, loaded as a
-//  native ES module from the jsDelivr CDN — no build step.
+// Aquarium Cafe & Resturant — Supabase client
 // ============================================================
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
@@ -11,29 +9,13 @@ export const isConfigured =
   SUPABASE_ANON_KEY.trim().length > 40;
 
 if (!isConfigured) {
-  console.error(
-    '🌊 Aquarium Cafe & Resturant — Supabase is not configured yet.\n' +
-      '   Open shared/config.js and paste your Project URL + anon key\n' +
-      '   (Supabase dashboard → Project Settings → API), then reload.'
-  );
+  console.error('Aquarium Cafe — Supabase is not configured. Open shared/config.js and add the project URL + client key.');
 }
 
-// A placeholder keeps the module importable when unconfigured —
-// every query path guards on isConfigured and throws a friendly error.
-// v5: customer accounts (Supabase Auth) need the session persisted in
-// localStorage with token auto-refresh — so the guest who signed in
-// yesterday is still signed in today. One shared client serves all apps.
-//
-// v5.1.3 · SESSION ISOLATION (security, part of the RLS lockdown):
-// the three apps run on the same origin and share one Supabase project,
-// so by default they would share ONE auth bucket — a customer login in
-// the Customer app would silently flip the Admin/Waiter clients from
-// the `anon` role to `authenticated`, breaking their write policies.
-// Each app therefore gets its OWN storage key: the Customer app keeps
-// its login exactly as before, while Admin/Waiter (which intentionally
-// have no auth code at all) NEVER pick up a session — their requests
-// always go out as `anon`, which is precisely the role their operator
-// write policies are granted to. No Admin/Waiter behavior changes.
+// Customer, Admin and Waiter use separate Auth storage keys because they are
+// separate applications on the same origin. Unlike the old v5.1.3 model,
+// Admin/Waiter now intentionally authenticate and receive real Supabase
+// sessions. Their authorization is enforced by staff_profiles/RLS/RPC guards.
 const APPkey = /\/(admin|waiter)\//.test(location.pathname)
   ? (location.pathname.match(/\/(admin|waiter)\//) || [])[1]
   : 'customer';
