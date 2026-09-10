@@ -6,7 +6,7 @@
 import { initI18n, toggleLang, langSwitchLabel, t, applyI18n } from '../shared/i18n.js';
 import { requireStaffSession } from '../shared/staff-auth.js';
 import { dictionary } from './lang.js';
-import { $, initUI } from './ui.js';
+import { $, initUI, esc } from './ui.js';
 import { renderOverview } from './overview.js';
 import { renderCustomizer } from './customizer.js';
 import { renderContent } from './content.js';
@@ -133,12 +133,16 @@ async function navigate() {
   try {
     await route.render(view);
   } catch (err) {
+    // Never place a raw database/network error inside innerHTML.
+    // Error messages are treated as untrusted text at this boundary.
     view.innerHTML = `
       <div class="err-box">
         <svg class="icon"><use href="#i-warn"/></svg>
-        <p>${err.message || t('err.load')}</p>
-        <button class="btn btn--ghost" onclick="location.reload()">${t('act.reload')}</button>
+        <p data-error-message></p>
+        <button class="btn btn--ghost" data-reload>${esc(t('act.reload'))}</button>
       </div>`;
+    view.querySelector('[data-error-message]').textContent = err?.message || t('err.load');
+    view.querySelector('[data-reload]').addEventListener('click', () => location.reload());
   }
 }
 
