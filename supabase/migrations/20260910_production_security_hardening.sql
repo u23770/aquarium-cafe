@@ -198,5 +198,9 @@ grant execute on function public.is_staff() to authenticated;
 revoke execute on function public.handle_new_user() from public,anon,authenticated;
 revoke execute on function public.send_order_push_webhook() from public,anon,authenticated;
 
+-- Customer order mutation wrappers must not be callable anonymously.
+revoke execute on function public.cancel_delivery_order(uuid) from anon;
+revoke execute on function public.edit_delivery_order(uuid,jsonb) from anon;
+
 -- New functions should not accidentally become public APIs.
 alter default privileges in schema public revoke execute on functions from public, anon, authenticated;
