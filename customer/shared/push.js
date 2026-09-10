@@ -4,6 +4,7 @@
 const VAPID_PUBLIC_KEY = 'BD0a4vUKCbDGvSXl6vVA-CIj8Cd2xwfd-eLv0mjAFJZewcXmFkj5v5OVz7aSEYc2VYezdMUeXwjCHlFYBq3YcGs';
 const SUPABASE_URL = window.__SUPABASE_URL__ || '';
 const SUPABASE_ANON_KEY = window.__SUPABASE_ANON_KEY__ || '';
+const GUEST_TRACK_KEY = 'aquarium_guest_tracking_v1';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -15,6 +16,15 @@ function urlBase64ToUint8Array(base64String) {
 async function getConfig() {
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = await import('./config.js');
   return { url: SUPABASE_URL, anon: SUPABASE_ANON_KEY };
+}
+
+function getGuestTracking(orderId) {
+  try {
+    const v = JSON.parse(localStorage.getItem(GUEST_TRACK_KEY) || 'null');
+    return v?.id === orderId && typeof v.token === 'string' && v.token.length >= 24 ? v.token : '';
+  } catch {
+    return '';
+  }
 }
 
 export async function registerPush(role, orderId = null, existingRegistration = null) {
@@ -48,7 +58,8 @@ export async function registerPush(role, orderId = null, existingRegistration = 
     p256dh: keys.p256dh,
     auth: keys.auth,
     role,
-    order_id: orderId
+    order_id: orderId,
+    trackingToken: role === 'customer' ? getGuestTracking(orderId) : ''
   };
 
   if (!keys.p256dh || !keys.auth) {
