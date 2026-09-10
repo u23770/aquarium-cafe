@@ -38,7 +38,6 @@ $('notifyBtn')?.addEventListener('click', async () => {
 });
 waiterSWReady.then(reg => autoRegisterGrantedPush('waiter', null, reg)).catch(() => {});
 
-
 /* ---------- language: boot FIRST ---------- */
 initI18n({ dictionary, defaultLang: 'en' });
 
@@ -126,6 +125,28 @@ function highlightOrderFromURL() {
   tryHighlight();
 }
 
+/* ---------- print action availability ----------
+   delivery.js already handles [data-print] clicks and uses the authoritative
+   in-memory order. Its normal print button starts at Preparing; this small
+   UI bridge adds the same action to Received/Accepted cards immediately,
+   without duplicating print logic or bypassing delivery.js. */
+function ensureEarlyPrintButtons() {
+  const board = $('delvBoard');
+  if (!board) return;
+  board.querySelectorAll('.d-card.ds-Received, .d-card.ds-Accepted').forEach((card) => {
+    if (card.querySelector('[data-print]')) return;
+    const id = card.dataset.id;
+    if (!id) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'd-act d-act--print';
+    btn.dataset.print = id;
+    btn.title = t('act.print');
+    btn.innerHTML = `<svg class="icon"><use href="#i-print"/></svg> ${t('act.print')}`;
+    card.appendChild(btn);
+  });
+}
+
 /* ---------- boot: gated on staff authentication ----------
    The delivery board must not initialize — no realtime
    subscription, no polling, no order fetch — until an active
@@ -150,8 +171,19 @@ requireStaffSession('waiter').then(() => {
 
   /* ---------- boot ---------- */
   initDelivery();
-  refreshDelivery('force').then(highlightOrderFromURL);
+  const board = $('delvBoard');
+  if (board) {
+    const printObserver = new MutationObserver(() => ensureEarlyPrintButtons());
+    printObserver.observe(board, { childList: true, subtree: true });
+  }
+  refreshDelivery('force').then(() => {
+    ensureEarlyPrintButtons();
+    highlightOrderFromURL();
+  });
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') highlightOrderFromURL();
+    if (document.visibilityState === 'visible') {
+      ensureEarlyPrintButtons();
+      highlightOrderFromURL();
+    }
   });
 });
