@@ -1,46 +1,97 @@
-# Production Checklist — Aquarium Cafe & Resturant **v5.1 (final)**
+# Production Checklist — Aquarium Cafe & Resturant (current)
 
-Run this list top-to-bottom on launch day.
+Run this list top-to-bottom before launch. The current production model uses authenticated staff RBAC, token-authorized guest order tracking, server-side checkout calculations, and Realtime updates.
 
-## Supabase
+## 1. Supabase database
 
-- [ ] Project created; **SQL Editor → `supabase/schema.sql` → Run** (fresh) **or** `supabase/migrations/20260807_v4_to_v5.sql` (upgrade of a live v4 DB).
-- [ ] *Only if the DB was migrated to v5 before 2026-08-08:* also run `supabase/migrations/20260808_v5_to_v51.sql` once.
-- [ ] `Project Settings → API`: `SUPABASE_URL` + `anon` key copied into **`shared/config.js`**.
-- [ ] **Authentication → Providers**: Email enabled. Decide *Confirm email* (off = instant signups; on = verification mails — both supported).
-- [ ] **Authentication → URL Configuration**: Site URL + redirect URLs include your real domain (`https://your-domain/**`).
-- [ ] **Storage**: bucket `media` exists (created by schema.sql); public read ✓.
-- [ ] **Database → Replication / Realtime**: `delivery_orders` is in the realtime publication (the waiter board + customer tracking depend on it). schema.sql adds it — verify in *Database → Publications*.
-- [ ] Optional but recommended: schedule a daily **Database backup** (Supabase does this on paid tiers automatically).
+- [ ] Fresh database: run `supabase/schema.sql`, then apply **all** migrations in `supabase/migrations/` in chronological order.
+- [ ] Existing database: apply only the migrations required to bring that database forward, ending with the current 2026-09-10 security/guest-tracking migrations.
+- [ ] Configure the project URL + publishable/anon client key in each app's `shared/config.js`.
+- [ ] Customer Email Auth is configured as intended.
+- [ ] Admin/Waiter staff-session flow is configured with its required Edge Function secrets.
+- [ ] Authentication redirect URLs include the real HTTPS domain.
+- [ ] Storage bucket `media` exists and has the intended public-read policy.
+- [ ] Realtime publication includes `delivery_orders` and every table actually used by the live customer/waiter flows.
+- [ ] Web Push VAPID public key is configured in the customer/waiter push helper; the private key is never shipped to the browser.
 
-## Apps (static hosting)
+## 2. Security verification
 
-- [ ] Serve the whole `aquarium-cafe/` folder over **HTTPS** (Netlify / Vercel / GitHub Pages / Nginx — no server code needed).
-- [ ] `/customer` loads, toggle EN ⇄ AR works, menu shows seeded products.
-- [ ] `/waiter` loads, **six columns** visible, sound toggle works, browser-notification permission granted on the dispatch device.
-- [ ] `/admin` loads, **sidebar → Menu Manager / Delivery Zones / Discounts** present, save pill turns green on any edit.
+- [ ] `cancel_delivery_order` and `edit_delivery_order` are authenticated-only; guests use the token-authorized guest wrappers.
+- [ ] Guest tracking stores only a random tracking token locally; the raw token is not displayed as a technical field to the customer.
+- [ ] Guest tracking RPCs validate the token hash before returning order data or allowing guest mutations.
+- [ ] Customer order/status-history reads are not public table reads.
+- [ ] Admin CRUD requires an active `staff_profiles` admin.
+- [ ] Waiter status transitions require an active staff role.
+- [ ] No browser code contains a `service_role`/secret key.
 
-## Operational smoke test (5 minutes)
+## 3. Customer app smoke test
 
-- [ ] Place a real test order as a guest: pick zone → sub zone → address → cash. Watch it appear on the waiter board *and* admin Deliveries instantly.
-- [ ] **Per-sub-zone pricing**: set zone El Dahar = 25 EGP but its sub zone *Dahar Beach* = 35 EGP; checkout must charge **35** when the sub zone is picked, **25** when skipped. Then change Dahar Beach to 40 — the **old order keeps 35**, the **next order charges 40**.
-- [ ] Advance it: Accept → Preparing → **Ready for delivery → add a temporary driver** → Out for delivery → Delivered. Confirm the customer tracking page shows the captain card with a call button.
-- [ ] Create a coupon in Admin → Discounts (e.g. `TEST10` 10%), apply it at checkout, confirm the row total and the coupon’s `used_count` increments.
-- [ ] Register a customer account → verify the profile shows the signup bonus points; place an order as that member, deliver it, confirm points are credited once.
-- [ ] Redeem points on the next order (checkbox at checkout) and confirm the discount line + ledger entry.
-- [ ] Disable a zone, a sub zone, and a product — confirm they vanish from the customer flow within a second (realtime).
-- [ ] Move a product to another category, reorder two categories — confirm the customer menu mirrors the order.
+- [ ] `/customer` loads over HTTPS.
+- [ ] EN ⇄ AR switch works and RTL layout remains usable.
+- [ ] Menu categories, search, sort, favorites, product modal, quantity controls and Add-to-cart all work.
+- [ ] Cart opens/closes, quantity +/- works, remove works, empty-cart Browse works, and checkout is disabled when empty.
+- [ ] Checkout: zone → sub-zone/skip → address → payment works.
+- [ ] GPS Maps helper fills a valid Google Maps URL when permission is granted; denial shows a normal user-facing error.
+- [ ] Coupon validation and automatic discounts work.
+- [ ] Loyalty points are shown only when applicable and are revalidated server-side.
+- [ ] Successful checkout shows a simple confirmation and a normal **Track Order** action; security tokens are invisible.
+- [ ] The active order can be reopened from the site's tracking pill while it is in progress.
+- [ ] Tracking shows status timeline, ETA, history, and driver/call details when available.
+- [ ] Customer push notification permission is optional; if already granted, registration happens automatically in the background.
+- [ ] Edit/cancel buttons appear only while the order is actually editable.
+- [ ] Delivered/Cancelled orders stop the live tracking subscription and active-order reminder.
+- [ ] Reviews, gallery/lightbox, account/profile and PWA install controls work.
 
-## Housekeeping
+## 4. Waiter app smoke test
 
-- [ ] Admin → Settings: set real **minimum order**, **ETA**, **free-above**, payment methods, loyalty numbers.
-- [ ] Admin → Content: real phones, WhatsApp, address, hours, branches.
-- [ ] Admin → Content → Socials page: real social links.
-- [ ] Admin → Settings → Business TODO: complete the 10 seeded items (legal name spelling, license, etc.).
-- [ ] Replace seeded menu photos with real ones (Media Library uploads are recommended — they survive hosting moves).
+- [ ] `/waiter` requires the staff session before loading order data.
+- [ ] Six delivery status columns render correctly.
+- [ ] Realtime updates move/refresh cards without a manual reload.
+- [ ] Polling safety refresh continues to work if Realtime temporarily drops.
+- [ ] Sound toggle works and respects mute state.
+- [ ] Refresh button works.
+- [ ] Print is available from **Received** and **Accepted** as well as later stages where appropriate.
+- [ ] Accept → Preparing → Ready → Out for Delivery → Delivered works.
+- [ ] Temporary-driver flow works and customer tracking receives the driver details.
+- [ ] Staff push notifications work after the browser grants permission.
+- [ ] Notification clicks highlight the intended order without changing its status.
 
-## Rollback plan
+## 5. Admin app smoke test
 
-Code-only rollback: redeploy the v4 static bundle against the same database (v5 is additive except the dropped `reservations` table and RPC, which the v4 bundle recreates its own way).
+- [ ] `/admin` requires the staff session before loading protected data.
+- [ ] Sidebar navigation works on desktop and mobile.
+- [ ] Overview loads.
+- [ ] Customizer/content/media/sections/menu/zones/discounts/banners/gallery/reviews/socials/deliveries/drivers/settings pages load.
+- [ ] Save/reorder/delete actions work and do not stack duplicate handlers after navigation.
+- [ ] Menu/category/product availability changes propagate to the customer app.
+- [ ] Zone/sub-zone fee changes affect new orders only; existing orders retain their stored snapshot.
+- [ ] Discount usage counters remain atomic under repeated checkout attempts.
+- [ ] Loyalty redemption/earn/refund remains atomic.
+- [ ] Commission statement calculates server-side at 5%, excludes delivery/VAT, excludes cancelled orders, and rejects periods over 32 days.
 
-Database rollback (rare): restore from the pre-upgrade snapshot/backup.
+## 6. Real end-to-end test
+
+1. Place a real guest test order.
+2. Confirm it appears on Waiter and Admin.
+3. Advance it through every delivery status.
+4. Open customer tracking and confirm each status changes live.
+5. Test customer push notifications.
+6. Test temporary driver + call button.
+7. Test edit/cancel while the order is still editable.
+8. Test a coupon and loyalty redemption on separate orders.
+9. Deliver the test order and confirm loyalty credit is applied once.
+10. Repeat with a logged-in customer and verify ownership isolation.
+
+## 7. Operational configuration
+
+- [ ] Admin Settings: real minimum order, ETA, free-above threshold and payment methods.
+- [ ] Admin Content: real phone/WhatsApp, address, hours and branches.
+- [ ] Admin Socials: real social links.
+- [ ] Business TODO items completed.
+- [ ] Seed/demo menu photos replaced with production photos.
+- [ ] Real domain/HTTPS configured before public launch.
+
+## 8. Rollback
+
+- Code rollback: redeploy the last known-good static bundle only when its database contract is compatible.
+- Database rollback: restore the pre-migration backup/snapshot; do not manually reverse security migrations in production unless the dependent code is rolled back with them.
