@@ -25,12 +25,8 @@ function guestIdFromUrl(url) {
   return m ? m[1] : null;
 }
 
-/*
- * Guest order rows are no longer readable through anon PostgREST.
- * The existing customer code still uses the query-builder API, so this
- * small transport adapter routes only the matching active guest order to
- * the token-authorized RPC. Other requests keep their normal behavior.
- */
+/* Guest order rows are no longer readable through anon PostgREST. Route only
+ * the matching active guest order to the token-authorized RPC. */
 if (typeof window !== 'undefined' && typeof window.fetch === 'function' && !window.__aquariumGuestFetchPatched) {
   const nativeFetch = window.fetch.bind(window);
   window.fetch = async (input, init) => {
@@ -40,13 +36,11 @@ if (typeof window !== 'undefined' && typeof window.fetch === 'function' && !wind
 
     if (creds && url.includes('/rest/v1/delivery_orders') && !url.includes('/rpc/')) {
       const orderId = guestIdFromUrl(url);
-      const isSingleOrderRead = orderId && orderId === creds.id && !/head=true/i.test(url);
-      if (isSingleOrderRead) {
+      if (orderId && orderId === creds.id && !/head=true/i.test(url)) {
         const rpcUrl = `${url.split('/rest/v1/')[0]}/rest/v1/rpc/get_guest_order`;
-        const body = JSON.stringify({ p_order_id: creds.id, p_token: creds.token });
         const headers = new Headers(init?.headers || (typeof input !== 'string' ? input.headers : undefined));
         headers.set('content-type', 'application/json');
-        const response = await nativeFetch(rpcUrl, { ...init, method: 'POST', headers, body });
+        const response = await nativeFetch(rpcUrl, { ...init, method: 'POST', headers, body: JSON.stringify({ p_order_id: creds.id, p_token: creds.token }) });
         if (response.ok) {
           const data = await response.json();
           return new Response(JSON.stringify(data), { status: 200, headers: { 'content-type': 'application/json' } });
@@ -59,10 +53,9 @@ if (typeof window !== 'undefined' && typeof window.fetch === 'function' && !wind
       const m = url.match(/[?&]order_id=eq\.([0-9a-f-]{36})(?:&|$)/i);
       if (m && m[1] === creds.id) {
         const rpcUrl = `${url.split('/rest/v1/')[0]}/rest/v1/rpc/get_guest_order_history`;
-        const body = JSON.stringify({ p_order_id: creds.id, p_token: creds.token });
         const headers = new Headers(init?.headers || (typeof input !== 'string' ? input.headers : undefined));
         headers.set('content-type', 'application/json');
-        const response = await nativeFetch(rpcUrl, { ...init, method: 'POST', headers, body });
+        const response = await nativeFetch(rpcUrl, { ...init, method: 'POST', headers, body: JSON.stringify({ p_order_id: creds.id, p_token: creds.token }) });
         if (response.ok) {
           const data = await response.json();
           return new Response(JSON.stringify(data), { status: 200, headers: { 'content-type': 'application/json' } });
@@ -71,44 +64,16 @@ if (typeof window !== 'undefined' && typeof window.fetch === 'function' && !wind
       }
     }
 
-    if (creds && url.includes('/rest/v1/rpc/edit_delivery_order')) {
-      try {
-        const source = init?.body;
-        const parsed = typeof source === 'string' ? JSON.parse(source) : null;
-        if (parsed?.p_order_id === creds.id) {
-          const rpcUrl = `${url.split('/rest/v1/')[0]}/rest/v1/rpc/edit_guest_order`;
-          const p = { p_order_id: creds.id, p_token: creds.token, p_items: parsed.p_items };
-          return nativeFetch(rpcUrl, { ...init, method: 'POST', body: JSON.stringify(p) });
-        }
-      } catch {}
-    }
-
-    if (creds && url.includes('/rest/v1/rpc/cancel_delivery_order')) {
-      try {
-        const source = init?.body;
-        const parsed = typeof source === 'string' ? JSON.parse(source) : null;
-        if (parsed?.p_order_id === creds.id) {
-          const rpcUrl = `${url.split('/rest/v1/')[0]}/rest/v1/rpc/cancel_guest_order`;
-          const p = { p_order_id: creds.id, p_token: creds.token };
-          return nativeFetch(rpcUrl, { ...init, method: 'POST', body: JSON.stringify(p) });
-        }
-      } catch {}
-    }
-
     return nativeFetch(input, init);
   };
   window.__aquariumGuestFetchPatched = true;
 }
 
-/** Run a PostgREST query builder, returning `data` or throwing a friendly Error. */
 export async function run(query, offlineMsg = 'Cannot reach Supabase right now — check your connection.') {
   if (!isConfigured) throw new Error(NOT_CONFIGURED);
   let res;
-  try {
-    res = await query;
-  } catch {
-    throw new Error(offlineMsg); // network-level failure
-  }
+  try { res = await query; }
+  catch { throw new Error(offlineMsg); }
   if (res?.error) {
     const err = new Error(res.error.message || 'Unexpected database error.');
     err.code = res.error.code;
@@ -117,39 +82,28 @@ export async function run(query, offlineMsg = 'Cannot reach Supabase right now �
   return res?.data ?? null;
 }
 
-/** Run a query that was built with { count: 'exact', head: true } → integer count. */
 export async function runCount(query) {
   if (!isConfigured) throw new Error(NOT_CONFIGURED);
   let res;
-  try {
-    res = await query;
-  } catch {
-    throw new Error('Cannot reach Supabase right now — check your connection.');
-  }
+  try { res = await query; }
+  catch { throw new Error('Cannot reach Supabase right now — check your connection.'); }
   if (res?.error) throw new Error(res.error.message || 'Unexpected database error.');
   return res?.count ?? 0;
 }
 
-/** Call a SECURITY DEFINER Postgres function (orders, overview, status flow…). */
 export async function rpc(name, args = {}) {
   const creds = typeof localStorage !== 'undefined' ? guestCredentials() : null;
-  if (creds && (name === 'edit_delivery_order' || name === 'cancel_delivery_order')) {
-    const orderId = args?.p_order_id;
-    if (orderId === creds.id) {
-      if (name === 'edit_delivery_order') {
-        return run(supabase.rpc('edit_guest_order', {
-          p_order_id: creds.id,
-          p_token: creds.token,
-          p_items: args.p_items,
-        }));
-      }
-      return run(supabase.rpc('cancel_guest_order', {
-        p_order_id: creds.id,
-        p_token: creds.token,
-      }));
+  if (creds && (name === 'edit_delivery_order' || name === 'cancel_delivery_order') && args?.p_order_id === creds.id) {
+    if (name === 'edit_delivery_order') {
+      return run(supabase.rpc('edit_guest_order', { p_order_id: creds.id, p_token: creds.token, p_items: args.p_items }));
     }
+    return run(supabase.rpc('cancel_guest_order', { p_order_id: creds.id, p_token: creds.token }));
   }
-  return run(supabase.rpc(name, args));
+  const result = await run(supabase.rpc(name, args));
+  if (name === 'place_delivery_order' && result?.id && result?.trackingToken) {
+    saveGuestTracking(result.id, result.trackingToken);
+  }
+  return result;
 }
 
 export function saveGuestTracking(id, token) {
