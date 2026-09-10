@@ -1,10 +1,7 @@
 // ============================================================
 //  Aquarium Cafe & Resturant — Admin console main (v5)
 //  Router + shell behaviour + instant EN⇄AR (RTL) language
-//  switch. Delivery-only platform pages:
-//    Overview · Customizer · Content · Media · Sections ·
-//    Menu Manager · Zones · Discounts · Banners · Gallery ·
-//    Reviews · Socials · Deliveries · Drivers · Settings
+//  switch. Delivery-only platform pages.
 // ============================================================
 import { initI18n, toggleLang, langSwitchLabel, t, applyI18n } from '../shared/i18n.js';
 import { requireStaffSession } from '../shared/staff-auth.js';
@@ -25,8 +22,8 @@ import { renderSocials } from './socials.js';
 import { renderDeliveries } from './deliveries.js';
 import { renderDrivers } from './drivers.js';
 import { renderSettings } from './settings.js';
+import { renderCommission } from './commission.js';
 
-/* ---------- language: boot BEFORE the router renders ---------- */
 initI18n({ dictionary, defaultLang: 'en' });
 
 const routes = {
@@ -44,10 +41,10 @@ const routes = {
   socials:    { titleKey: 'pt.socials',    render: renderSocials },
   deliveries: { titleKey: 'pt.deliveries', render: renderDeliveries },
   drivers:    { titleKey: 'pt.drivers',    render: renderDrivers },
+  commission: { titleKey: 'pt.settings',   render: renderCommission },
   settings:   { titleKey: 'pt.settings',   render: renderSettings },
 };
 
-/* ---------- language button (topbar) ---------- */
 const paintLangBtn = () => {
   const btn = $('langBtn');
   const label = $('langBtnLabel');
@@ -56,26 +53,54 @@ const paintLangBtn = () => {
   btn.setAttribute('aria-label', t('top.lang'));
   btn.setAttribute('title', t('top.lang'));
 };
+
 $('langBtn')?.addEventListener('click', toggleLang);
+
+function paintCommissionNav() {
+  const nav = $('snav');
+  if (!nav) return;
+
+  let link = nav.querySelector('.snav__link[data-route="commission"]');
+  if (!link) {
+    link = document.createElement('a');
+    link.href = '#/commission';
+    link.className = 'snav__link';
+    link.dataset.route = 'commission';
+    link.innerHTML = '<svg class="icon"><use href="#i-percent"/></svg><span data-commission-label></span>';
+
+    const settingsLink = nav.querySelector('.snav__link[data-route="settings"]');
+    if (settingsLink) settingsLink.before(link);
+    else nav.appendChild(link);
+  }
+
+  const label = link.querySelector('[data-commission-label]');
+  if (label) label.textContent = document.documentElement.lang === 'ar' ? 'العمولات' : 'Commission';
+}
+
 document.addEventListener('lang:changed', () => {
   paintLangBtn();
   applyI18n(document);
-  navigate(); // fully re-render the current page in the new language
+  paintCommissionNav();
+  navigate();
 });
-paintLangBtn();
 
-/* ---------- sidebar (mobile) ---------- */
+paintLangBtn();
+paintCommissionNav();
+
 const sidebar = $('sidebar');
 const scrim = $('sidebarScrim');
-const closeSidebar = () => { sidebar.classList.remove('open'); scrim.classList.remove('show'); };
+const closeSidebar = () => {
+  sidebar.classList.remove('open');
+  scrim.classList.remove('show');
+};
 
 $('menuBtn').addEventListener('click', () => {
   const open = sidebar.classList.toggle('open');
   scrim.classList.toggle('show', open);
 });
+
 scrim.addEventListener('click', closeSidebar);
 
-/* ---------- hash router ---------- */
 let currentKey = 'overview';
 
 async function navigate() {
@@ -88,13 +113,14 @@ async function navigate() {
   );
 
   const title = $('pageTitle');
-  title.textContent = t(route.titleKey);
+  title.textContent = currentKey === 'commission'
+    ? (document.documentElement.lang === 'ar' ? 'كشف حساب العمولة' : 'Commission Statement')
+    : t(route.titleKey);
+
   title.style.animation = 'none';
   void title.offsetWidth;
   title.style.animation = '';
 
-  /* Fresh #view node per navigation: drops every event listener the
-     previous page delegated to it, so handlers never stack up. */
   const oldView = $('view');
   const view = oldView.cloneNode(false);
   oldView.replaceWith(view);
@@ -103,6 +129,7 @@ async function navigate() {
   view.style.animation = '';
 
   closeSidebar();
+
   try {
     await route.render(view);
   } catch (err) {
@@ -117,12 +144,8 @@ async function navigate() {
 
 window.addEventListener('hashchange', navigate);
 
-/* ---------- boot: gated on staff authentication ----------
-   initUI()/navigate() are what actually load and render admin
-   data, so nothing here runs until an active admin session is
-   verified — either from an existing session or via the access
-   code gate. */
 requireStaffSession('admin').then(() => {
   initUI();
+  paintCommissionNav();
   navigate();
 });
