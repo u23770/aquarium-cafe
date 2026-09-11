@@ -49,8 +49,8 @@ self.addEventListener('push', (e) => {
   try { d = { ...d, ...(e.data?.json() || {}) }; } catch {}
   e.waitUntil(self.registration.showNotification(d.title, {
     body: d.body,
-    icon: 'icons/icon-192.png',
-    badge: 'icons/icon-192.png',
+    icon: 'images/restaurant-logo-preloader.jpg',
+    badge: 'images/restaurant-logo-preloader.jpg',
     data: { url: d.url || './' },
     tag: d.tag || 'aquarium-order'
   }));
