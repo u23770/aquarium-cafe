@@ -1,13 +1,12 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — main entry (v5)
+//  Aquarium Cafe & Resturant — main entry (v5)
 //  i18n boot (instant EN⇄AR + RTL), preloader, appearance
 //  engine, nav, smooth scroll, scroll-spy, accounts, cart,
 //  delivery checkout & live tracking bootstrap.
 // ============================================================
 import { initI18n, toggleLang, langSwitchLabel, t, applyI18n } from '../shared/i18n.js';
 import { dictionary } from './lang.js';
-import { initAppearance, applyAll, PREVIEW, applyNavLang } from './theme.js';
-import { defaultSettings, defaultTheme, defaultContent, defaultSections } from '../shared/appearance.js';
+import { initAppearance, PREVIEW, applyNavLang } from './theme.js';
 import { initAuth } from './auth.js';
 import { initMenu } from './menu.js';
 import { initCart } from './cart.js';
@@ -17,46 +16,6 @@ import { initReviews } from './reviews.js';
 import { initReveals, closeLayer, closeTop } from './ui.js';
 
 const $ = (id) => document.getElementById(id);
-
-/* ---------- design-only visual polish ---------- */
-{
-  const href = './css/design-polish.css?v=20260911';
-  if (!document.querySelector('link[data-design-polish]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = href;
-    link.dataset.designPolish = 'true';
-    document.head.appendChild(link);
-  }
-  const logoHref = './css/preloader-logo.css?v=20260911';
-  if (!document.querySelector('link[data-preloader-logo]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = logoHref;
-    link.dataset.preloaderLogo = 'true';
-    document.head.appendChild(link);
-  }
-}
-
-/* ---------- inline icon repair ----------
-   The install control references #i-download. Keep the existing
-   sprite convention and repair the symbol before the control is used. */
-{
-  const sprite = document.querySelector('body > svg');
-  if (sprite && !sprite.querySelector('#i-download')) {
-    sprite.insertAdjacentHTML('beforeend', '<symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></g></symbol>');
-  }
-}
-
-/* ---------- bundled marine theme before async DB appearance load ----------
-   Supabase remains authoritative; this only paints the already-defined
-   bundled defaults immediately so the old coffee fallback cannot flash. */
-applyAll({
-  settings: defaultSettings(),
-  theme: defaultTheme(),
-  content: defaultContent(),
-  sections: defaultSections(),
-});
 
 /* ---------- PWA install + offline shell ---------- */
 let deferredInstallPrompt = null;
@@ -75,6 +34,8 @@ $('installBtn')?.addEventListener('click', async () => {
     if (b) b.hidden = true;
     return;
   }
+  // iOS/Safari and some browsers do not expose beforeinstallprompt.
+  // Give the user a useful manual-install instruction instead of a dead button.
   const ar = document.documentElement.lang === 'ar';
   alert(ar
     ? 'لإضافة الموقع للشاشة الرئيسية: من قائمة المتصفح اختر «إضافة إلى الشاشة الرئيسية» أو «Add to Home Screen». إذا لم يظهر الخيار، افتح الموقع من Chrome أو Safari.'
@@ -100,8 +61,8 @@ const paintLangBtn = () => {
 $('langBtn')?.addEventListener('click', toggleLang);
 document.addEventListener('lang:changed', () => {
   paintLangBtn();
-  applyNavLang();
-  applyI18n(document);
+  applyNavLang();   // DB-driven nav labels restore / translate
+  applyI18n(document); // static data-i18n attributes
 });
 paintLangBtn();
 
@@ -118,7 +79,7 @@ paintLangBtn();
     document.readyState === 'complete' ? r() : window.addEventListener('load', r, { once: true })
   );
   Promise.all([loaded, minDelay]).then(hide);
-  setTimeout(hide, 3600);
+  setTimeout(hide, 3600); // hard fallback
 }
 
 /* ---------- nav: shrink on scroll ---------- */
@@ -199,12 +160,12 @@ document.addEventListener('keydown', (e) => {
 $('year').textContent = new Date().getFullYear();
 
 /* ---------- boot ---------- */
-initAppearance();
+initAppearance();   // theme / content / sections / identity (async, safe)
 initSpy();
-initAuth();
+initAuth();         // accounts: session, nav chip, profile modal
 initCart();
-initDelivery();
+initDelivery();     // zones checkout + loyalty + coupons + live tracking
 initMenu();
-initGallery();
-initReviews();
+initGallery();      // promo banner + gallery grid + lightbox
+initReviews();      // guest reviews + submit modal
 initReveals();

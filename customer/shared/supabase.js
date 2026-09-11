@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Supabase client (single shared instance)
+//  Aquarium Cafe & Resturant — Supabase client (single shared instance)
 //  Uses the latest @supabase/supabase-js v2 SDK, loaded as a
 //  native ES module from the jsDelivr CDN — no build step.
 // ============================================================
@@ -12,7 +12,7 @@ export const isConfigured =
 
 if (!isConfigured) {
   console.error(
-    '🌊 Aquarium Cafe & Restaurant — Supabase is not configured yet.\n' +
+    '🌊 Aquarium Cafe & Resturant — Supabase is not configured yet.\n' +
       '   Open shared/config.js and paste your Project URL + anon key\n' +
       '   (Supabase dashboard → Project Settings → API), then reload.'
   );

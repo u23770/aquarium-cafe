@@ -1,9 +1,9 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — digital menu (v5, bilingual)
+//  Aquarium Cafe & Resturant — digital menu (v5, bilingual)
 //  categories (EN + AR names), search (both languages), sort,
 //  favorites, product grid & modal. Every chrome string comes
-//  from the dictionary; product/category names switch with the
-//  language through pickLang().
+//  from the dictionary; product/category names switch with
+//  the language through pickLang().
 // ============================================================
 import { getCategories, getProducts } from './api.js';
 import { addToCart } from './cart.js';
@@ -24,23 +24,6 @@ let modalQty = 1;
 
 let els = null;
 const $ = (id) => document.getElementById(id);
-
-function loadPremiumDesign() {
-  if (document.querySelector('link[data-premium-design]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'css/premium-navbar-hero.css?v=20260911';
-  link.dataset.premiumDesign = '1';
-  document.head.appendChild(link);
-
-  if (!document.querySelector('link[data-menu-premium]')) {
-    const menuLink = document.createElement('link');
-    menuLink.rel = 'stylesheet';
-    menuLink.href = 'css/menu-premium.css?v=20260911';
-    menuLink.dataset.menuPremium = '1';
-    document.head.appendChild(menuLink);
-  }
-}
 
 /* ---------- bilingual product text ---------- */
 const pname = (p) => pickLang(p, 'name');
@@ -214,7 +197,7 @@ function onGridClick(e) {
       favBtn.classList.toggle('is-fav', on);
       favBtn.setAttribute('aria-pressed', String(on));
       favBtn.setAttribute('aria-label', on ? t('fav.remove') : t('fav.add'));
-      renderChips();
+      renderChips(); // favorites chip appears/disappears with the counter
       els.bar.querySelector(`[data-slug="${CSS.escape(activeSlug)}"]`)?.classList.add('is-active');
     }
     return;
@@ -290,8 +273,6 @@ function setModalQty(n) {
 
 /* ---------- init ---------- */
 export async function initMenu() {
-  loadPremiumDesign();
-
   els = {
     bar: $('categoryBar'),
     grid: $('productGrid'),
@@ -316,7 +297,7 @@ export async function initMenu() {
   try {
     [categories, products] = await Promise.all([getCategories(), getProducts()]);
     const stat = document.getElementById('statItems');
-    if (stat) stat.textContent = products.length > 200 ? '200+' : String(products.length);
+    if (stat && products.length) stat.textContent = `${products.length}+`;
   } catch (err) {
     els.grid.innerHTML = `
       <div class="menu__empty">
