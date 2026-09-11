@@ -1,4 +1,4 @@
-const CACHE = 'aquarium-customer-v3';
+const CACHE = 'aquarium-customer-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -8,12 +8,14 @@ const APP_SHELL = [
   './css/preloader-logo.css',
   './css/menu-premium.css',
   './css/delivery-premium.css',
+  './css/delivery-select-ui.css',
   './js/main.js',
   './js/lang.js',
   './js/theme.js',
   './js/menu.js',
   './js/cart.js',
   './js/delivery.js',
+  './js/delivery-select-ui.js',
   './js/auth.js',
   './js/gallery.js',
   './js/reviews.js',

@@ -1,0 +1,64 @@
+/* Aquarium Cafe — compact progressive delivery selectors
+ * Presentation/interaction bridge only. The existing delivery.js remains authoritative.
+ */
+
+.dl-select-source { display:none !important; }
+
+.dl-select {
+  display:grid;
+  gap:.45rem;
+  margin:.15rem 0 .85rem;
+}
+
+.dl-select > span {
+  color:var(--c-muted);
+  font-size:.78rem;
+  font-weight:750;
+  letter-spacing:.01em;
+}
+
+.dl-select select {
+  width:100%;
+  min-height:48px;
+  padding:.78rem 2.7rem .78rem 1rem;
+  border:1px solid color-mix(in srgb,var(--c-border) 82%,transparent);
+  border-radius:14px;
+  background:color-mix(in srgb,var(--c-card) 94%,transparent);
+  color:var(--c-heading);
+  font:inherit;
+  font-size:.92rem;
+  font-weight:700;
+  outline:none;
+  cursor:pointer;
+  box-shadow:0 10px 24px -24px rgb(9 56 76 / .45);
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+
+.dl-select select:hover {
+  border-color:color-mix(in srgb,var(--c-primary) 42%,var(--c-border));
+}
+
+.dl-select select:focus-visible {
+  border-color:var(--c-primary);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--c-primary) 16%,transparent),0 10px 24px -24px rgb(9 56 76 / .5);
+}
+
+.dl-select select:disabled {
+  cursor:not-allowed;
+  opacity:.58;
+}
+
+.dl-select.is-empty select {
+  color:var(--c-muted);
+}
+
+.dl-select__hint {
+  margin:0;
+  color:var(--c-muted);
+  font-size:.76rem;
+  line-height:1.45;
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .dl-select select { transition:none; }
+}

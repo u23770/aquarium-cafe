@@ -212,6 +212,7 @@ initSpy();
 initAuth();
 initCart();
 initDelivery();
+import('./delivery-select-ui.js').catch(() => {});
 initMenu();
 initGallery();
 initReviews();
