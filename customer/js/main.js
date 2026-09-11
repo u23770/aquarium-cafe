@@ -36,6 +36,14 @@ const $ = (id) => document.getElementById(id);
     link.dataset.preloaderLogo = 'true';
     document.head.appendChild(link);
   }
+  const deliveryHref = './css/delivery-premium.css?v=20260911';
+  if (!document.querySelector('link[data-delivery-premium]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = deliveryHref;
+    link.dataset.deliveryPremium = 'true';
+    document.head.appendChild(link);
+  }
 }
 
 /* ---------- inline icon repair ----------
