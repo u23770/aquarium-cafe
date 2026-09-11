@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Guest reviews (v5, bilingual)
+//  Aquarium Cafe & Restaurant — Guest reviews (v5, bilingual)
 //  Shows approved reviews; guests submit new ones through the
 //  star modal — they always land unapproved (moderation first).
 //  Validation, labels and toasts follow the active language.

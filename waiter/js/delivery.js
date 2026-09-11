@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Waiter · Delivery Dispatch (v5)
+//  Aquarium Cafe & Restaurant — Waiter · Delivery Dispatch (v5)
 //  Kanban: Received → Accepted → Preparing → Ready →
 //          Out for Delivery → (Delivered / Cancelled = "Done")
 //  Ready-for-delivery dispatch offers a SAVED driver OR a

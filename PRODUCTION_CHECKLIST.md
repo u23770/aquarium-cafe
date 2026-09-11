@@ -1,4 +1,4 @@
-# Production Checklist — Aquarium Cafe & Resturant (current)
+# Production Checklist — Aquarium Cafe & Restaurant (current)
 
 Run this list top-to-bottom before launch. The current production model uses authenticated staff RBAC, token-authorized guest order tracking, server-side checkout calculations, and Realtime updates.
 

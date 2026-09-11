@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — digital menu (v5, bilingual)
+//  Aquarium Cafe & Restaurant — digital menu (v5, bilingual)
 //  categories (EN + AR names), search (both languages), sort,
 //  favorites, product grid & modal. Every chrome string comes
 //  from the dictionary; product/category names switch with the

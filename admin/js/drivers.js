@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin · Delivery Drivers (v5)
+//  Aquarium Cafe & Restaurant — Admin · Delivery Drivers (v5)
 //  The driver roster used at the "Ready for delivery" step:
 //  names + phones (+ optional notes), activatable /
 //  deactivatable, deletable. Temporary (one-off) drivers are

@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Customer dictionary (EN + AR)
+//  Aquarium Cafe & Restaurant — Customer dictionary (EN + AR)
 //  Every UI string on the site: nav, buttons, forms, hints,
 //  validation, statuses, toasts — nothing user-facing is left
 //  hardcoded. Keys are flat dot-paths consumed by shared/i18n.js

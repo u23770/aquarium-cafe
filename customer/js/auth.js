@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Customer accounts (v5)
+//  Aquarium Cafe & Restaurant — Customer accounts (v5)
 //  ------------------------------------------------------------
 //  Sign in · create account · continue as guest.
 //  One modal, two tabs; the session lives in Supabase Auth.

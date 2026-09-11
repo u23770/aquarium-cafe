@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Waiter UI utilities
+//  Aquarium Cafe & Restaurant — Waiter UI utilities
 //  (formatting, toast, notification sound, time helpers —
 //   all locale-aware for the instant EN⇄AR switch)
 // ============================================================

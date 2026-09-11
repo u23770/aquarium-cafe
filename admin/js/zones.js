@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin · Delivery Zones (v5.1)
+//  Aquarium Cafe & Restaurant — Admin · Delivery Zones (v5.1)
 //  The whole delivery geography is edited here:
 //   · Main zones — named EN + AR, each with its own delivery
 //     fee and an optional per-zone free-above override.

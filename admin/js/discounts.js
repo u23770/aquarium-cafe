@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin · Discounts & Coupons (v5)
+//  Aquarium Cafe & Restaurant — Admin · Discounts & Coupons (v5)
 //  Every promotion is a row in public.discounts:
 //   · signup   — automatic, first delivered order of members
 //   · coupon   — customers type the code at checkout

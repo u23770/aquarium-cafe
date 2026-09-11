@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Waiter dictionary (EN + AR)
+//  Aquarium Cafe & Restaurant — Waiter dictionary (EN + AR)
 //  Delivery dispatch board: columns, cards, dispatch panel,
 //  toasts, confirm dialogs — every string, both languages.
 // ============================================================

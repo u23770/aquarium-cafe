@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — shared UI utilities
+//  Aquarium Cafe & Restaurant — shared UI utilities
 //  (money formatting, toasts, modal/layer manager, reveal-on-scroll)
 // ============================================================
 import { isRTL } from '../shared/i18n.js';

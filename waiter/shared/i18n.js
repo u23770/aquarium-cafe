@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — shared i18n engine (EN / AR)
+//  Aquarium Cafe & Restaurant — shared i18n engine (EN / AR)
 // ------------------------------------------------------------
 //  · t(key)                → instant translation + {var} slots
 //  · setLang('en'|'ar')    → switches the WHOLE app instantly:

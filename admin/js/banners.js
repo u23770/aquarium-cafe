@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin · Homepage Banners
+//  Aquarium Cafe & Restaurant — Admin · Homepage Banners
 //  Promo strips on the customer website (title, subtitle,
 //  image, call-to-action). The first VISIBLE banner (in the
 //  order set here) is what the homepage shows.

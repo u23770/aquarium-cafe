@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin · Social Links
+//  Aquarium Cafe & Restaurant — Admin · Social Links
 //  The social_icons shared by the website footer and the
 //  Contact section. Live in the social_links table — the
 //  customer site renders every VISIBLE row in this order.

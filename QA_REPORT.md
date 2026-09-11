@@ -1,4 +1,4 @@
-# QA Report — Aquarium Cafe & Resturant v5.1 ➜ v5.1.3 (FINAL)
+# QA Report — Aquarium Cafe & Restaurant v5.1 ➜ v5.1.3 (FINAL)
 
 Date: 2026-08-08/09 (schema re-run + atomic counters) · **2026-08-10 v5.1.2
 RLS role-switch fix + v5.1.3 admin-write LOCKDOWN** · Scope: complete project

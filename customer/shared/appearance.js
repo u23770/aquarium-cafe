@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — shared appearance model
+//  Aquarium Cafe & Restaurant — shared appearance model
 //  (single source of truth for customer site AND admin builder)
 // ------------------------------------------------------------
 //  All visual customization lives in Supabase. This module holds
@@ -23,11 +23,11 @@
 
 export function defaultSettings() {
   return {
-    cafeName: 'Aquarium Cafe & Resturant',
+    cafeName: 'Aquarium Cafe & Restaurant',
     slogan: 'Sea View · Seafood · Coffee & Shisha',
     description:
       'A family terrace directly on the Hurghada waterfront — fresh seafood, generous shisha, fresh juices and real coffee, with an indoor aquarium and a kids\u2019 play corner.',
-    copyright: '© {year} Aquarium Cafe & Resturant — on the Hurghada corniche, behind the General Hospital.',
+    copyright: '© {year} Aquarium Cafe & Restaurant — on the Hurghada corniche, behind the General Hospital.',
     logoUrl: 'images/logo.svg',
     faviconUrl: 'images/logo.svg',
     currency: 'EGP',

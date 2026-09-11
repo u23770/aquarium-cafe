@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
---  AQUARIUM CAFE & RESTURANT — PRODUCTION SCHEMA v5.1  (Supabase / PostgreSQL)
+--  AQUARIUM CAFE & RESTAURANT — PRODUCTION SCHEMA v5.1  (Supabase / PostgreSQL)
 --  v5.1.1 · 2026-08-09 · atomic-counters hardening (coupon usage, loyalty
 --          balances, order status) — see migrations/20260809_v51_atomic_guards.sql
 --  v5.1.2 · 2026-08-10 · RLS role-switch fix — public READS are
@@ -1554,7 +1554,7 @@ create policy "media: public delete" on storage.objects for delete to public
 
 
 -- ───────────────────── 8 · SEED DATA ───────────────────────────────
--- REAL Aquarium Cafe & Resturant business data, gathered from public
+-- REAL Aquarium Cafe & Restaurant business data, gathered from public
 -- sources (Google Maps, official Facebook, Restaurant Guru, customer
 -- photos of the printed menu). Menu prices are the REAL ones from the
 -- photographed paper menu — pages whose prices could not be verified
@@ -1562,10 +1562,10 @@ create policy "media: public delete" on storage.objects for delete to public
 
 -- 8.1 · identity & checklist
 insert into public.settings (key, value) values
-  ('cafe_name',   'Aquarium Cafe & Resturant'),
+  ('cafe_name',   'Aquarium Cafe & Restaurant'),
   ('slogan',      'Sea View · Seafood · Coffee & Shisha'),
   ('description', 'A family terrace directly on the Hurghada waterfront — fresh seafood, generous shisha, fresh juices and real coffee, with an indoor aquarium and a kids'' play corner.'),
-  ('copyright',   '© {year} Aquarium Cafe & Resturant — on the Hurghada corniche, behind the General Hospital.'),
+  ('copyright',   '© {year} Aquarium Cafe & Restaurant — on the Hurghada corniche, behind the General Hospital.'),
   ('logo_url',    'images/logo.svg'),
   ('favicon_url', 'images/logo.svg'),
   ('currency',    'EGP'),

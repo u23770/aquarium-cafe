@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin console dictionary (v5)
+//  Aquarium Cafe & Restaurant — Admin console dictionary (v5)
 //  EN + AR for every page: Studio (overview, customizer,
 //  content, media, sections), Menu & Delivery (menu manager,
 //  zones, discounts), Marketing (banners, gallery, reviews,

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
---  AQUARIUM CAFE & RESTURANT — platform v5 → v5.1 (FINAL)
+--  AQUARIUM CAFE & RESTAURANT — platform v5 → v5.1 (FINAL)
 --  MIGRATION: 2026-08-08 — production-release hardening
 --
 --  Run this ONLY if your database already has v5 (you applied

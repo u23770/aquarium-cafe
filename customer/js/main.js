@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — main entry (v5)
+//  Aquarium Cafe & Restaurant — main entry (v5)
 //  i18n boot (instant EN⇄AR + RTL), preloader, appearance
 //  engine, nav, smooth scroll, scroll-spy, accounts, cart,
 //  delivery checkout & live tracking bootstrap.

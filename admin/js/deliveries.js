@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin · Deliveries Monitor (v5)
+//  Aquarium Cafe & Restaurant — Admin · Deliveries Monitor (v5)
 //  Read-only live monitor of every delivery order: zone &
 //  sub zone, captain (permanent or temporary), payment,
 //  discounts & loyalty movement, totals, status & age.

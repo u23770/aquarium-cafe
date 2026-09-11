@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Waiter dashboard main (v5)
+//  Aquarium Cafe & Restaurant — Waiter dashboard main (v5)
 //  Delivery-only dispatch board: instant EN⇄AR (RTL), clock,
 //  sound, refresh, realtime pushes + a gentle polling safety
 //  net. Status moves live in waiter/js/delivery.js.

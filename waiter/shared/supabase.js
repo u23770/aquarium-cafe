@@ -1,4 +1,4 @@
-// Aquarium Cafe & Resturant — Waiter Supabase client
+// Aquarium Cafe & Restaurant — Waiter Supabase client
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 

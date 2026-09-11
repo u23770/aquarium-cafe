@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — image helpers shared by the three apps
+//  Aquarium Cafe & Restaurant — image helpers shared by the three apps
 // ------------------------------------------------------------
 //  The `image` column stores either:
 //    · a bundled path  "images/espresso.webp"  (ships in customer/images)

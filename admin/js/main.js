@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Admin console main (v5)
+//  Aquarium Cafe & Restaurant — Admin console main (v5)
 //  Router + shell behaviour + instant EN⇄AR (RTL) language
 //  switch. Delivery-only platform pages.
 // ============================================================

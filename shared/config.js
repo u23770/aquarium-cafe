@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — SUPABASE CONFIGURATION  ★ EDIT THIS FILE ★
+//  Aquarium Cafe & Restaurant — SUPABASE CONFIGURATION  ★ EDIT THIS FILE ★
 // ------------------------------------------------------------
 //  1. Open your project at https://supabase.com/dashboard
 //  2. Go to  Project Settings → API

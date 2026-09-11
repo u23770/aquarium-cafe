@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Customer data layer (Supabase, v5)
+//  Aquarium Cafe & Restaurant — Customer data layer (Supabase, v5)
 //  Public reads (appearance / categories / products / zones /
 //  gallery / reviews / banners / socials / delivery & loyalty
 //  settings) come straight from PostgREST; checkout runs inside

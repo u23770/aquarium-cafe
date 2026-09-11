@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Resturant — Promo banner + Gallery grid (v5)
+//  Aquarium Cafe & Restaurant — Promo banner + Gallery grid (v5)
 //  (both are managed from the admin; images resolve from the
 //  media library or the bundled images/ folder). Chrome strings
 //  (aria labels, empty state) are bilingual via the dictionary.
