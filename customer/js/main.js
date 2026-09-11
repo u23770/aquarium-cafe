@@ -6,7 +6,8 @@
 // ============================================================
 import { initI18n, toggleLang, langSwitchLabel, t, applyI18n } from '../shared/i18n.js';
 import { dictionary } from './lang.js';
-import { initAppearance, PREVIEW, applyNavLang } from './theme.js';
+import { initAppearance, applyAll, PREVIEW, applyNavLang } from './theme.js';
+import { defaultSettings, defaultTheme, defaultContent, defaultSections } from '../shared/appearance.js';
 import { initAuth } from './auth.js';
 import { initMenu } from './menu.js';
 import { initCart } from './cart.js';
@@ -36,6 +37,26 @@ const $ = (id) => document.getElementById(id);
     document.head.appendChild(link);
   }
 }
+
+/* ---------- inline icon repair ----------
+   The install control references #i-download. Keep the existing
+   sprite convention and repair the symbol before the control is used. */
+{
+  const sprite = document.querySelector('body > svg');
+  if (sprite && !sprite.querySelector('#i-download')) {
+    sprite.insertAdjacentHTML('beforeend', '<symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></g></symbol>');
+  }
+}
+
+/* ---------- bundled marine theme before async DB appearance load ----------
+   Supabase remains authoritative; this only paints the already-defined
+   bundled defaults immediately so the old coffee fallback cannot flash. */
+applyAll({
+  settings: defaultSettings(),
+  theme: defaultTheme(),
+  content: defaultContent(),
+  sections: defaultSections(),
+});
 
 /* ---------- PWA install + offline shell ---------- */
 let deferredInstallPrompt = null;
