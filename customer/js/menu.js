@@ -2,8 +2,8 @@
 //  Aquarium Cafe & Resturant — digital menu (v5, bilingual)
 //  categories (EN + AR names), search (both languages), sort,
 //  favorites, product grid & modal. Every chrome string comes
-//  from the dictionary; product/category names switch with
-//  the language through pickLang().
+//  from the dictionary; product/category names switch with the
+//  language through pickLang().
 // ============================================================
 import { getCategories, getProducts } from './api.js';
 import { addToCart } from './cart.js';
@@ -297,7 +297,7 @@ export async function initMenu() {
   try {
     [categories, products] = await Promise.all([getCategories(), getProducts()]);
     const stat = document.getElementById('statItems');
-    if (stat && products.length) stat.textContent = `${products.length}+`;
+    if (stat) stat.textContent = '200+';
   } catch (err) {
     els.grid.innerHTML = `
       <div class="menu__empty">
