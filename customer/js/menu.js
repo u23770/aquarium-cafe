@@ -29,9 +29,17 @@ function loadPremiumDesign() {
   if (document.querySelector('link[data-premium-design]')) return;
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = 'css/premium-navbar-hero.css';
+  link.href = 'css/premium-navbar-hero.css?v=20260911';
   link.dataset.premiumDesign = '1';
   document.head.appendChild(link);
+
+  if (!document.querySelector('link[data-menu-premium]')) {
+    const menuLink = document.createElement('link');
+    menuLink.rel = 'stylesheet';
+    menuLink.href = 'css/menu-premium.css?v=20260911';
+    menuLink.dataset.menuPremium = '1';
+    document.head.appendChild(menuLink);
+  }
 }
 
 /* ---------- bilingual product text ---------- */
@@ -308,7 +316,7 @@ export async function initMenu() {
   try {
     [categories, products] = await Promise.all([getCategories(), getProducts()]);
     const stat = document.getElementById('statItems');
-    if (stat) stat.textContent = '200+';
+    if (stat) stat.textContent = products.length > 200 ? '200+' : String(products.length);
   } catch (err) {
     els.grid.innerHTML = `
       <div class="menu__empty">
