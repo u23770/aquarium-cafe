@@ -49,6 +49,26 @@ function updateReviewIntro() {
     : 'Real reviews from our guests — shown after team approval.';
 }
 
+/* Remove the old promotional review claim from the static hero/summary.
+   The review database is currently empty, so the site must not imply
+   that hundreds of reviews exist. Future approved reviews are rendered
+   by render() below. */
+function removeFakeReviewCount() {
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let node;
+  while ((node = walker.nextNode())) nodes.push(node);
+
+  for (const textNode of nodes) {
+    const text = textNode.nodeValue || '';
+    if (!/800\+\s*(reviews?|آراء|تقييمات)/i.test(text)) continue;
+    textNode.nodeValue = text.replace(
+      /800\+\s*(reviews?|آراء|تقييمات)/gi,
+      isRTL() ? 'لا توجد تقييمات بعد' : 'No reviews yet'
+    );
+  }
+}
+
 async function render() {
   const grid = els.grid;
   try {
@@ -133,6 +153,7 @@ export function initReviews() {
   if (!els.grid) return;
 
   updateReviewIntro();
+  removeFakeReviewCount();
   render();
 
   document.addEventListener('click', (e) => {
@@ -155,6 +176,7 @@ export function initReviews() {
 
   document.addEventListener('lang:changed', () => {
     updateReviewIntro();
+    removeFakeReviewCount();
     render();
   });
 }
