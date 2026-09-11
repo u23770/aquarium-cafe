@@ -1,0 +1,202 @@
+/* Aquarium Cafe — incremental premium Navbar + Hero refinement
+   Design-only layer. Loaded after style.css so the existing UI/JS structure stays intact. */
+
+/* ───────── Premium navbar ───────── */
+.nav {
+  height: 74px;
+  padding-inline: max(1rem, calc((100% - var(--container-w)) / 2));
+  gap: .9rem;
+  background: linear-gradient(180deg, rgb(7 24 30 / .74), rgb(7 24 30 / .30));
+  border-bottom: 1px solid rgb(255 255 255 / .10);
+  backdrop-filter: blur(12px) saturate(1.25);
+  -webkit-backdrop-filter: blur(12px) saturate(1.25);
+}
+
+.nav.scrolled {
+  height: 66px;
+  background: rgb(8 27 34 / .90) !important;
+  border-bottom-color: rgb(255 255 255 / .13);
+  box-shadow: 0 12px 36px -20px rgb(0 0 0 / .72) !important;
+}
+
+.brand { gap: .62rem; min-width: 0; }
+.brand__mark {
+  width: 38px;
+  height: 38px;
+  box-shadow: 0 8px 22px -9px rgb(0 0 0 / .7);
+}
+.brand__mark .icon { width: 22px; height: 22px; }
+.brand__text {
+  font-size: 1.05rem;
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
+.brand__text small {
+  font-size: .52rem;
+  letter-spacing: .42em;
+  margin-top: .24rem;
+}
+
+.nav__links { gap: 1.25rem; }
+.nav__links a[data-scroll] {
+  font-size: .82rem;
+  letter-spacing: .05em;
+  opacity: .78;
+}
+.nav__links a[data-scroll]::after { height: 1.5px; }
+
+.nav__actions { gap: .25rem; }
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid transparent;
+}
+.icon-btn:hover {
+  background: rgb(255 255 255 / .10);
+  border-color: rgb(255 255 255 / .10);
+  transform: translateY(-1px);
+}
+.icon-btn__badge { top: 1px; right: -1px; }
+
+/* ───────── Mobile navbar ───────── */
+@media (max-width: 820px) {
+  .nav {
+    height: 62px;
+    padding-inline: .72rem;
+    gap: .35rem;
+    background: linear-gradient(180deg, rgb(5 20 25 / .84), rgb(5 20 25 / .56));
+  }
+
+  .nav.scrolled { height: 58px; }
+
+  .brand {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .brand__mark {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+  }
+  .brand__mark .icon { width: 20px; height: 20px; }
+  .brand__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: .86rem;
+    letter-spacing: .10em;
+  }
+  .brand__text small { display: none; }
+
+  .nav__links {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: .7rem;
+    right: .7rem;
+    display: grid;
+    gap: .2rem;
+    padding: .65rem;
+    border: 1px solid rgb(255 255 255 / .12);
+    border-radius: 18px;
+    background: rgb(7 25 31 / .94);
+    box-shadow: 0 24px 55px -24px rgb(0 0 0 / .8);
+    backdrop-filter: blur(20px) saturate(1.25);
+    -webkit-backdrop-filter: blur(20px) saturate(1.25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(.98);
+    transform-origin: top;
+    transition: opacity .25s ease, visibility .25s ease, transform .3s var(--ease);
+  }
+
+  .nav.open .nav__links {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  .nav__links a[data-scroll] {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 .8rem;
+    border-radius: 12px;
+    font-size: .9rem;
+  }
+  .nav__links a[data-scroll]:hover,
+  .nav__links a.is-active { background: rgb(255 255 255 / .07); }
+  .nav__links a[data-scroll]::after { display: none; }
+
+  .nav__actions { gap: .08rem; }
+  .icon-btn,
+  .burger { width: 38px; height: 38px; }
+  .icon-btn .icon { width: 18px; height: 18px; }
+  .icon-btn__badge {
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: .58rem;
+  }
+
+  .burger {
+    display: block;
+    flex: 0 0 38px;
+    border-radius: 50%;
+  }
+  .burger:hover { background: rgb(255 255 255 / .08); }
+}
+
+@media (max-width: 390px) {
+  .nav { padding-inline: .55rem; }
+  .brand__text { font-size: .78rem; }
+  .icon-btn, .burger { width: 35px; height: 35px; }
+  .burger { flex-basis: 35px; }
+  .nav__actions { gap: 0; }
+}
+
+/* ───────── Hero refinement hooks ─────────
+   These rules only affect the common hero class names already used by the
+   customer page. They deliberately avoid changing content or interaction. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(820px, 100svh);
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgb(4 19 24 / .78) 0%, rgb(4 19 24 / .40) 46%, rgb(4 19 24 / .18) 100%),
+    linear-gradient(180deg, rgb(4 19 24 / .18) 0%, transparent 48%, rgb(4 19 24 / .62) 100%);
+}
+
+.hero h1 {
+  max-width: 820px;
+  font-size: clamp(3rem, 7vw, 6.2rem);
+  line-height: .96;
+  letter-spacing: -.035em;
+  text-shadow: 0 8px 28px rgb(0 0 0 / .28);
+}
+
+@media (max-width: 820px) {
+  .hero {
+    min-height: 760px;
+  }
+  .hero h1 {
+    max-width: 95%;
+    font-size: clamp(2.7rem, 12vw, 4.5rem);
+    line-height: .98;
+    letter-spacing: -.045em;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero { min-height: 720px; }
+  .hero h1 { font-size: clamp(2.45rem, 12.5vw, 3.4rem); }
+}
