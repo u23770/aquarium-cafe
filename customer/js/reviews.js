@@ -59,15 +59,15 @@ function updateGoogleRatingLabel() {
 
 async function render() {
   const grid = els.grid;
+  const section = grid.closest('.reviews');
   try {
     const rows = await getReviews(9);
+    if (section) section.hidden = rows.length === 0;
     grid.innerHTML = rows.length
       ? rows.map(cardHTML).join('')
-      : `<div class="menu__empty">
-           <svg class="icon"><use href="#i-star-o"/></svg>
-           <p>${esc(t('rv.empty'))}</p>
-         </div>`;
+      : '';
   } catch {
+    if (section) section.hidden = true;
     grid.innerHTML = '';
   }
 }
