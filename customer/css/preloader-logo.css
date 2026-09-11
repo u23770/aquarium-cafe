@@ -1,4 +1,7 @@
-/* Aquarium Cafe — exact supplied restaurant logo for the opening preloader. */
+/* Aquarium Cafe — exact supplied restaurant logo for the opening preloader.
+   CSS layer hierarchy position: 4th of 4, loaded last (see style.css
+   header). Most specific override; intentionally wins ties over the
+   .preloader__mark styling defined in design-polish.css. */
 .preloader__mark {
   padding: 0 !important;
   overflow: hidden;

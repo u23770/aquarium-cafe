@@ -2,6 +2,9 @@
  * Aquarium Cafe — visual polish layer
  * Design-only overrides. No business logic, data flow, IDs or URLs are changed.
  * Loaded after the theme-driven customer stylesheet.
+ * CSS layer hierarchy position: 2nd of 4 (see style.css header).
+ * Reads design tokens from style.css's :root via var(); does not define
+ * competing tokens of its own.
  */
 
 /* ---------- shared interaction polish ---------- */
