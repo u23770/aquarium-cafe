@@ -27,6 +27,14 @@ const $ = (id) => document.getElementById(id);
     link.dataset.designPolish = 'true';
     document.head.appendChild(link);
   }
+  const logoHref = './css/preloader-logo.css?v=20260911';
+  if (!document.querySelector('link[data-preloader-logo]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = logoHref;
+    link.dataset.preloaderLogo = 'true';
+    document.head.appendChild(link);
+  }
 }
 
 /* ---------- PWA install + offline shell ---------- */
@@ -46,8 +54,6 @@ $('installBtn')?.addEventListener('click', async () => {
     if (b) b.hidden = true;
     return;
   }
-  // iOS/Safari and some browsers do not expose beforeinstallprompt.
-  // Give the user a useful manual-install instruction instead of a dead button.
   const ar = document.documentElement.lang === 'ar';
   alert(ar
     ? 'لإضافة الموقع للشاشة الرئيسية: من قائمة المتصفح اختر «إضافة إلى الشاشة الرئيسية» أو «Add to Home Screen». إذا لم يظهر الخيار، افتح الموقع من Chrome أو Safari.'
