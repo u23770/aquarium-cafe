@@ -1,1 +1,10 @@
-{"rewrites":[{"source":"/([^.]*)$","destination":"/index.html"}],"headers":[{"source":"/(.*)","headers":[{"key":"X-Redeploy-Trigger","value":"1"}]}]}
+ewogICJoZWFkZXJzIjogWwogICAgewogICAgICAic291cmNlIjogIi8oLiop
+IiwKICAgICAgImhlYWRlcnMiOiBbCiAgICAgICAgeyAia2V5IjogIlgtQ29u
+dGVudC1UeXBlLU9wdGlvbnMiLCAidmFsdWUiOiAibm9zbmlmZiIgfSwKICAg
+ICAgICB7ICJrZXkiOiAiUmVmZXJyZXItUG9saWN5IiwgInZhbHVlIjogInN0
+cmljdC1vcmlnaW4td2hlbi1jcm9zcy1vcmlnaW4iIH0sCiAgICAgICAgeyAi
+a2V5IjogIlBlcm1pc3Npb25zLVBvbGljeSIsICJ2YWx1ZSI6ICJjYW1lcmE9
+KCksIG1pY3JvcGhvbmU9KCksIGdlb2xvY2F0aW9uPShzZWxmKSwgcGF5bWVu
+dD0oKSIgfSwKICAgICAgICB7ICJrZXkiOiAiU3RyaWN0LVRyYW5zcG9ydC1T
+ZWN1cml0eSIsICJ2YWx1ZSI6ICJtYXgtYWdlPTMxNTM2MDAwOyBpbmNsdWRl
+U3ViRG9tYWlucyIgfQogICAgICBdCiAgICB9CiAgXQp9Cg==
