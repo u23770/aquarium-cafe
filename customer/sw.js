@@ -1,4 +1,4 @@
-const CACHE = 'aquarium-customer-v2';
+const CACHE = 'aquarium-customer-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,7 +6,24 @@ const APP_SHELL = [
   './css/design-polish.css',
   './css/premium-navbar-hero.css',
   './css/preloader-logo.css',
+  './css/menu-premium.css',
+  './css/delivery-premium.css',
   './js/main.js',
+  './js/lang.js',
+  './js/theme.js',
+  './js/menu.js',
+  './js/cart.js',
+  './js/delivery.js',
+  './js/auth.js',
+  './js/gallery.js',
+  './js/reviews.js',
+  './js/api.js',
+  './js/ui.js',
+  './shared/i18n.js',
+  './shared/appearance.js',
+  './shared/config.js',
+  './shared/db.js',
+  './shared/media.js',
   './manifest.webmanifest',
   './images/restaurant-logo-preloader.jpg',
 ];
@@ -14,7 +31,7 @@ const APP_SHELL = [
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE)
-      .then((c) => c.addAll(APP_SHELL).catch(() => {}))
+      .then((c) => Promise.allSettled(APP_SHELL.map((url) => c.add(url).catch(() => null))))
       .then(() => self.skipWaiting())
   );
 });
@@ -32,8 +49,10 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     fetch(e.request)
       .then((r) => {
-        const copy = r.clone();
-        caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
+        if (r.ok) {
+          const copy = r.clone();
+          caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
+        }
         return r;
       })
       .catch(() => caches.match(e.request).then((r) => r || caches.match('./index.html')))
