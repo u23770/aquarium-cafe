@@ -25,6 +25,15 @@ let modalQty = 1;
 let els = null;
 const $ = (id) => document.getElementById(id);
 
+function loadPremiumDesign() {
+  if (document.querySelector('link[data-premium-design]')) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'css/premium-navbar-hero.css';
+  link.dataset.premiumDesign = '1';
+  document.head.appendChild(link);
+}
+
 /* ---------- bilingual product text ---------- */
 const pname = (p) => pickLang(p, 'name');
 const pdesc = (p) => pickLang(p, 'description');
@@ -197,7 +206,7 @@ function onGridClick(e) {
       favBtn.classList.toggle('is-fav', on);
       favBtn.setAttribute('aria-pressed', String(on));
       favBtn.setAttribute('aria-label', on ? t('fav.remove') : t('fav.add'));
-      renderChips(); // favorites chip appears/disappears with the counter
+      renderChips();
       els.bar.querySelector(`[data-slug="${CSS.escape(activeSlug)}"]`)?.classList.add('is-active');
     }
     return;
@@ -273,6 +282,8 @@ function setModalQty(n) {
 
 /* ---------- init ---------- */
 export async function initMenu() {
+  loadPremiumDesign();
+
   els = {
     bar: $('categoryBar'),
     grid: $('productGrid'),
