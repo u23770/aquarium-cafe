@@ -2,7 +2,8 @@
  * Presentation/interaction bridge only. The existing delivery.js remains authoritative.
  */
 
-.dl-select-source { display:none !important; }
+.dl-select-source { display:block !important; }
+.dl-select-source > button { display:none !important; }
 
 .dl-select {
   display:grid;
