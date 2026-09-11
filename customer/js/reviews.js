@@ -41,6 +41,14 @@ function cardHTML(r, i) {
   </article>`;
 }
 
+function updateReviewIntro() {
+  const subtitle = document.querySelector('[data-i18n-html="rv.subHtml"]');
+  if (!subtitle) return;
+  subtitle.textContent = isRTL()
+    ? 'آراء حقيقية من ضيوفنا — نعرضها بعد موافقة الفريق.'
+    : 'Real reviews from our guests — shown after team approval.';
+}
+
 async function render() {
   const grid = els.grid;
   try {
@@ -124,6 +132,7 @@ export function initReviews() {
   };
   if (!els.grid) return;
 
+  updateReviewIntro();
   render();
 
   document.addEventListener('click', (e) => {
@@ -144,5 +153,8 @@ export function initReviews() {
 
   els.form.addEventListener('submit', submit);
 
-  document.addEventListener('lang:changed', render);
+  document.addEventListener('lang:changed', () => {
+    updateReviewIntro();
+    render();
+  });
 }
