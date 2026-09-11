@@ -17,6 +17,18 @@ import { initReveals, closeLayer, closeTop } from './ui.js';
 
 const $ = (id) => document.getElementById(id);
 
+/* ---------- design-only visual polish ---------- */
+{
+  const href = './css/design-polish.css?v=20260911';
+  if (!document.querySelector('link[data-design-polish]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.dataset.designPolish = 'true';
+    document.head.appendChild(link);
+  }
+}
+
 /* ---------- PWA install + offline shell ---------- */
 let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -61,8 +73,8 @@ const paintLangBtn = () => {
 $('langBtn')?.addEventListener('click', toggleLang);
 document.addEventListener('lang:changed', () => {
   paintLangBtn();
-  applyNavLang();   // DB-driven nav labels restore / translate
-  applyI18n(document); // static data-i18n attributes
+  applyNavLang();
+  applyI18n(document);
 });
 paintLangBtn();
 
@@ -79,7 +91,7 @@ paintLangBtn();
     document.readyState === 'complete' ? r() : window.addEventListener('load', r, { once: true })
   );
   Promise.all([loaded, minDelay]).then(hide);
-  setTimeout(hide, 3600); // hard fallback
+  setTimeout(hide, 3600);
 }
 
 /* ---------- nav: shrink on scroll ---------- */
@@ -160,12 +172,12 @@ document.addEventListener('keydown', (e) => {
 $('year').textContent = new Date().getFullYear();
 
 /* ---------- boot ---------- */
-initAppearance();   // theme / content / sections / identity (async, safe)
+initAppearance();
 initSpy();
-initAuth();         // accounts: session, nav chip, profile modal
+initAuth();
 initCart();
-initDelivery();     // zones checkout + loyalty + coupons + live tracking
+initDelivery();
 initMenu();
-initGallery();      // promo banner + gallery grid + lightbox
-initReviews();      // guest reviews + submit modal
+initGallery();
+initReviews();
 initReveals();
