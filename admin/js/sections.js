@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Section Manager (v5)
+//  Aquarium Cafe & Resturant — Admin · Section Manager (v5)
 //  Reorder the customer page by drag & drop, show/hide any
 //  section, and switch whole features (ordering, delivery)
 //  on or off — never touching code.

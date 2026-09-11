@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — shared data helpers
+//  Aquarium Cafe & Resturant — shared data helpers
 //  Thin wrappers every site uses: consistent errors, count
 //  queries, RPC calls, and the not-configured guard.
 // ============================================================

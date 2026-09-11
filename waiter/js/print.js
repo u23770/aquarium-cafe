@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Waiter · Print Order (v5.2)
+//  Aquarium Cafe & Resturant — Waiter · Print Order (v5.2)
 //  ------------------------------------------------------------
 //  Builds a clean, authoritative print sheet for one delivery
 //  order and sends it to the browser print dialog. Only ever
@@ -21,7 +21,7 @@ import { esc, money, moneyEgp, exactTime } from './ui.js';
 import { t, pickLang, isRTL } from '../shared/i18n.js';
 
 const $ = (id) => document.getElementById(id);
-const RESTAURANT_NAME = 'Aquarium Cafe & Restaurant';
+const RESTAURANT_NAME = 'Aquarium Cafe & Resturant';
 const LOGO_SRC = '../customer/images/logo.svg';
 
 /* ---------- QR: exact saved Maps URL only, never generated/guessed ---------- */

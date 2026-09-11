@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Visual Website Builder (Customizer)
+//  Aquarium Cafe & Resturant — Admin · Visual Website Builder (Customizer)
 //  Left: contextual control panels (General, Colors, Type,
 //  Layout, Hero, Navbar, Product Card, Buttons, Animations).
 //  Right: a LIVE preview of the real customer site — every

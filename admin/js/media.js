@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Media Library (v5)
+//  Aquarium Cafe & Resturant — Admin · Media Library (v5)
 //  Upload · replace · delete · reuse · organise by folder.
 //  The same grid doubles as an "image picker" modal used by
 //  the customizer, content editor and product form — so an

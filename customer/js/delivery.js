@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Delivery system (customer, v5)
+//  Aquarium Cafe & Resturant — Delivery system (customer, v5)
 //  ------------------------------------------------------------
 //  CHECKOUT, in three calm steps:
 //    1 · main zone (grid of zones, fee shown — set per zone)

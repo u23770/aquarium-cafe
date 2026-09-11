@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin data layer (Supabase)
+//  Aquarium Cafe & Resturant — Admin data layer (Supabase)
 //  Website Management System edition:
 //   · appearance  → settings / website_theme / website_content /
 //                   website_sections  (the Visual Builder)

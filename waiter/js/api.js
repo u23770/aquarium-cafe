@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Waiter data layer (Supabase, v5)
+//  Aquarium Cafe & Resturant — Waiter data layer (Supabase, v5)
 //  Delivery-only dashboard: dispatch boards read delivery
 //  orders (+ zones, drivers, temporary drivers, discounts,
 //  loyalty usage); every status move runs inside the

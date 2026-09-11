@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Menu Manager (v5)
+//  Aquarium Cafe & Resturant — Admin · Menu Manager (v5)
 //  ONE page rules the whole menu:
 //   · categories — add, rename (EN + AR), reorder, show/hide,
 //     delete (only when empty)

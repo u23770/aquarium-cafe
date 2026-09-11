@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Staff access-code authentication
+//  Aquarium Cafe & Resturant — Staff access-code authentication
 //  Shared by the Admin and Waiter applications only.
 //
 //  There is no email/password UI here. Each app calls

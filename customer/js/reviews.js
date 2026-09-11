@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Guest reviews (v5, bilingual)
+//  Aquarium Cafe & Resturant — Guest reviews (v5, bilingual)
 //  Shows approved reviews; guests submit new ones through the
 //  star modal — they always land unapproved (moderation first).
 //  Validation, labels and toasts follow the active language.
@@ -39,22 +39,6 @@ function cardHTML(r, i) {
     </div>
     <p class="rev-card__text">“${esc(r.text)}”</p>
   </article>`;
-}
-
-function updateReviewIntro() {
-  const subtitle = document.querySelector('[data-i18n-html="rv.subHtml"]');
-  if (!subtitle) return;
-  subtitle.textContent = isRTL()
-    ? 'آراء حقيقية من ضيوفنا — نعرضها بعد موافقة الفريق.'
-    : 'Real reviews from our guests — shown after team approval.';
-}
-
-/* The hero shows the restaurant's Google rating only.
-   We intentionally do not display any review-count claim. */
-function updateGoogleRatingLabel() {
-  const el = document.querySelector('[data-i18n="hero.statRating"]');
-  if (!el) return;
-  el.textContent = isRTL() ? 'تقييم Google' : 'Google rating';
 }
 
 async function render() {
@@ -140,8 +124,6 @@ export function initReviews() {
   };
   if (!els.grid) return;
 
-  updateReviewIntro();
-  updateGoogleRatingLabel();
   render();
 
   document.addEventListener('click', (e) => {
@@ -162,9 +144,5 @@ export function initReviews() {
 
   els.form.addEventListener('submit', submit);
 
-  document.addEventListener('lang:changed', () => {
-    updateReviewIntro();
-    updateGoogleRatingLabel();
-    render();
-  });
+  document.addEventListener('lang:changed', render);
 }

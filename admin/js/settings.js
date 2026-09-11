@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Settings (v5)
+//  Aquarium Cafe & Resturant — Admin · Settings (v5)
 //  One page for every operational switch:
 //   · Delivery settings (enabled, minimum order, ETA, global
 //     free-above fallback, payment methods, customer note)

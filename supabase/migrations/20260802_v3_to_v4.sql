@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
---  AQUARIUM CAFE & RESTAURANT — platform v4
+--  AQUARIUM CAFE & RESTURANT — platform v4
 --  MIGRATION: v3 (menta) → v4 (aquarium)
 --  Date: 2026-08-02
 --

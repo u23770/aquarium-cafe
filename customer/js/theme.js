@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Appearance engine (Visual Builder, client side)
+//  Aquarium Cafe & Resturant — Appearance engine (Visual Builder, client side)
 // ------------------------------------------------------------
 //  Loads settings / theme / content / sections from Supabase,
 //  merges them over the shared defaults and applies everything:
@@ -150,7 +150,7 @@ function applyTheme(t) {
 
 /* ═══════════════ 2 · identity & feature switches ═══════════════ */
 function applySettings(s) {
-  const name = s.cafeName?.trim() || 'Aquarium Cafe & Restaurant';
+  const name = s.cafeName?.trim() || 'Aquarium Cafe & Resturant';
 
   document.title = `${name}${s.slogan ? ' — ' + s.slogan : ''}`;
   const meta = $('metaDesc');
@@ -257,7 +257,7 @@ function applyContent(ct, s) {
   const track = $('highlightsTrack');
   if (track) {
     const items = (Array.isArray(ct.highlights) ? ct.highlights : []).filter(Boolean);
-    const seq = items.length ? items : ['Aquarium Cafe & Restaurant'];
+    const seq = items.length ? items : ['Aquarium Cafe & Resturant'];
     track.innerHTML = [...seq, ...seq].map((t) => `<span>${esc(t)}</span><i>✦</i>`).join('');
   }
 

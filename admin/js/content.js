@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Website Content editor
+//  Aquarium Cafe & Resturant — Admin · Website Content editor
 //  About, contact, phones, WhatsApp, email, maps, working
 //  hours, branches, socials, highlights strip & footer text.
 //  Everything autosaves (debounced) straight to website_content

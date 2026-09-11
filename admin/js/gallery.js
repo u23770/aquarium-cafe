@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Gallery Manager
+//  Aquarium Cafe & Resturant — Admin · Gallery Manager
 //  The photo wall on the customer website. Pick images from
 //  the Media Library (or upload), caption, reorder, hide and
 //  delete. Changes reach open customer tabs instantly.

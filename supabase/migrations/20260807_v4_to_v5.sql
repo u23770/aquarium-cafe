@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
---  AQUARIUM CAFE & RESTAURANT — platform v5
+--  AQUARIUM CAFE & RESTURANT — platform v5
 --  MIGRATION: v4 → v5  (delivery-only commercial platform)
 --  Date: 2026-08-07
 --

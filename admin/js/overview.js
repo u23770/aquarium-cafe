@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Overview (v5)
+//  Aquarium Cafe & Resturant — Admin · Overview (v5)
 //  Delivery-only operations dashboard: today's deliveries &
 //  revenue, active orders needing attention, drivers, zones,
 //  coupons, loyalty members, review queue — plus the latest

@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin UI utilities
+//  Aquarium Cafe & Resturant — Admin UI utilities
 //  (toast, modal manager, confirm dialog, save pill, misc —
 //   everything follows the active language instantly)
 // ============================================================

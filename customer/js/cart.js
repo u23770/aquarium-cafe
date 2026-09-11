@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — cart state, drawer UI & checkout
+//  Aquarium Cafe & Resturant — cart state, drawer UI & checkout
 //  v5: delivery-only platform. Checkout hands the cart straight
 //  to the delivery flow (zones → address → payment → tracking,
 //  handled by delivery.js). Fully bilingual: items keep their

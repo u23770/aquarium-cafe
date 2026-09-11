@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · Reviews Moderation
+//  Aquarium Cafe & Resturant — Admin · Reviews Moderation
 //  Website reviews arrive UNPUBLISHED (approved = false) —
 //  approve the good ones, delete the noise. Only approved
 //  reviews show on the customer website.

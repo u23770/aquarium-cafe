@@ -1,5 +1,5 @@
 // ============================================================
-//  Aquarium Cafe & Restaurant — Admin · reusable form controls
+//  Aquarium Cafe & Resturant — Admin · reusable form controls
 //  One tiny widget library powers the whole Visual Builder:
 //  colors, ranges, selects, toggles, text, fonts, images,
 //  and repeatable list editors. Value binding is dot-path

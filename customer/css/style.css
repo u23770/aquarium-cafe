@@ -1,32 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════
-   AQUARIUM CAFE & RESTAURANT — Customer site
+   AQUARIUM CAFE & RESTURANT — Customer site
    100% theme-driven: every visual token below is a CSS custom
    property, applied live from Supabase by js/theme.js.
    The :root values mirror the database defaults so the page is
    beautiful even before (or without) a database connection.
    ═══════════════════════════════════════════════════════════════ */
-
-/* ── CSS layer hierarchy (documented Phase 4 — no functional change) ──
-   1. style.css               — THIS FILE. Base structure and the single
-                                 source of truth for all design tokens
-                                 below (:root). Values mirror the Supabase
-                                 theme defaults; do not wholesale replace.
-   2. design-polish.css       — premium visual polish layer, loaded after
-                                 this file by customer/js/main.js. Reads
-                                 the tokens below via var(); introduces no
-                                 new ones of its own.
-   3. premium-navbar-hero.css — navbar/hero-specific override layer,
-                                 loaded after design-polish.css by
-                                 customer/js/menu.js (initMenu). Kept as
-                                 its own file for now — folding it into
-                                 design-polish.css would change which
-                                 declaration wins the cascade for a few
-                                 shared selectors, which needs visual
-                                 verification first (see Phase 4 report).
-   4. preloader-logo.css      — smallest, most specific layer; swaps the
-                                 preloader mark for the supplied real logo
-                                 photo. Loaded last by customer/js/main.js.
-   ─────────────────────────────────────────────────────────────────── */
 
 :root {
   /* ── colors (Colors panel) ── */
@@ -100,14 +78,6 @@
   --anim-dur: .7s;
   --ease: cubic-bezier(.22, .9, .3, 1);
   --spring: cubic-bezier(.34, 1.56, .64, 1);
-
-  /* ── navbar / hero surface tokens (Phase 4) ──
-     Static design layer — NOT part of the admin/theme customizer's
-     setVar() list (see customer/js/theme.js), so these always resolve
-     to the values below regardless of the live Supabase theme.
-     Exposed as bare RGB channels for composition inside rgba(). */
-  --nav-surface-rgb:   5, 24, 31;
-  --surface-light-rgb: 255, 255, 255;
 }
 
 /* ─────────────────────────── reset ─────────────────────────── */
