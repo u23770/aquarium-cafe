@@ -39,27 +39,44 @@ const $ = (id) => document.getElementById(id);
 
 /* ---------- PWA install + offline shell ---------- */
 let deferredInstallPrompt = null;
+
+const syncInstallButton = () => {
+  const b = $('installBtn');
+  if (b) b.hidden = !deferredInstallPrompt;
+};
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredInstallPrompt = e;
-  const b = $('installBtn');
-  if (b) b.hidden = false;
+  syncInstallButton();
 });
-$('installBtn')?.addEventListener('click', async () => {
-  const b = $('installBtn');
-  if (deferredInstallPrompt) {
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice.catch(() => {});
-    deferredInstallPrompt = null;
-    if (b) b.hidden = true;
-    return;
+
+/* Use delegated click handling because the appearance/theme engine can
+   rebuild the navigation and replace #installBtn after boot. */
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest?.('#installBtn');
+  if (!b || !deferredInstallPrompt) return;
+
+  const promptEvent = deferredInstallPrompt;
+  deferredInstallPrompt = null;
+  syncInstallButton();
+
+  try {
+    await promptEvent.prompt();
+    await promptEvent.userChoice.catch(() => {});
+  } finally {
+    syncInstallButton();
   }
-  const ar = document.documentElement.lang === 'ar';
-  alert(ar
-    ? 'لإضافة الموقع للشاشة الرئيسية: من قائمة المتصفح اختر «إضافة إلى الشاشة الرئيسية» أو «Add to Home Screen». إذا لم يظهر الخيار، افتح الموقع من Chrome أو Safari.'
-    : 'To add the website to your home screen, open the browser menu and choose “Add to Home Screen” or “Install app”. If the option is missing, open the site in Chrome or Safari.');
 });
-window.addEventListener('appinstalled', () => { const b = $('installBtn'); if (b) b.hidden = true; });
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  syncInstallButton();
+});
+
+/* Re-sync after theme/content rendering replaces navigation controls. */
+document.addEventListener('theme:applied', syncInstallButton);
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
@@ -187,3 +204,4 @@ initMenu();
 initGallery();
 initReviews();
 initReveals();
+syncInstallButton();
