@@ -1,0 +1,1 @@
+Backup marker before fixing PWA icon selection. Main was f7eb30f963f350461a5df1af647dea57c6fd13a8.
