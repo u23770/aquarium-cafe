@@ -1,4 +1,4 @@
-const CACHE = 'aquarium-customer-v2';
+const CACHE = 'aquarium-customer-v3';
 const APP_SHELL = [
   './',
   './index.html',
