@@ -20,18 +20,18 @@ import { toast, money, esc, openLayer, closeLayer } from './ui.js';
 import { t } from '../shared/i18n.js';
 
 const $ = (id) => document.getElementById(id);
+const AUTH_REDIRECT_URL = 'https://aquarium-cafe-and-restaurant.vercel.app/verified.html';
 
 let els = null;
-let session = null;          // supabase session (null = guest)
-let profile = null;          // { name, phone }
-let loyaltyCfg = null;       // cached loyalty config
-let histFilter = 'all';      // all | earn | redeem
+let session = null;
+let profile = null;
+let loyaltyCfg = null;
+let histFilter = 'all';
 let working = false;
 
 export const getUser = () => session?.user ?? null;
 export const getProfile = () => profile;
 
-/* ═══════════════ helpers ═══════════════ */
 const userFirstName = (user, prof) => {
   const name = (prof?.name || user?.user_metadata?.full_name || '').trim();
   if (name) return name.split(/\s+/)[0];
@@ -56,7 +56,6 @@ function broadcast() {
   );
 }
 
-/* ═══════════════ session lifecycle ═══════════════ */
 async function hydrate(sess) {
   session = sess;
   profile = null;
@@ -85,7 +84,6 @@ function paintNav() {
   }
 }
 
-/* ═══════════════ auth modal ═══════════════ */
 function setTab(which) {
   const isIn = which === 'in';
   els.tabIn.classList.toggle('is-active', isIn);
@@ -150,9 +148,8 @@ async function submitSignUp(e) {
   if (v) return;
   setWorking(true, 'up');
   try {
-    const res = await signUpCustomer({ name, phone, email, password });
+    const res = await signUpCustomer({ name, phone, email, password, emailRedirectTo: AUTH_REDIRECT_URL });
     if (!res.session) {
-      // email confirmation is ON in the Supabase project
       els.errUp.textContent = t('auth.confirmEmail');
       return;
     }
@@ -168,7 +165,6 @@ async function submitSignUp(e) {
   }
 }
 
-/* ═══════════════ profile modal ═══════════════ */
 async function openProfileModal() {
   const user = getUser();
   if (!user) { openAuthModal('in'); return; }
@@ -201,10 +197,7 @@ function paintWallet(points, cfg) {
   els.pfBalance.textContent = points;
   const worth = cfg?.pointValue ? points * cfg.pointValue : 0;
   els.pfWorth.textContent = worth > 0 ? t('pf.worth', { x: money(worth) }) : '';
-  els.pfRate.textContent =
-    cfg?.enabled && cfg.pointsPerOrder > 0
-      ? t('pf.earnRate', { n: cfg.pointsPerOrder })
-      : '';
+  els.pfRate.textContent = cfg?.enabled && cfg.pointsPerOrder > 0 ? t('pf.earnRate', { n: cfg.pointsPerOrder }) : '';
 }
 
 function paintHistory(rows) {
@@ -215,26 +208,17 @@ function paintHistory(rows) {
   });
   els.pfEmpty.hidden = filtered.length > 0;
   const lang = document.documentElement.lang === 'ar' ? 'ar-EG' : 'en-EG';
-  els.pfList.innerHTML = filtered
-    .map((r) => {
-      const d = new Date(r.created_at);
-      const when = isNaN(d)
-        ? ''
-        : d.toLocaleDateString(lang, { day: 'numeric', month: 'short' }) +
-          ' · ' +
-          d.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' });
-      const cls = r.delta >= 0 ? 'is-plus' : 'is-minus';
-      return `
+  els.pfList.innerHTML = filtered.map((r) => {
+    const d = new Date(r.created_at);
+    const when = isNaN(d) ? '' : d.toLocaleDateString(lang, { day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' });
+    const cls = r.delta >= 0 ? 'is-plus' : 'is-minus';
+    return `
       <li class="pf__tx">
         <span class="pf__tx-ico ${cls}"><svg class="icon"><use href="#${r.delta >= 0 ? 'i-plus' : 'i-minus'}"/></svg></span>
-        <div>
-          <b>${esc(t('reason.' + r.reason) === 'reason.' + r.reason ? (r.reason || '') : t('reason.' + r.reason))}</b>
-          <small>${esc(when)}</small>
-        </div>
+        <div><b>${esc(t('reason.' + r.reason) === 'reason.' + r.reason ? (r.reason || '') : t('reason.' + r.reason))}</b><small>${esc(when)}</small></div>
         <strong class="${cls}">${r.delta >= 0 ? '+' : ''}${r.delta}</strong>
       </li>`;
-    })
-    .join('');
+  }).join('');
 }
 
 async function submitProfile(e) {
@@ -274,7 +258,6 @@ async function doSignOut() {
   }
 }
 
-/* ═══════════════ init ═══════════════ */
 export function initAuth() {
   els = {
     authBtn: $('authBtn'),
@@ -313,15 +296,12 @@ export function initAuth() {
   };
   if (!els.modal) return;
 
-  els.authBtn.addEventListener('click', () =>
-    getUser() ? openProfileModal() : openAuthModal('in')
-  );
+  els.authBtn.addEventListener('click', () => getUser() ? openProfileModal() : openAuthModal('in'));
   els.tabIn.addEventListener('click', () => setTab('in'));
   els.tabUp.addEventListener('click', () => setTab('up'));
   els.formIn.addEventListener('submit', submitSignIn);
   els.formUp.addEventListener('submit', submitSignUp);
   els.guest.addEventListener('click', () => closeLayer(els.modal));
-
   els.pfForm.addEventListener('submit', submitProfile);
   els.pfLogout.addEventListener('click', doSignOut);
   els.pfFilter.addEventListener('click', (e) => {
@@ -331,18 +311,12 @@ export function initAuth() {
     els.pfFilter.querySelectorAll('button').forEach((x) => x.classList.toggle('is-active', x === b));
     loadWallet();
   });
-
-  /* any [data-open-auth] element (e.g. the checkout nudge) opens the modal */
   document.addEventListener('click', (e) => {
     const opener = e.target.closest('[data-open-auth]');
     if (opener) openAuthModal(opener.dataset.openAuth === 'up' ? 'up' : 'in');
   });
-
-  /* keep the nav chip + dependents in sync with every auth transition */
   onAuthChange((sess) => { hydrate(sess); });
   getSession().then((sess) => { hydrate(sess); });
-
-  /* language switch → re-paint dynamic strings */
   document.addEventListener('lang:changed', () => {
     paintNav();
     if (els.modalPf.classList.contains('open')) loadWallet();
