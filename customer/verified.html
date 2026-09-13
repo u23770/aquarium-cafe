@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="robots" content="noindex" />
+<title>Account Verified — Aquarium Cafe &amp; Restaurant</title>
+<link rel="icon" type="image/svg+xml" href="images/logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --c-primary:#6f4e37; --c-secondary:#8a6244; --c-accent:#b98a55;
+    --c-bg:#faf5ec; --c-card:#fffdf8; --c-text:#41332a; --c-heading:#241709;
+    --c-border:#e6d9c3; --c-success:#56745b; --c-danger:#b3564a;
+    --font-head:'Playfair Display', Georgia, serif;
+    --font-body:'Manrope','Segoe UI', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100dvh; display:flex; align-items:center; justify-content:center;
+    background:var(--c-bg); color:var(--c-text); font-family:var(--font-body);
+    padding:24px;
+  }
+  .card{
+    width:100%; max-width:440px; background:var(--c-card); border:1px solid var(--c-border);
+    border-radius:20px; padding:40px 32px; text-align:center;
+    box-shadow:0 20px 50px rgba(36,23,9,.08);
+  }
+  .logo{ width:64px; height:64px; margin:0 auto 18px; display:block; }
+  .icon{
+    width:64px; height:64px; margin:0 auto 20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .icon.ok{ background:rgba(86,116,91,.12); color:var(--c-success); }
+  .icon.err{ background:rgba(179,86,74,.12); color:var(--c-danger); }
+  .icon.loading{ background:rgba(185,138,85,.12); color:var(--c-accent); }
+  h1{
+    font-family:var(--font-head); font-size:26px; margin:0 0 6px; color:var(--c-heading);
+  }
+  .ar{ direction:rtl; font-family:'Manrope','Segoe UI',sans-serif; }
+  p{ margin:6px 0; line-height:1.6; color:var(--c-secondary); font-size:15px; }
+  .btn{
+    display:inline-block; margin-top:24px; padding:13px 30px; border-radius:999px;
+    background:var(--c-primary); color:#fff; text-decoration:none; font-weight:700;
+    font-size:15px; transition:background .2s ease;
+  }
+  .btn:hover{ background:#5a3e2b; }
+  .hidden{ display:none; }
+  .spinner{
+    width:34px; height:34px; border:3px solid rgba(185,138,85,.3);
+    border-top-color:var(--c-accent); border-radius:50%; animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="images/logo.svg" alt="Aquarium Cafe & Restaurant" />
+
+    <!-- LOADING STATE -->
+    <div id="stateLoading">
+      <div class="icon loading"><div class="spinner"></div></div>
+      <h1>Verifying your email…</h1>
+      <p class="ar">جارٍ التحقق من بريدك الإلكتروني…</p>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="stateSuccess" class="hidden">
+      <div class="icon ok">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.4"/><path d="m8 12.5 2.7 2.7L16.5 9"/></svg>
+      </div>
+      <h1>Your account has been verified successfully</h1>
+      <p class="ar">تم التحقق من حسابك بنجاح</p>
+      <p>Welcome to Aquarium Cafe &amp; Restaurant — you're all set to sign in and order.</p>
+      <a class="btn" id="continueBtn" href="./index.html">Continue to the website</a>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="stateError" class="hidden">
+      <div class="icon err">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.4"/><path d="M12 8v5M12 16h.01"/></svg>
+      </div>
+      <h1>This link is no longer valid</h1>
+      <p class="ar">هذا الرابط لم يعد صالحًا</p>
+      <p id="errDetail">The verification link may have expired or already been used. Please try signing up again or request a new link.</p>
+      <a class="btn" href="./index.html">Return to Aquarium Cafe</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './shared/supabase.js';
+
+    const show = (id) => {
+      ['stateLoading', 'stateSuccess', 'stateError'].forEach((s) => {
+        document.getElementById(s).classList.toggle('hidden', s !== id);
+      });
+    };
+
+    function showError(message) {
+      if (message) document.getElementById('errDetail').textContent = message;
+      show('stateError');
+    }
+
+    // Supabase surfaces expired/used links as ?error=...&error_description=...
+    // (or in the hash fragment, depending on flow) instead of a session.
+    const params = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const errDesc = params.get('error_description') || hashParams.get('error_description');
+    if (errDesc) {
+      showError(decodeURIComponent(errDesc.replace(/\+/g, ' ')));
+    } else {
+      // supabase-js (detectSessionInUrl: true) parses the verification
+      // link automatically on load and exchanges it for a real session —
+      // this is the real Supabase verification, not a simulated one.
+      let settled = false;
+      const finish = (session) => {
+        if (settled) return;
+        settled = true;
+        session ? show('stateSuccess') : showError();
+      };
+      supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') finish(session);
+      });
+      supabase.auth.getSession().then(({ data }) => {
+        if (data?.session) finish(data.session);
+      });
+      // Fallback: if nothing resolves in a few seconds, treat as invalid.
+      setTimeout(() => finish(null), 6000);
+    }
+  </script>
+</body>
+</html>

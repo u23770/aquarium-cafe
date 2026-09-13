@@ -124,12 +124,12 @@ export async function getProduct(id) {
    Sign-up writes full_name/phone into raw user metadata → the
    on_auth_user_created trigger creates customer_profiles +
    loyalty_accounts (+ welcome bonus) in one atomic step. */
-export async function signUpCustomer({ name, phone, email, password }) {
+export async function signUpCustomer({ name, phone, email, password, emailRedirectTo }) {
   if (!supabase.auth) throw new Error(OFFLINE);
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: name, phone } },
+    options: { data: { full_name: name, phone }, emailRedirectTo },
   });
   if (error) throw Object.assign(new Error(error.message), { code: error.code, status: error.status });
   // Supabase answers 200 with an obfuscated, identity-less user object
