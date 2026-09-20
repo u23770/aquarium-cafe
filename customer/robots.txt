@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /?track=
-Disallow: /?order=
 
-Sitemap: https://aquarium-cafe-and-restaurant.vercel.app/sitemap.xml
+Sitemap: https://aquarium-cafe-and-restaurant-4whp6lkwc-yousry.vercel.app/sitemap.xml
