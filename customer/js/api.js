@@ -29,6 +29,7 @@ const mapProduct = (p) => ({
   description: p.description,
   description_ar: p.description_ar ?? '',
   price: p.price,
+  prices: (() => { if (!p.prices) return {}; if (typeof p.prices === 'object') return p.prices; try { return JSON.parse(p.prices); } catch { return {}; } })(),
   image: p.image,
   badge: p.badge,
   featured: !!p.featured,
@@ -107,7 +108,7 @@ export async function getProduct(id) {
     const row = await run(
       supabase
         .from('products')
-        .select('id, category_id, name, name_ar, description, description_ar, price, image, badge, featured, sort_order, available, categories(name, name_ar, slug)')
+        .select('id, category_id, name, name_ar, description, description_ar, price, prices, image, badge, featured, sort_order, available, categories(name, name_ar, slug)')
         .eq('id', id)
         .eq('available', true)
         .single(),
