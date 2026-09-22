@@ -2181,3 +2181,253 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
     margin-bottom: 1.25rem;
   }
 }
+
+
+
+/* ============================================================
+   NAVBAR V2 — compact top header + floating bottom cart
+   Visual-only: no menu, cart, auth, language, or database logic changed.
+   ============================================================ */
+
+.nav {
+  height: var(--nav-h);
+  min-height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding-inline: clamp(.7rem, 2vw, 1.35rem);
+  overflow: visible;
+  z-index: 1000;
+}
+
+.nav .brand {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: none;
+  overflow: visible;
+  gap: .55rem;
+}
+
+.nav .brand__mark {
+  flex: 0 0 auto;
+  width: clamp(38px, 6vw, 50px);
+  height: clamp(38px, 6vw, 50px);
+}
+
+.nav .brand__text {
+  min-width: 0;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+  font-size: clamp(.88rem, 2.1vw, 1.2rem);
+  letter-spacing: .08em;
+}
+
+.nav .brand__text small {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+  font-size: clamp(.43rem, 1vw, .58rem);
+  letter-spacing: .22em;
+  margin-top: .18rem;
+}
+
+.nav__links {
+  z-index: 1001;
+}
+
+.nav__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(.18rem, .6vw, .5rem);
+}
+
+.nav__actions .burger { order: 1; }
+.nav__actions .auth-btn { order: 2; }
+.nav__actions .install-btn { order: 3; }
+.nav__actions .lang-btn { order: 4; }
+
+.nav .burger,
+.nav .icon-btn,
+.nav .lang-btn {
+  flex: 0 0 auto;
+}
+
+.nav .burger {
+  display: block;
+  width: 42px;
+  height: 42px;
+}
+
+.nav .auth-btn {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.nav .auth-btn__label {
+  display: none;
+}
+
+.nav .install-btn {
+  width: auto;
+  min-width: 0;
+  min-height: 42px;
+  padding-inline: .8rem;
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+.nav .install-btn[hidden] {
+  display: none !important;
+}
+
+.nav .lang-btn {
+  min-height: 42px;
+  min-width: 42px;
+  padding-inline: .55rem;
+  border-radius: 999px;
+}
+
+@media (max-width: 560px) {
+  .nav {
+    padding-inline: .55rem;
+    gap: .35rem;
+  }
+
+  .nav .brand {
+    gap: .42rem;
+  }
+
+  .nav .brand__mark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav .brand__text {
+    font-size: .82rem;
+    letter-spacing: .055em;
+  }
+
+  .nav .brand__text small {
+    font-size: .39rem;
+    letter-spacing: .13em;
+    margin-top: .12rem;
+  }
+
+  .nav__actions {
+    gap: .08rem;
+  }
+
+  .nav .burger,
+  .nav .auth-btn,
+  .nav .lang-btn {
+    width: 37px;
+    height: 37px;
+    min-width: 37px;
+    min-height: 37px;
+  }
+
+  .nav .lang-btn {
+    padding-inline: .35rem;
+  }
+
+  .nav .install-btn {
+    min-height: 37px;
+    padding-inline: .55rem;
+    font-size: .72rem;
+  }
+}
+
+/* On very small phones, keep the full restaurant name visible by
+   using two compact lines rather than ellipsizing it. */
+@media (max-width: 430px) {
+  .nav .brand__text {
+    white-space: normal;
+    line-height: 1.05;
+    font-size: .75rem;
+  }
+
+  .nav .brand__text small {
+    font-size: .34rem;
+    letter-spacing: .1em;
+  }
+
+  .nav .burger,
+  .nav .auth-btn,
+  .nav .lang-btn {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+  }
+
+  .nav .install-btn {
+    max-width: 76px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: .66rem;
+    padding-inline: .42rem;
+  }
+}
+
+/* The cart becomes the persistent bottom action on phones, similar to
+   the reference design. It remains the same #cartBtn and keeps all
+   existing cart behavior/badge updates. */
+@media (max-width: 760px) {
+  body {
+    padding-bottom: 82px;
+  }
+
+  .nav__actions #cartBtn {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 1200;
+    width: 108px;
+    height: 54px;
+    border-radius: 999px;
+    background: var(--c-primary);
+    color: #fff;
+    box-shadow: 0 10px 28px rgb(0 0 0 / .22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+  }
+
+  .nav__actions #cartBtn::after {
+    content: "Cart";
+    font-family: var(--font-head);
+    font-size: .82rem;
+    font-weight: 800;
+    letter-spacing: .02em;
+  }
+
+  html[dir="rtl"] .nav__actions #cartBtn::after {
+    content: "السلة";
+  }
+
+  .nav__actions #cartBtn .icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nav__actions #cartBtn .icon-btn__badge {
+    top: 5px;
+    right: 14px;
+  }
+}
+
+/* On wider screens the cart stays in the top header as before. */
+@media (min-width: 761px) {
+  .nav__actions #cartBtn {
+    position: relative;
+  }
+}
