@@ -819,3 +819,65 @@
 [dir="rtl"] .preloader__word {
   direction: ltr;
 }
+
+
+/* ============================================================
+   MENU UI POLISH — preview only
+   Keeps the existing menu logic/data intact.
+   ============================================================ */
+
+/* Keep the menu category rail visually connected to the menu controls. */
+.menu .chips {
+  position: relative;
+  z-index: 4;
+  margin-top: .15rem;
+  margin-bottom: 1.35rem;
+  padding-block: .15rem;
+}
+
+/* Give the product area one consistent card system regardless of
+   how many products the active filter returns. */
+.menu #productGrid {
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.menu #productGrid .card {
+  min-width: 0;
+  width: 100%;
+}
+
+/* All view: never use a compact/two-column special presentation. */
+.menu #productGrid.menu-grid--all {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .menu #productGrid,
+  .menu #productGrid.menu-grid--all {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .menu #productGrid,
+  .menu #productGrid.menu-grid--all {
+    grid-template-columns: 1fr;
+  }
+
+  .menu .chips {
+    margin-bottom: 1.15rem;
+  }
+}
+
+/* Slightly tighten the menu's top rhythm without moving the navbar. */
+.menu {
+  scroll-margin-top: 76px;
+}
+
+@media (max-width: 820px) {
+  .menu {
+    scroll-margin-top: 66px;
+  }
+}
