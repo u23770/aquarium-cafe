@@ -2135,3 +2135,49 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
     padding-inline: .3rem;
   }
 }
+
+
+/* ============================================================
+   MENU POLISH — final preview overrides
+   ============================================================ */
+
+/* Category rail: keep it visually tight and aligned with the menu. */
+.menu .chips {
+  margin-top: -.35rem;
+  margin-bottom: 1.6rem;
+  padding-bottom: .2rem;
+  scroll-padding-inline: 1rem;
+}
+
+/* Every filter, including All, uses the exact same product-card grid. */
+.menu #productGrid,
+.menu #productGrid.menu-grid--all {
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  gap: calc(var(--gutter) + 10px);
+}
+
+.menu #productGrid .card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* On mobile the normal menu is one card per row — All must not become
+   a compact two-column layout. */
+@media (max-width: 900px) {
+  .menu #productGrid,
+  .menu #productGrid.menu-grid--all {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .menu #productGrid,
+  .menu #productGrid.menu-grid--all {
+    grid-template-columns: 1fr;
+  }
+
+  .menu .chips {
+    margin-top: -.15rem;
+    margin-bottom: 1.25rem;
+  }
+}
