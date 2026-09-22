@@ -168,6 +168,10 @@ function renderSkeletons() {
 function renderGrid(animate = false) {
   const list = visibleProducts();
 
+  // Keep the grid presentation explicit so All uses the same card system
+  // as every category instead of inheriting a compact filtered layout.
+  els.grid.classList.toggle('menu-grid--all', activeSlug === 'all');
+
   if (!list.length) {
     const searching = query.trim().length > 0;
     const favEmpty = activeSlug === 'favorites';
