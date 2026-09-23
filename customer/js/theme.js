@@ -199,7 +199,8 @@ function applyContent(ct, s) {
       if (href === '#menu') href = './menu.html';
       else if (href === '#hero') href = './';
       const anchor = href.startsWith('#') ? href.slice(1) : '';
-      return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : 'target="_blank" rel="noopener"'} ${anchor ? `data-link="${esc(anchor)}"` : ''} class="${i === 0 ? 'is-active' : ''}">${esc(n.label || 'Link')}</a>`;
+      const external = /^https?:\/\//i.test(href);
+      return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : external ? 'target="_blank" rel="noopener"' : ''} ${anchor ? `data-link="${esc(anchor)}"` : ''} class="${i === 0 ? 'is-active' : ''}">${esc(n.label || 'Link')}</a>`;
     })
     .join('');
   const nav = $('navLinks');
@@ -220,7 +221,8 @@ function applyContent(ct, s) {
         if (href === '#menu') href = './menu.html';
         else if (href === '#hero') href = './';
         const anchor = href.startsWith('#');
-        return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : 'target="_blank" rel="noopener"'}>${esc(n.label || 'Link')}</a>`;
+        const external = /^https?:\/\//i.test(href);
+        return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : external ? 'target="_blank" rel="noopener"' : ''}>${esc(n.label || 'Link')}</a>`;
       })
       .join('');
     fNav.querySelectorAll('a').forEach((a) => {
