@@ -28,7 +28,8 @@ const mapProduct = (p) => ({
   name_ar: p.name_ar ?? '',
   description: p.description,
   description_ar: p.description_ar ?? '',
-  price: p.price,
+  price: +p.price,
+  prices: p.prices && typeof p.prices === 'object' ? p.prices : null,
   image: p.image,
   badge: p.badge,
   featured: !!p.featured,
@@ -94,7 +95,7 @@ export function getProducts(category = 'all') {
   const join = category && category !== 'all' ? 'categories!inner(name, name_ar, slug)' : 'categories(name, name_ar, slug)';
   let q = supabase
     .from('products')
-    .select(`id, category_id, name, name_ar, description, description_ar, price, image, badge, featured, sort_order, available, ${join}`)
+    .select(`id, category_id, name, name_ar, description, description_ar, price, prices, image, badge, featured, sort_order, available, ${join}`)
     .eq('available', true)
     .order('sort_order', { ascending: true })
     .order('id', { ascending: true });
@@ -107,7 +108,7 @@ export async function getProduct(id) {
     const row = await run(
       supabase
         .from('products')
-        .select('id, category_id, name, name_ar, description, description_ar, price, image, badge, featured, sort_order, available, categories(name, name_ar, slug)')
+        .select('id, category_id, name, name_ar, description, description_ar, price, prices, image, badge, featured, sort_order, available, categories(name, name_ar, slug)')
         .eq('id', id)
         .eq('available', true)
         .single(),
