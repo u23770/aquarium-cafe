@@ -46,6 +46,15 @@ export const dictionary = {
     'tk.editUnavailable': 'This order can no longer be edited.',
     'tk.editEmpty': 'Keep at least one item in the order.',
 
+    /* ---- app shell ---- */
+    'appNav.home': 'Home',
+    'appNav.menu': 'Menu',
+    'appNav.cart': 'Cart',
+    'appNav.open': 'Open daily',
+    'appNav.openMenu': 'Open menu',
+    'appNav.whatsapp': 'WhatsApp',
+    'appNav.location': 'Location',
+
     /* ---- hero (static chrome only; texts come from the CMS) ---- */
     'hero.scroll': 'Scroll down',
     'hero.statRating': 'Google rating · 800+ reviews',
@@ -97,6 +106,8 @@ export const dictionary = {
 
     /* ---- cart drawer ---- */
     'cart.title': 'Your Order',
+    'cart.pageEyebrow': '— Your Order —',
+    'cart.pageTitle': 'Your cart',
     'cart.close': 'Close cart',
     'cart.emptyTitle': 'Your cart is empty',
     'cart.emptySub': 'Something from the sea? A smoothie? Add it from the menu.',
@@ -384,6 +395,15 @@ export const dictionary = {
     'tk.editUnavailable': 'لم يعد من الممكن تعديل هذا الطلب.',
     'tk.editEmpty': 'يجب أن يبقى عنصر واحد على الأقل في الطلب.',
 
+    /* ---- app shell ---- */
+    'appNav.home': 'الرئيسية',
+    'appNav.menu': 'المنيو',
+    'appNav.cart': 'السلة',
+    'appNav.open': 'مفتوح يوميًا',
+    'appNav.openMenu': 'افتح المنيو',
+    'appNav.whatsapp': 'واتساب',
+    'appNav.location': 'الموقع',
+
     /* ---- hero ---- */
     'hero.scroll': 'انزل لتحت',
     'hero.statRating': 'تقييم جوجل · أكثر من ٨٠٠ مراجعة',
@@ -435,6 +455,8 @@ export const dictionary = {
 
     /* ---- cart drawer ---- */
     'cart.title': 'طلبك',
+    'cart.pageEyebrow': '— طلبك —',
+    'cart.pageTitle': 'السلة',
     'cart.close': 'اقفل السلة',
     'cart.emptyTitle': 'سلتك فاضية',
     'cart.emptySub': 'حاجة من البحر؟ سموزي؟ ضيفها من المنيو.',
