@@ -85,6 +85,7 @@ function removeItem(id) {
   cart = cart.filter((i) => i.id !== id);
   persist();
   renderCart();
+  renderCartPage();
   renderBadge();
   if (item) toast(t('msg.removed', { name: itemName(item) }));
 }
@@ -108,8 +109,10 @@ function closeCart() {
 
 function renderBadge(bump = false) {
   const n = cartCount();
-  els.count.textContent = n;
-  els.count.classList.toggle('is-zero', n === 0);
+  if (els.count) {
+    els.count.textContent = n;
+    els.count.classList.toggle('is-zero', n === 0);
+  }
   if (bump && n > 0) {
     els.btn.classList.remove('bump');
     void els.btn.offsetWidth; // restart animation
