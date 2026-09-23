@@ -14,6 +14,7 @@ const MAX_QTY = 20;
 
 let cart = loadCart();
 let els = null;
+let pageEls = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -55,6 +56,7 @@ export function addToCart(product, qty = 1) {
   }
   persist();
   renderCart();
+  renderCartPage();
   renderBadge(true);
   toast(t('msg.added', { name: itemName(cart.find((i) => i.id === product.id) || { name: product.name }) }));
 }
@@ -74,6 +76,7 @@ function changeQty(id, delta) {
   item.qty = Math.min(MAX_QTY, Math.max(1, item.qty + delta));
   persist();
   renderCart();
+  renderCartPage();
   renderBadge();
 }
 
@@ -90,6 +93,7 @@ function clearCart() {
   cart = [];
   persist();
   renderCart();
+  renderCartPage();
   renderBadge();
 }
 
@@ -160,6 +164,18 @@ function renderCart() {
   els.checkout.disabled = !cart.length;
 }
 
+function renderCartPage() {
+  if (!pageEls) return;
+  pageEls.total.textContent = money(cartTotal());
+  pageEls.checkout.disabled = !cart.length;
+  if (!cart.length) {
+    pageEls.empty.hidden = false;
+    pageEls.items.innerHTML = '<div class="app-cart-empty"><svg class="icon"><use href="#i-fish"/></svg><strong>' + esc(t('cart.emptyTitle')) + '</strong><small>' + esc(t('cart.emptySub')) + '</small><button type="button" class="btn btn--ghost" data-app-view="menu">' + esc(t('cart.browse')) + ' <svg class="icon" data-flip-rtl><use href="#i-arrow"/></svg></button></div>';
+    return;
+  }
+  pageEls.empty.hidden = true;
+  pageEls.items.innerHTML = cart.map((i) => '<article class="app-cart-item ci" data-id="' + i.id + '"><img class="ci__img" src="' + esc(i.image || 'images/placeholder.svg') + '" alt="' + esc(itemName(i)) + '" loading="lazy" onerror="this.onerror=null;this.src=\'images/placeholder.svg\'"><div class="ci__meta"><b>' + esc(itemName(i)) + '</b><span>' + money(i.price) + '</span></div><div class="ci__qty"><button type="button" data-dec aria-label="' + esc(t('cart.decrease')) + '"><svg class="icon"><use href="#i-minus"/></svg></button><b>' + i.qty + '</b><button type="button" data-inc aria-label="' + esc(t('cart.increase')) + '"><svg class="icon"><use href="#i-plus"/></svg></button></div><strong class="ci__line">' + money(i.price * i.qty) + '</strong><button type="button" class="ci__rm" data-remove aria-label="' + esc(t('cart.remove', { name: itemName(i) })) + '"><svg class="icon"><use href="#i-trash"/></svg></button></article>').join('');
+}
 function onItemsClick(e) {
   const btn = e.target.closest('button');
   const row = e.target.closest('.ci');
@@ -197,22 +213,24 @@ export function initCart() {
     headCount: $('cartHeadCount'),
     checkout: $('checkoutBtn'),
   };
-  if (!els.btn) return;
+  pageEls = { items: $('cartPageItems'), empty: $('cartPageEmpty'), total: $('cartPageTotal'), checkout: $('cartPageCheckout') };
 
-  els.btn.addEventListener('click', openCart);
-  els.close.addEventListener('click', closeCart);
-  els.overlay.addEventListener('click', closeCart);
+  if (els.btn) els.btn.addEventListener('click', openCart);
+  els.close?.addEventListener('click', closeCart);
+  els.overlay?.addEventListener('click', closeCart);
   // Ensure the overlay hides whenever the drawer layer closes (ESC, etc.)
-  els.drawer.addEventListener('layer:close', () => els.overlay.classList.remove('show'));
+  els.drawer?.addEventListener('layer:close', () => els.overlay?.classList.remove('show'));
 
-  els.items.addEventListener('click', onItemsClick);
-  els.checkout.addEventListener('click', openCheckout);
+  els.items?.addEventListener('click', onItemsClick);
+  els.checkout?.addEventListener('click', openCheckout);
+  pageEls.items?.addEventListener('click', onItemsClick);
+  pageEls.checkout?.addEventListener('click', openCheckout);
 
   // delivery.js broadcasts this once the courier order is accepted by the server
   document.addEventListener('delivery:placed', clearCart);
 
   // language switch → item names & labels re-render
-  document.addEventListener('lang:changed', () => { renderCart(); renderBadge(); });
+  document.addEventListener('lang:changed', () => { renderCart(); renderCartPage(); renderBadge(); });
 
   renderCart();
   renderBadge();
