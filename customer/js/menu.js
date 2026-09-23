@@ -400,7 +400,28 @@ function initQueryCategory() {
 }
 
 export async function initMenu() {
-  if (!els) return;
+  loadPremiumDesign();
+
+  els = {
+    bar: $('categoryBar'),
+    grid: $('productGrid'),
+    search: $('menuSearch'),
+    sort: $('menuSort'),
+    modal: $('productModal'),
+    img: $('pmImg'),
+    badge: $('pmBadge'),
+    cat: $('pmCat'),
+    name: $('pmName'),
+    desc: $('pmDesc'),
+    price: $('pmPrice'),
+    qtyVal: $('pmQtyVal'),
+    minus: $('pmMinus'),
+    plus: $('pmPlus'),
+    add: $('pmAdd'),
+    addTotal: $('pmAddTotal'),
+    variants: $('pmVariants'),
+    additions: $('pmAdditions'),
+  };
   loadPremiumDesign();
   renderSkeletons();
 
