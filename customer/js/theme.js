@@ -247,13 +247,19 @@ function applyContent(ct, s) {
     $('heroBtnText').textContent = h.buttonText || 'Explore';
     const link = String(h.buttonLink || '#menu');
     heroBtn.setAttribute('href', link);
+    const external = /^https?:\/\//i.test(link);
     if (link.startsWith('#')) {
       heroBtn.setAttribute('data-scroll', '');
       heroBtn.removeAttribute('target');
-    } else {
+      heroBtn.removeAttribute('rel');
+    } else if (external) {
       heroBtn.removeAttribute('data-scroll');
       heroBtn.setAttribute('target', '_blank');
       heroBtn.setAttribute('rel', 'noopener');
+    } else {
+      heroBtn.removeAttribute('data-scroll');
+      heroBtn.removeAttribute('target');
+      heroBtn.removeAttribute('rel');
     }
   }
   const heroBg = $('heroBg');
