@@ -110,15 +110,55 @@
 
   <header class="nav" id="nav" data-responsive>
     <a href="#hero" class="brand" data-scroll aria-label="Restaurant home" data-i18n-aria="nav.brandHome"><span class="brand__mark"><svg class="icon"><use href="#i-fish"/></svg></span><span class="brand__text" data-brand-name>AQUARIUM<small data-brand-sub>CAFÉ &amp; RESTAURANT</small></span></a>
-    <nav class="nav__links" id="navLinks" aria-label="Main navigation"><a href="#hero" data-scroll data-link="hero" class="is-active" data-i18n-nav="nav.home">Home</a><a href="#menu" data-scroll data-link="menu" data-i18n-nav="nav.menu">Menu</a><a href="#contact" data-scroll data-link="contact" data-i18n-nav="nav.contact">Contact</a></nav>
-    <div class="nav__actions"><button class="lang-btn install-btn" id="installBtn" hidden data-i18n-aria="nav.install" title="Click to install"><svg class="icon"><use href="#i-download"/></svg><span data-i18n="nav.install">Click to install</span></button><button class="lang-btn" id="langBtn" aria-label="التبديل إلى العربية" data-i18n-aria="nav.lang" title="Language"><svg class="icon"><use href="#i-globe"/></svg><span id="langBtnLabel">ع</span></button><button class="icon-btn auth-btn" id="authBtn" aria-label="Sign in"><svg class="icon"><use href="#i-user"/></svg><span class="auth-btn__label" id="authBtnLabel" data-i18n="nav.signin">Sign in</span></button><button class="icon-btn" id="cartBtn" aria-label="Open your cart" data-i18n-aria="nav.cart"><svg class="icon"><use href="#i-bag"/></svg><span class="icon-btn__badge is-zero" id="cartCount">0</span></button><button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" data-i18n-aria="nav.burger"><span></span><span></span><span></span></button></div>
+    <nav class="nav__links" id="navLinks" aria-label="Secondary navigation"></nav>
+    <div class="nav__actions">
+      <button class="lang-btn" id="langBtn" aria-label="التبديل إلى العربية" data-i18n-aria="nav.lang" title="Language"><svg class="icon"><use href="#i-globe"/></svg><span id="langBtnLabel">ع</span></button>
+      <button class="icon-btn auth-btn" id="authBtn" aria-label="Sign in"><svg class="icon"><use href="#i-user"/></svg><span class="auth-btn__label" id="authBtnLabel" data-i18n="nav.signin">Sign in</span></button>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" data-i18n-aria="nav.burger"><span></span><span></span><span></span></button>
+    </div>
   </header>
+  <nav class="app-bottom-nav" id="appBottomNav" aria-label="Primary navigation">
+    <button type="button" class="app-bottom-nav__item is-active" data-app-view="home" aria-current="page">
+      <svg class="icon"><use href="#i-store"/></svg><span data-i18n="appNav.home">Home</span>
+    </button>
+    <button type="button" class="app-bottom-nav__item" data-app-view="menu">
+      <svg class="icon"><use href="#i-cup"/></svg><span data-i18n="appNav.menu">Menu</span>
+    </button>
+    <button type="button" class="app-bottom-nav__item app-bottom-nav__cart" data-app-view="cart">
+      <span class="app-bottom-nav__icon"><svg class="icon"><use href="#i-bag"/></svg><span class="icon-btn__badge is-zero" id="cartCount">0</span></span>
+      <span data-i18n="appNav.cart">Cart</span>
+    </button>
+  </nav>
 
   <main id="pageMain">
     <section class="hero" id="hero" data-section="hero">
       <div class="hero__bg" id="heroBg" aria-hidden="true"></div><div class="hero__overlay" id="heroOverlay" aria-hidden="true"></div><div class="hero__bubbles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="container hero__inner"><p class="hero__eyebrow reveal" style="--d:.05s"><span class="pulse-dot"></span> <span id="heroSlogan">Sea View · Seafood · Coffee &amp; Shisha</span></p><h1 class="hero__title reveal" id="heroTitle" style="--d:.15s">Dine where the sea meets your table</h1><p class="hero__sub reveal" id="heroSub" style="--d:.3s">Aquarium Cafe &amp; Restaurant in Hurghada — fresh seafood, pizza, creamy smoothies and coffee on the waterfront, behind the General Hospital. Home delivery available across Hurghada.</p><div class="hero__cta reveal" style="--d:.45s"><a href="#menu" class="btn btn--primary" id="heroBtn" data-scroll><span id="heroBtnText">Explore the menu</span> <svg class="icon" data-flip-rtl><use href="#i-arrow"/></svg></a></div><div class="hero__stats reveal" style="--d:.6s"><div class="stat"><strong>4.2 <svg class="icon icon--star"><use href="#i-star"/></svg></strong><span data-i18n="hero.statRating">Google rating</span></div><div class="stat"><strong id="statItems">70+</strong><span data-i18n="hero.statItems">Menu items</span></div><div class="stat"><strong><span data-i18n="hero.statOpen">Open daily</span></strong><span data-i18n="hero.statHours">8 AM – 2 AM</span></div></div></div>
       <a class="hero__scroll" href="#menu" data-scroll aria-label="Scroll down" data-i18n-aria="hero.scroll"><span class="mouse"><span class="wheel"></span></span><span class="hero__scroll-text" data-i18n="hero.scroll">scroll</span></a>
+    </section>
+
+    <section class="home-info" id="homeInfo" aria-labelledby="homeInfoTitle">
+      <div class="container">
+        <div class="home-info__card">
+          <div class="home-info__brand">
+            <div class="home-info__logo brand__mark" id="homeInfoLogo"><svg class="icon"><use href="#i-fish"/></svg></div>
+            <div class="home-info__identity">
+              <h2 id="homeInfoTitle" data-brand-name>AQUARIUM CAFE &amp; RESTAURANT</h2>
+              <p id="homeInfoAddress">—</p>
+            </div>
+            <span class="home-info__status"><i></i><span data-i18n="appNav.open">Open daily</span></span>
+          </div>
+          <div class="home-info__facts">
+            <div><svg class="icon"><use href="#i-clock"/></svg><span id="homeInfoHours">—</span></div>
+            <div><svg class="icon"><use href="#i-phone"/></svg><span id="homeInfoPhone">—</span></div>
+          </div>
+          <div class="home-info__actions">
+            <button type="button" class="btn btn--primary" data-app-view="menu"><span data-i18n="appNav.openMenu">Open menu</span><svg class="icon" data-flip-rtl><use href="#i-arrow"/></svg></button>
+            <a class="btn btn--ghost is-hidden" id="homeInfoWhatsApp" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-wa"/></svg><span data-i18n="appNav.whatsapp">WhatsApp</span></a>
+            <a class="btn btn--ghost is-hidden" id="homeInfoMaps" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-pin"/></svg><span data-i18n="appNav.location">Location</span></a>
+          </div>
+        </div>
+      </div>
     </section>
 
     <div class="marquee" id="highlights" data-section="highlights" aria-hidden="true"><div class="marquee__track" id="highlightsTrack"><span>Sea View Terrace</span><i>✦</i><span>Fresh Seafood</span><i>✦</i><span>Shisha Lounge</span><i>✦</i><span>Fresh Juices &amp; Smoothies</span><i>✦</i><span>Family Friendly</span><i>✦</i><span>Sea View Terrace</span><i>✦</i><span>Fresh Seafood</span><i>✦</i><span>Shisha Lounge</span><i>✦</i><span>Fresh Juices &amp; Smoothies</span><i>✦</i><span>Family Friendly</span><i>✦</i></div></div>
@@ -129,6 +169,22 @@
     <section class="section reviews" id="reviews" data-section="reviews"><div class="container"><div class="section__head reveal"><p class="section__eyebrow" data-i18n="rv.eyebrow">— Guest Book —</p><h2 class="section__title" data-i18n-html="rv.titleHtml">What our <em>guests say</em></h2><p class="section__sub" data-i18n-html="rv.subHtml">Hear directly from our guests — new reviews are added after their visits.</p></div><div class="reviews__grid reveal" id="reviewsGrid" style="--d:.1s" aria-live="polite"></div><div class="reviews__cta reveal" style="--d:.2s"><button class="btn btn--primary" id="writeReviewBtn" data-open-review><svg class="icon"><use href="#i-star-o"/></svg> <span data-i18n="rv.write">Write a review</span></button><small data-i18n="rv.note">New reviews appear after the team approves them.</small></div></div></section>
     <section class="section contact" id="contact" data-section="contact"><div class="container"><div class="section__head reveal"><p class="section__eyebrow" data-i18n="c.eyebrow">— Find Us —</p><h2 class="section__title" data-i18n-html="c.titleHtml">Come say <em>ahlan</em></h2><p class="section__sub" data-i18n="c.sub">On the corniche behind the General Hospital — walk up the stairs and the sea does the rest.</p></div><div class="contact__grid"><div class="c-card reveal" style="--d:.05s"><span class="c-card__icon"><svg class="icon"><use href="#i-pin"/></svg></span><h3 data-i18n="c.address">Address</h3><p id="cAddress">Behind the General Hospital, Hurghada</p><p class="dim" data-i18n="c.walkins">Walk-ins always welcome</p></div><div class="c-card reveal" style="--d:.15s"><span class="c-card__icon"><svg class="icon"><use href="#i-phone"/></svg></span><h3 data-i18n="c.contact">Contact</h3><div class="c-rows" id="cPhones"><a href="tel:+201013913636">+20 10 13913636</a></div><p class="c-rows c-rows--mini"><a id="cWaLink" data-social="whatsapp" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-wa"/></svg> <span data-i18n="c.whatsapp">WhatsApp</span></a><a id="cEmailLink" href="mailto:aquariumseaview@gmail.com"><svg class="icon"><use href="#i-mail"/></svg> <span data-i18n="c.email">Email us</span></a></p></div><div class="c-card reveal" style="--d:.25s"><span class="c-card__icon"><svg class="icon"><use href="#i-clock"/></svg></span><h3 data-i18n="c.hours">Working Hours</h3><div class="c-rows" id="cHours"><p>Every day · 8:00 AM – 2:00 AM</p></div></div><div class="c-card reveal" style="--d:.35s"><span class="c-card__icon"><svg class="icon"><use href="#i-star"/></svg></span><h3 data-i18n="c.follow">Follow Us</h3><div class="socials"><a data-social="instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon"><use href="#i-ig"/></svg></a><a data-social="facebook" href="#" target="_blank" rel="noopener" aria-label="Facebook"><svg class="icon"><use href="#i-fb"/></svg></a><a data-social="tiktok" href="#" target="_blank" rel="noopener" aria-label="TikTok"><svg class="icon"><use href="#i-tk"/></svg></a><a data-social="whatsapp" href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-wa"/></svg></a><a data-social="youtube" href="#" target="_blank" rel="noopener" aria-label="YouTube" class="is-hidden"><svg class="icon"><use href="#i-yt"/></svg></a></div><p class="dim" id="cSocialHint" data-i18n="c.socialHint">Daily catch &amp; terrace sunsets</p></div></div><div class="branches reveal" id="cBranches" style="--d:.45s"><h3 class="branches__title"><svg class="icon"><use href="#i-store"/></svg> <span data-i18n="c.branches">Our Branches</span></h3><div class="branches__row" id="cBranchesRow"></div></div><div class="contact__maps reveal" style="--d:.55s"><a id="mapsBtn" class="btn btn--primary" href="https://maps.app.goo.gl/D1q6Viif77U9MWqm8" target="_blank" rel="noopener"><svg class="icon"><use href="#i-pin"/></svg> <span data-i18n="c.maps">Open in Google Maps</span></a><p class="dim" id="cAddress2">Behind the General Hospital, Hurghada</p></div></div></section>
   </main>
+
+  <section class="app-cart-page" id="cartPage" aria-labelledby="cartPageTitle" hidden>
+    <div class="container app-cart-page__inner">
+      <div class="app-page-head">
+        <button type="button" class="app-back" data-app-view="home" aria-label="Back to home"><svg class="icon" data-flip-ltr><use href="#i-arrow"/></svg></button>
+        <div><p class="section__eyebrow" data-i18n="cart.pageEyebrow">— Your Order —</p><h1 id="cartPageTitle" data-i18n="cart.pageTitle">Your cart</h1></div>
+      </div>
+      <div class="app-cart-page__body" id="cartPageItems"></div>
+      <div class="app-cart-page__empty" id="cartPageEmpty" hidden></div>
+      <div class="app-cart-page__summary">
+        <div class="row"><span data-i18n="cart.total">Total</span><strong id="cartPageTotal">EGP 0</strong></div>
+        <p data-i18n="cart.note">Home delivery across Hurghada — pay when it arrives.</p>
+        <button class="btn btn--primary btn--block" id="cartPageCheckout" disabled><span data-i18n="cart.checkout">Checkout</span><svg class="icon" data-flip-rtl><use href="#i-arrow"/></svg></button>
+      </div>
+    </div>
+  </section>
 
   <footer class="footer" id="footer" data-section="footer"><div class="container footer__grid"><div class="footer__col footer__col--brand"><a href="#hero" class="brand" data-scroll><span class="brand__mark"><svg class="icon"><use href="#i-fish"/></svg></span><span class="brand__text" data-brand-name>AQUARIUM<small data-brand-sub>CAFÉ &amp; RESTAURANT</small></span></a><p id="fDescription">Fresh seafood, shisha and slow coffee right on the Hurghada waterfront.</p><div class="socials"><a data-social="instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon"><use href="#i-ig"/></svg></a><a data-social="facebook" href="#" target="_blank" rel="noopener" aria-label="Facebook"><svg class="icon"><use href="#i-fb"/></svg></a><a data-social="tiktok" href="#" target="_blank" rel="noopener" aria-label="TikTok"><svg class="icon"><use href="#i-tk"/></svg></a><a data-social="whatsapp" href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-wa"/></svg></a><a data-social="youtube" href="#" target="_blank" rel="noopener" aria-label="YouTube" class="is-hidden"><svg class="icon"><use href="#i-yt"/></svg></a></div></div><div class="footer__col"><h4 data-i18n="ft.explore">Explore</h4><div class="footer__links" id="fNav"><a href="#hero" data-scroll data-i18n-nav="nav.home" data-db-label="Home">Home</a><a href="#menu" data-scroll data-i18n-nav="nav.menu" data-db-label="Digital Menu">Digital Menu</a><a href="#gallery" data-scroll data-i18n-nav="nav.gallery" data-db-label="Gallery">Gallery</a><a href="#contact" data-scroll data-i18n-nav="nav.contact" data-db-label="Contact &amp; Location">Contact &amp; Location</a></div></div><div class="footer__col"><h4 data-i18n="ft.hours">Working Hours</h4><div class="footer__hours" id="fHours"><p>Every day · 8:00 AM – 2:00 AM</p></div></div><div class="footer__col"><h4 data-i18n="ft.contact">Contact</h4><p id="fAddress">Behind the General Hospital, Hurghada</p><div id="fPhones"><a href="tel:+201013913636">+20 10 13913636</a></div></div></div><div class="footer__bar"><p id="fCopyright">© <span id="year">2026</span> Aquarium Cafe &amp; Restaurant — on the Hurghada corniche.</p><p class="footer__legal"><a href="./privacy-policy.html">Privacy Policy</a> · <a href="./terms.html">Terms &amp; Conditions</a></p></div></footer>
 
