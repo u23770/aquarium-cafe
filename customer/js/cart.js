@@ -107,9 +107,15 @@ function closeCart() {
 
 function renderBadge(bump = false) {
   const n = cartCount();
-  els.count.textContent = n;
-  els.count.classList.toggle('is-zero', n === 0);
-  if (bump && n > 0) {
+  document.querySelectorAll('[data-cart-count]').forEach((el) => {
+    el.textContent = n;
+    el.classList.toggle('is-zero', n === 0);
+  });
+  if (els.count) {
+    els.count.textContent = n;
+    els.count.classList.toggle('is-zero', n === 0);
+  }
+  if (bump && n > 0 && els.btn) {
     els.btn.classList.remove('bump');
     void els.btn.offsetWidth; // restart animation
     els.btn.classList.add('bump');
