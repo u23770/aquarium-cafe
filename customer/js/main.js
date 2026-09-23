@@ -8,7 +8,7 @@ import { initI18n, toggleLang, langSwitchLabel, t, applyI18n } from '../shared/i
 import { dictionary } from './lang.js';
 import { initAppearance, PREVIEW, applyNavLang } from './theme.js';
 import { initAuth } from './auth.js';
-import { initMenu } from './menu.js';
+import { initMenu, initHomeCategories } from './menu.js';
 import { initCart } from './cart.js';
 import { initDelivery } from './delivery.js';
 import { initGallery } from './gallery.js';
@@ -200,7 +200,8 @@ initSpy();
 initAuth();
 initCart();
 initDelivery();
-initMenu();
+if ($('productGrid')) initMenu();
+initHomeCategories();
 initGallery();
 initReviews();
 initReveals();
