@@ -386,6 +386,7 @@ function addConfiguredProduct() {
   const selected = modalVariant || { productId: modalProduct.id, price: modalProduct.price };
   addToCart(modalProduct, modalQty, {
     variantProduct: products.find((p) => p.id === selected.productId) || selected,
+    variant: selected.key || '',
     additions: selectedAdditions(),
   });
   closeLayer(els.modal);
