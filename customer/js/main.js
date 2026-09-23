@@ -81,6 +81,49 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
 const NAV_OFFSET = 66;
+const APP_VIEWS = ['home', 'menu', 'cart'];
+let currentAppView = 'home';
+
+function normalizeAppView(view) {
+  return APP_VIEWS.includes(view) ? view : 'home';
+}
+
+function syncAppViewUI(view) {
+  currentAppView = normalizeAppView(view);
+  document.body.dataset.appView = currentAppView;
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  document.querySelectorAll('[data-app-view]').forEach((el) => {
+    const active = el.dataset.appView === currentAppView;
+    el.classList.toggle('is-active', active);
+    if (active && el.matches('button')) el.setAttribute('aria-current', 'page');
+    else el.removeAttribute('aria-current');
+  });
+  const page = $('cartPage');
+  if (page) page.hidden = currentAppView !== 'cart';
+  document.dispatchEvent(new CustomEvent('app:view', { detail: { view: currentAppView } }));
+}
+
+function setAppView(view, { replace = false } = {}) {
+  const next = normalizeAppView(view);
+  const hash = next === 'home' ? '#home' : '#' + next;
+  if (location.hash !== hash) {
+    if (replace) history.replaceState({ appView: next }, '', hash);
+    else history.pushState({ appView: next }, '', hash);
+  }
+  syncAppViewUI(next);
+}
+
+function bootAppView() {
+  const raw = location.hash.replace('#', '').toLowerCase();
+  setAppView(raw === 'menu' ? 'menu' : raw === 'cart' ? 'cart' : 'home', { replace: true });
+  const syncFromHash = () => {
+    const next = location.hash.replace('#', '').toLowerCase();
+    syncAppViewUI(next === 'menu' ? 'menu' : next === 'cart' ? 'cart' : 'home');
+  };
+  window.addEventListener('popstate', syncFromHash);
+  window.addEventListener('hashchange', syncFromHash);
+}
+
 
 /* ---------- language: boot BEFORE anything renders ---------- */
 initI18n({ dictionary, defaultLang: 'en' });
@@ -135,9 +178,27 @@ $('burger').addEventListener('click', () => {
 
 /* ---------- smooth scroll with nav offset ---------- */
 document.addEventListener('click', (e) => {
+  const viewLink = e.target.closest('[data-app-view]');
+  if (viewLink) {
+    e.preventDefault();
+    nav.classList.remove('open');
+    $('burger').setAttribute('aria-expanded', 'false');
+    setAppView(viewLink.dataset.appView);
+    return;
+  }
   const link = e.target.closest('[data-scroll]');
   if (!link) return;
   const hash = link.getAttribute('href');
+  if (hash === '#menu') {
+    e.preventDefault();
+    setAppView('menu');
+    return;
+  }
+  if (hash === '#hero') {
+    e.preventDefault();
+    setAppView('home');
+    return;
+  }
   const target = hash && hash.startsWith('#') && document.querySelector(hash);
   if (!target) return;
   e.preventDefault();
@@ -193,6 +254,9 @@ document.addEventListener('keydown', (e) => {
 
 /* ---------- footer year ---------- */
 $('year').textContent = new Date().getFullYear();
+
+/* ---------- app shell ---------- */
+bootAppView();
 
 /* ---------- boot ---------- */
 initAppearance();
