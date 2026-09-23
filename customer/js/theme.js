@@ -355,11 +355,18 @@ function applySections(list) {
   const map = new Map();
   document.querySelectorAll('[data-section]').forEach((el) => map.set(el.dataset.section, el));
 
-  // order main-page sections
+  // Reorder only known section nodes, preserving non-section helpers
+  // such as the home quick-order panel in their original position.
+  const sectionNodes = [...main.children].filter((el) => el.dataset.section && map.has(el.dataset.section));
   const ordered = list
     .filter((s) => map.has(s.id) && map.get(s.id).parentElement === main)
-    .sort((a, b) => a.position - b.position);
-  for (const s of ordered) main.appendChild(map.get(s.id));
+    .sort((a, b) => a.position - b.position)
+    .map((s) => map.get(s.id));
+
+  ordered.forEach((node, i) => {
+    const reference = sectionNodes[i] || null;
+    if (node !== reference) main.insertBefore(node, reference);
+  });
 
   // visibility everywhere (main sections + footer)
   for (const s of list) {
