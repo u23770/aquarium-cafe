@@ -10,6 +10,9 @@ export const dictionary = {
   /* ════════════════════ ENGLISH ════════════════════ */
   en: {
     /* ---- nav / chrome ---- */
+    'appNav.home': 'Home',
+    'appNav.menu': 'Menu',
+    'appNav.cart': 'Cart',
     'nav.home': 'Home',
     'nav.menu': 'Menu',
     'nav.gallery': 'Gallery',
@@ -348,7 +351,10 @@ export const dictionary = {
   /* ════════════════════ ARABIC ════════════════════ */
   ar: {
     /* ---- nav / chrome ---- */
-    'nav.home': 'الرئيسية',
+        'appNav.home': 'الرئيسية',
+    'appNav.menu': 'المنيو',
+    'appNav.cart': 'السلة',
+'nav.home': 'الرئيسية',
     'nav.menu': 'المنيو',
     'nav.gallery': 'المعرض',
     'nav.about': 'من نحن',
