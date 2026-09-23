@@ -271,6 +271,41 @@ function applyContent(ct, s) {
     if (ai && ct.about.imageUrl) ai.src = resolveSrc(ct.about.imageUrl);
   }
 
+  /* --- app-shell home card (reuses existing appearance data) --- */
+  const homeName = $('homeInfoTitle');
+  if (homeName) homeName.textContent = s.cafeName || 'Aquarium Cafe & Restaurant';
+  const homeAddress = $('homeInfoAddress');
+  if (homeAddress) homeAddress.textContent = ct.contact?.address || '';
+  const homeHours = $('homeInfoHours');
+  if (homeHours) {
+    const firstHour = Array.isArray(ct.hours) && ct.hours.length ? ct.hours[0] : null;
+    homeHours.textContent = firstHour ? ((firstHour.days || '') + ' · ' + (firstHour.time || '')) : '';
+  }
+  const homePhone = $('homeInfoPhone');
+  if (homePhone) {
+    const p = Array.isArray(ct.contact?.phones) ? ct.contact.phones.filter(Boolean)[0] : '';
+    homePhone.textContent = p || '';
+  }
+  const homeLogo = $('homeInfoLogo');
+  if (homeLogo) {
+    if (s.logoUrl) {
+      homeLogo.classList.add('has-logo');
+      homeLogo.innerHTML = '<img class="brand__logo-img" src="' + esc(resolveSrc(s.logoUrl)) + '" alt="' + esc(s.cafeName || 'Restaurant') + ' logo">';
+    } else {
+      homeLogo.classList.remove('has-logo');
+      homeLogo.innerHTML = '<svg class="icon"><use href="#i-leaf"/></svg>';
+    }
+  }
+  const homeWa = $('homeInfoWhatsApp');
+  if (homeWa) {
+    if (ct.contact?.whatsapp) { homeWa.href = ct.contact.whatsapp; homeWa.classList.remove('is-hidden'); }
+    else homeWa.classList.add('is-hidden');
+  }
+  const homeMaps = $('homeInfoMaps');
+  if (homeMaps) {
+    if (ct.contact?.mapsUrl) { homeMaps.href = ct.contact.mapsUrl; homeMaps.classList.remove('is-hidden'); }
+    else homeMaps.classList.add('is-hidden');
+  }
   /* --- contact --- */
   const k = ct.contact || {};
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
