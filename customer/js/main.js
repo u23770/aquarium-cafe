@@ -200,7 +200,7 @@ initSpy();
 initAuth();
 initCart();
 initDelivery();
-if ($('productGrid')) initMenu();
+if (document.body.classList.contains('page-menu') && $('productGrid')) initMenu();
 initHomeCategories();
 initGallery();
 initReviews();
