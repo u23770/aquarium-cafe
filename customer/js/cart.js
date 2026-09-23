@@ -14,6 +14,7 @@ const MAX_QTY = 20;
 
 let cart = loadCart();
 let els = null;
+let pageMode = false;
 
 const $ = (id) => document.getElementById(id);
 
@@ -95,10 +96,12 @@ function clearCart() {
 
 /* ---------- drawer ---------- */
 function openCart() {
+  if (pageMode) return;
   els.overlay.classList.add('show');
   openLayer(els.drawer);
 }
 function closeCart() {
+  if (pageMode) return;
   closeLayer(els.drawer);
 }
 
@@ -115,51 +118,44 @@ function renderBadge(bump = false) {
 
 function renderCart() {
   const n = cartCount();
-  els.headCount.textContent = n ? t(n > 1 ? 'cart.itemCountPlural' : 'cart.itemCount', { n }) : '';
+  const targetItems = pageMode ? els.pageItems : els.items;
+  const targetTotal = pageMode ? els.pageTotal : els.total;
+  const targetCheckout = pageMode ? els.pageCheckout : els.checkout;
+  if (!targetItems || !targetTotal || !targetCheckout) return;
+
+  if (els.headCount) els.headCount.textContent = n ? t(n > 1 ? 'cart.itemCountPlural' : 'cart.itemCount', { n }) : '';
 
   if (!cart.length) {
-    els.items.innerHTML = `
-      <div class="drawer__empty">
-        <svg class="icon"><use href="#i-fish"/></svg>
-        <strong>${esc(t('cart.emptyTitle'))}</strong>
-        <small>${esc(t('cart.emptySub'))}</small>
-        <button class="btn btn--ghost js-browse">
-          ${esc(t('cart.browse'))} <svg class="icon"><use href="#i-arrow"/></svg>
-        </button>
-      </div>`;
-    els.items.querySelector('.js-browse').addEventListener('click', () => {
-      closeCart();
-      document.querySelector('#menu')?.scrollIntoView({ behavior: 'smooth' });
-    });
+    targetItems.innerHTML = pageMode
+      ? `<div class="customer-cart-empty">
+          <svg class="icon"><use href="#i-fish"/></svg>
+          <strong>${esc(t('cart.emptyTitle'))}</strong>
+          <small>${esc(t('cart.emptySub'))}</small>
+          <a class="btn btn--ghost" href="./menu.html">${esc(t('cart.browse'))} <svg class="icon" data-flip-rtl><use href="#i-arrow"/></svg></a>
+        </div>`
+      : `<div class="drawer__empty">
+          <svg class="icon"><use href="#i-fish"/></svg>
+          <strong>${esc(t('cart.emptyTitle'))}</strong>
+          <small>${esc(t('cart.emptySub'))}</small>
+          <a class="btn btn--ghost" href="./menu.html">${esc(t('cart.browse'))} <svg class="icon"><use href="#i-arrow"/></svg></a>
+        </div>`;
   } else {
-    els.items.innerHTML = cart
-      .map(
-        (i) => `
+    targetItems.innerHTML = cart.map((i) => `
       <div class="ci" data-id="${i.id}">
-        <img class="ci__img" src="${esc(i.image || 'images/placeholder.svg')}" alt="${esc(itemName(i))}"
-             loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-        <div class="ci__meta">
-          <b>${esc(itemName(i))}</b>
-          <span>${money(i.price)}</span>
-        </div>
+        <img class="ci__img" src="${esc(i.image || 'images/placeholder.svg')}" alt="${esc(itemName(i))}" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+        <div class="ci__meta"><b>${esc(itemName(i))}</b><span>${money(i.price)}</span></div>
         <div class="ci__qty">
-          <button data-dec aria-label="${esc(t('cart.decrease'))}"><svg class="icon"><use href="#i-minus"/></svg></button>
+          <button type="button" data-dec aria-label="${esc(t('cart.decrease'))}"><svg class="icon"><use href="#i-minus"/></svg></button>
           <b>${i.qty}</b>
-          <button data-inc aria-label="${esc(t('cart.increase'))}"><svg class="icon"><use href="#i-plus"/></svg></button>
+          <button type="button" data-inc aria-label="${esc(t('cart.increase'))}"><svg class="icon"><use href="#i-plus"/></svg></button>
         </div>
         <strong class="ci__line">${money(i.price * i.qty)}</strong>
-        <button class="ci__rm" data-remove aria-label="${esc(t('cart.remove', { name: itemName(i) }))}">
-          <svg class="icon"><use href="#i-trash"/></svg>
-        </button>
-      </div>`
-      )
-      .join('');
+        <button type="button" class="ci__rm" data-remove aria-label="${esc(t('cart.remove', { name: itemName(i) }))}"><svg class="icon"><use href="#i-trash"/></svg></button>
+      </div>`).join('');
   }
-
-  els.total.textContent = money(cartTotal());
-  els.checkout.disabled = !cart.length;
+  targetTotal.textContent = money(cartTotal());
+  targetCheckout.disabled = !cart.length;
 }
-
 function onItemsClick(e) {
   const btn = e.target.closest('button');
   const row = e.target.closest('.ci');
@@ -196,17 +192,22 @@ export function initCart() {
     total: $('cartTotal'),
     headCount: $('cartHeadCount'),
     checkout: $('checkoutBtn'),
+    pageItems: $('cartPageItems'),
+    pageTotal: $('cartPageTotal'),
+    pageCheckout: $('cartPageCheckout'),
   };
-  if (!els.btn) return;
+  pageMode = !!els.pageItems;
 
-  els.btn.addEventListener('click', openCart);
-  els.close.addEventListener('click', closeCart);
-  els.overlay.addEventListener('click', closeCart);
+  if (els.btn) els.btn.addEventListener('click', openCart);
+  els.close?.addEventListener('click', closeCart);
+  els.overlay?.addEventListener('click', closeCart);
   // Ensure the overlay hides whenever the drawer layer closes (ESC, etc.)
-  els.drawer.addEventListener('layer:close', () => els.overlay.classList.remove('show'));
+  els.drawer?.addEventListener('layer:close', () => els.overlay?.classList.remove('show'));
 
-  els.items.addEventListener('click', onItemsClick);
-  els.checkout.addEventListener('click', openCheckout);
+  els.items?.addEventListener('click', onItemsClick);
+  els.pageItems?.addEventListener('click', onItemsClick);
+  els.checkout?.addEventListener('click', openCheckout);
+  els.pageCheckout?.addEventListener('click', openCheckout);
 
   // delivery.js broadcasts this once the courier order is accepted by the server
   document.addEventListener('delivery:placed', clearCart);
