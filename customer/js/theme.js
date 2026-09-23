@@ -360,6 +360,13 @@ function applyContent(ct, s) {
 /* ═══════════════ 4 · sections (order & visibility) ═══════════════ */
 function applySections(list) {
   const main = $('pageMain');
+  // The dedicated menu page has its own URL and layout. Do not let the
+  // homepage section manager hide/reorder its menu section.
+  if (document.body.classList.contains('page-menu')) {
+    const menu = $('menu');
+    if (menu) menu.hidden = false;
+    return;
+  }
   const map = new Map();
   document.querySelectorAll('[data-section]').forEach((el) => map.set(el.dataset.section, el));
 
