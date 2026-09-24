@@ -42,7 +42,11 @@ let deferredInstallPrompt = null;
 
 const syncInstallButton = () => {
   const b = $('installBtn');
-  if (b) b.hidden = !deferredInstallPrompt;
+  if (b) {
+    b.hidden = false;
+    b.disabled = !deferredInstallPrompt;
+    b.setAttribute('aria-disabled', String(!deferredInstallPrompt));
+  }
 };
 
 window.addEventListener('beforeinstallprompt', (e) => {
