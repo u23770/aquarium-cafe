@@ -1096,7 +1096,17 @@ body[data-card-hover="glow"] .card:hover { box-shadow: 0 0 0 2px var(--c-accent)
     visibility: hidden;
     transition: transform .5s var(--ease), visibility .5s;
   }
-  .nav.open .nav__links { transform: none; visibility: visible; }
+  .nav.open .nav__links {
+    transform: translateY(0);
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav__links {
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
   .nav__links a[data-scroll] { font-size: 1.5rem; font-family: var(--font-head); }
 
   .hero__inner { padding-top: calc(var(--nav-h) + 1.6rem); }
