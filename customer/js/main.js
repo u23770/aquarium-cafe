@@ -128,9 +128,22 @@ window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
 /* ---------- burger / mobile menu ---------- */
-$('burger').addEventListener('click', () => {
-  const open = nav.classList.toggle('open');
-  $('burger').setAttribute('aria-expanded', String(open));
+document.addEventListener('click', (e) => {
+  const burger = e.target.closest?.('#burger');
+  if (!burger) return;
+  const header = $('nav');
+  if (!header) return;
+  const open = header.classList.toggle('open');
+  burger.setAttribute('aria-expanded', String(open));
+});
+
+document.addEventListener('click', (e) => {
+  const link = e.target.closest?.('#navLinks a');
+  if (!link) return;
+  const header = $('nav');
+  const burger = $('burger');
+  if (header) header.classList.remove('open');
+  if (burger) burger.setAttribute('aria-expanded', 'false');
 });
 
 /* ---------- smooth scroll with nav offset ---------- */
