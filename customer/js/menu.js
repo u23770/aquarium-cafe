@@ -72,14 +72,18 @@ function groupProducts(raw) {
     const options = rows
       .map((p) => {
         const key = variantKey(p.name);
-        const price = Number(p.price);
+        const rawPrice = Number(p.price);
+        const price = Number.isFinite(rawPrice) ? rawPrice : 0;
         return { key, label: VARIANT_LABELS[key] || key, price, productId: p.id };
       })
       .filter((v) => v.key);
 
     const prices = master.prices && typeof master.prices === 'object' ? master.prices : {};
     for (const option of options) {
-      if (prices[option.key] != null) option.price = Number(prices[option.key]);
+      if (prices[option.key] != null) {
+        const parsed = Number(prices[option.key]);
+        if (Number.isFinite(parsed)) option.price = parsed;
+      }
     }
 
     grouped.push({
@@ -87,7 +91,10 @@ function groupProducts(raw) {
       name: baseName(master.name),
       name_ar: baseName(master.name_ar),
       baseName: baseName(master.name),
-      price: Math.min(...options.map((v) => v.price)),
+      price: (() => {
+        const valid = options.map((v) => Number(v.price)).filter(Number.isFinite);
+        return valid.length ? Math.min(...valid) : 0;
+      })(),
       variantOptions: options,
       hasVariants: options.length > 0,
     });
@@ -181,7 +188,8 @@ function cardHTML(p, i) {
   const name = pname(p);
   const needsCustomization = p.hasVariants || additions.length > 0;
   const prices = p.variantOptions?.map((v) => v.price).filter(Number.isFinite) || [p.price];
-  const minPrice = Math.min(...prices);
+  const validPrices = prices.filter(Number.isFinite);
+  const minPrice = validPrices.length ? Math.min(...validPrices) : 0;
 
   return `
   <article class="card reveal" style="--d:${(i % 8) * 60}ms" data-id="${p.id}" tabindex="0"
@@ -282,8 +290,12 @@ function selectedAdditions() {
 }
 
 function modalUnitPrice() {
-  const base = Number(modalVariant?.price ?? modalProduct?.price ?? 0);
-  const extras = selectedAdditions().reduce((sum, a) => sum + Number(a.price || 0), 0);
+  const rawBase = Number(modalVariant?.price ?? modalProduct?.price ?? 0);
+  const base = Number.isFinite(rawBase) ? rawBase : 0;
+  const extras = selectedAdditions().reduce((sum, a) => {
+    const n = Number(a.price);
+    return sum + (Number.isFinite(n) ? n : 0);
+  }, 0);
   return base + extras;
 }
 
@@ -383,7 +395,7 @@ function onSort(e) {
 
 function addConfiguredProduct() {
   if (!modalProduct) return;
-  const selected = modalVariant || { productId: modalProduct.id, price: modalProduct.price };
+  const selected = modalVariant || { productId: modalProduct.id, price: Number.isFinite(Number(modalProduct.price)) ? Number(modalProduct.price) : 0 };
   addToCart(modalProduct, modalQty, {
     variantProduct: products.find((p) => p.id === selected.productId) || selected,
     variant: selected.key || '',
