@@ -13,6 +13,16 @@ const ADDITIONS_CATEGORY_ID = 4;
 const VARIANT_RE = /\s*\((S|D|T|Q)\)\s*$/i;
 const VARIANT_LABELS = { S: 'S', D: 'D', T: 'T', Q: 'Q' };
 
+function finitePrice(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
+function displayPrice(value) {
+  const n = finitePrice(value);
+  return n == null ? '—' : money(n);
+}
+
 let categories = [];
 let products = [];
 let additions = [];
@@ -72,8 +82,7 @@ function groupProducts(raw) {
     const options = rows
       .map((p) => {
         const key = variantKey(p.name);
-        const rawPrice = Number(p.price);
-        const price = Number.isFinite(rawPrice) ? rawPrice : 0;
+        const price = finitePrice(p.price);
         return { key, label: VARIANT_LABELS[key] || key, price, productId: p.id };
       })
       .filter((v) => v.key);
@@ -81,8 +90,8 @@ function groupProducts(raw) {
     const prices = master.prices && typeof master.prices === 'object' ? master.prices : {};
     for (const option of options) {
       if (prices[option.key] != null) {
-        const parsed = Number(prices[option.key]);
-        if (Number.isFinite(parsed)) option.price = parsed;
+        const parsed = finitePrice(prices[option.key]);
+        if (parsed != null) option.price = parsed;
       }
     }
 
@@ -92,8 +101,8 @@ function groupProducts(raw) {
       name_ar: baseName(master.name_ar),
       baseName: baseName(master.name),
       price: (() => {
-        const valid = options.map((v) => Number(v.price)).filter(Number.isFinite);
-        return valid.length ? Math.min(...valid) : 0;
+        const valid = options.map((v) => finitePrice(v.price)).filter((v) => v != null);
+        return valid.length ? Math.min(...valid) : null;
       })(),
       variantOptions: options,
       hasVariants: options.length > 0,
@@ -187,9 +196,9 @@ function cardHTML(p, i) {
   const fav = favs.has(p.id);
   const name = pname(p);
   const needsCustomization = p.hasVariants || additions.length > 0;
-  const prices = p.variantOptions?.map((v) => v.price).filter(Number.isFinite) || [p.price];
-  const validPrices = prices.filter(Number.isFinite);
-  const minPrice = validPrices.length ? Math.min(...validPrices) : 0;
+  const prices = p.variantOptions?.map((v) => finitePrice(v.price)).filter((v) => v != null) || [finitePrice(p.price)];
+  const validPrices = prices.filter((v) => v != null);
+  const minPrice = validPrices.length ? Math.min(...validPrices) : null;
 
   return `
   <article class="card reveal" style="--d:${(i % 8) * 60}ms" data-id="${p.id}" tabindex="0"
@@ -208,7 +217,7 @@ function cardHTML(p, i) {
       <h3 class="card__name">${esc(name)}</h3>
       <p class="card__desc">${esc(pdesc(p))}</p>
       <div class="card__foot">
-        <span class="card__price">${p.hasVariants ? esc(t('card.from')) + ' ' : ''}${money(minPrice)}</span>
+        <span class="card__price">${p.hasVariants && minPrice != null ? esc(t('card.from')) + ' ' : ''}${displayPrice(minPrice)}</span>
         <button class="card__add ${needsCustomization ? 'card__add--custom' : ''}" data-add="${p.id}" aria-label="${esc(t('card.addAria', { name }))}">
           <svg class="icon"><use href="#i-${needsCustomization ? 'plus' : 'bag'}"/></svg>
         </button>
@@ -290,11 +299,10 @@ function selectedAdditions() {
 }
 
 function modalUnitPrice() {
-  const rawBase = Number(modalVariant?.price ?? modalProduct?.price ?? 0);
-  const base = Number.isFinite(rawBase) ? rawBase : 0;
+  const base = finitePrice(modalVariant?.price ?? modalProduct?.price) ?? 0;
   const extras = selectedAdditions().reduce((sum, a) => {
-    const n = Number(a.price);
-    return sum + (Number.isFinite(n) ? n : 0);
+    const n = finitePrice(a.price);
+    return sum + (n ?? 0);
   }, 0);
   return base + extras;
 }
@@ -395,7 +403,7 @@ function onSort(e) {
 
 function addConfiguredProduct() {
   if (!modalProduct) return;
-  const selected = modalVariant || { productId: modalProduct.id, price: Number.isFinite(Number(modalProduct.price)) ? Number(modalProduct.price) : 0 };
+  const selected = modalVariant || { productId: modalProduct.id, price: finitePrice(modalProduct.price) ?? 0 };
   addToCart(modalProduct, modalQty, {
     variantProduct: products.find((p) => p.id === selected.productId) || selected,
     variant: selected.key || '',
