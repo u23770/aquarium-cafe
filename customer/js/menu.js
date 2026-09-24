@@ -476,8 +476,11 @@ export async function initHomeCategories() {
   const wrap = $('homeCategoryGrid');
   if (!wrap) return;
   try {
-    const cats = await getCategories();
+    const [cats, rawProducts] = await Promise.all([getCategories(), getProducts()]);
     const visible = cats.filter((c) => c.id !== ADDITIONS_CATEGORY_ID).slice(0, 8);
+    const menuCount = groupProducts(rawProducts.filter((p) => p.category_id !== ADDITIONS_CATEGORY_ID)).length;
+    const stat = $('statItems');
+    if (stat) stat.textContent = `${menuCount}+`;
     wrap.innerHTML = visible.map((c) => `
       <a class="home-category-card" href="./menu.html?category=${encodeURIComponent(c.slug)}">
         <span class="home-category-card__icon"><svg class="icon"><use href="#i-cup"/></svg></span>
