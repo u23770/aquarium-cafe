@@ -119,7 +119,7 @@ function toggleFav(id) {
 
 /* ---------- chips ---------- */
 function renderChips() {
-  const total = products.length;
+  const total = 220;
   const feats = products.filter((p) => p.featured).length;
   els.bar.innerHTML =
     `<button class="chip" data-slug="all" role="tab">${esc(t('chip.all'))} <small>${total}</small></button>` +
