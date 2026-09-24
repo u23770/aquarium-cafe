@@ -424,7 +424,7 @@ export async function initMenu() {
 
   els.bar.classList.add('is-sticky');
 
-  els.bar.addEventListener('click', (e) => {
+  els.modal.addEventListener('click', (e) => {
     const size = e.target.closest('[data-size]');
     if (size && modalProduct) { selectedSize = size.dataset.size; paintModal(); return; }
     const extra = e.target.closest('[data-extra-inc], [data-extra-dec]');
