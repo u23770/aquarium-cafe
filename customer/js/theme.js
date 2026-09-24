@@ -245,7 +245,11 @@ function applyContent(ct, s) {
   const heroBtn = $('heroBtn');
   if (heroBtn) {
     $('heroBtnText').textContent = h.buttonText || 'Explore';
-    const link = String(h.buttonLink || '#menu');
+    let link = String(h.buttonLink || '#menu');
+    // The homepage menu is now a dedicated page, so the old #menu anchor
+    // must navigate there instead of trying to scroll to the hidden menu.
+    if (link === '#menu') link = './menu.html';
+    if (link === '#hero') link = './';
     heroBtn.setAttribute('href', link);
     const external = /^https?:\/\//i.test(link);
     if (link.startsWith('#')) {
