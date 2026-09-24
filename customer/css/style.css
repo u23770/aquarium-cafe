@@ -269,7 +269,7 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
 .nav__links a[data-scroll]:hover::after, .nav__links a.is-active::after { right: 0; }
 
 
-.nav__actions { display: flex; align-items: center; gap: .6rem; }
+.nav__actions { display: flex; align-items: center; gap: .6rem; position: relative; z-index: 20; }
 
 .icon-btn {
   position: relative;
@@ -294,7 +294,7 @@ body:not([data-nav-sticky="on"]) .nav.scrolled { position: fixed; }
 .icon-btn.bump { animation: bump .45s var(--spring); }
 @keyframes bump { 30% { transform: scale(1.22) rotate(-6deg); } }
 
-.burger { display: none; width: 42px; height: 42px; position: relative; z-index: 3; }
+.burger { display: none; width: 42px; height: 42px; position: relative; z-index: 30; pointer-events: auto; touch-action: manipulation; }
 .burger span {
   position: absolute; left: 10px; right: 10px; height: 2px;
   border-radius: 2px; background: currentColor;
