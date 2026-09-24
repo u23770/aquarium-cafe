@@ -28,10 +28,10 @@ const mapProduct = (p) => ({
   name_ar: p.name_ar ?? '',
   description: p.description,
   description_ar: p.description_ar ?? '',
-  price: p.price == null || p.price === '' ? null : Number(p.price),
-  prices: p.prices && typeof p.prices === 'object'
-    ? Object.fromEntries(Object.entries(p.prices).map(([k, v]) => [k, v == null || v === '' ? null : Number(v)]))
-    : null,
+  // Keep the exact values coming from Supabase. The basic version uses p.price directly;
+  // do not invent, coerce, or replace missing prices with 0.
+  price: p.price,
+  prices: p.prices ?? null,
   image: p.image,
   badge: p.badge,
   featured: !!p.featured,
