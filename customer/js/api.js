@@ -29,6 +29,7 @@ const mapProduct = (p) => ({
   description: p.description,
   description_ar: p.description_ar ?? '',
   price: p.price,
+  prices: p.prices ?? null,
   image: p.image,
   badge: p.badge,
   featured: !!p.featured,
@@ -100,6 +101,21 @@ export function getProducts(category = 'all') {
     .order('id', { ascending: true });
   if (category && category !== 'all') q = q.eq('categories.slug', category);
   return run(q, OFFLINE).then((rows) => (rows || []).map(mapProduct));
+}
+
+/** Available menu additions (real products from the Additions category). */
+export async function getAdditions() {
+  const rows = await run(
+    supabase
+      .from('products')
+      .select('id, category_id, name, name_ar, description, description_ar, price, image, badge, featured, sort_order, available, categories!inner(name, name_ar, slug)')
+      .eq('available', true)
+      .eq('categories.slug', 'additions')
+      .order('sort_order', { ascending: true })
+      .order('id', { ascending: true }),
+    OFFLINE
+  );
+  return (rows || []).map(mapProduct);
 }
 
 export async function getProduct(id) {
