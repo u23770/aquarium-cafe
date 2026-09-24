@@ -1996,9 +1996,11 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
 }
 
 .nav.open .nav__links {
-  transform: none;
-  visibility: visible;
-  pointer-events: auto;
+  transform: translateY(0) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 110 !important;
 }
 
 .nav__links a[data-scroll] {
