@@ -5,7 +5,7 @@
 //  from the dictionary; product/category names switch with the
 //  language through pickLang().
 // ============================================================
-import { getCategories, getProducts } from './api.js';
+import { getCategories, getProducts, getAdditions } from './api.js';
 import { addToCart } from './cart.js';
 import { money, esc, openLayer, closeLayer, observeReveals, toast } from './ui.js';
 import { t, pickLang, isRTL } from '../shared/i18n.js';
@@ -15,12 +15,15 @@ const FAV_KEY = 'aquarium_favs_v1';
 
 let categories = [];
 let products = [];
+let additions = [];
 let activeSlug = 'all';
 let query = '';
 let sortMode = 'default';
 
 let modalProduct = null;
 let modalQty = 1;
+let selectedSize = null;
+let selectedAdditions = new Map();
 
 let els = null;
 const $ = (id) => document.getElementById(id);
@@ -38,6 +41,59 @@ function loadPremiumDesign() {
 const pname = (p) => pickLang(p, 'name');
 const pdesc = (p) => pickLang(p, 'description');
 const pcat = (p) => (isRTL() && p.category_ar ? p.category_ar : p.category);
+const SIZE_KEYS = ['S', 'D', 'T', 'Q'];
+
+function variantKey(name) {
+  const m = String(name || '').match(/\s*\(([SDTQ])\)\s*$/i);
+  return m ? m[1].toUpperCase() : null;
+}
+
+function baseProductName(name) {
+  return String(name || '').replace(/\s*\(([SDTQ])\)\s*$/i, '').trim();
+}
+
+function groupProducts(raw) {
+  const groups = new Map();
+  for (const p of raw || []) {
+    const key = baseProductName(p.name);
+    const size = variantKey(p.name);
+    if (!size) {
+      groups.set(String(p.id), { ...p, variants: [{ ...p, size: null }] });
+      continue;
+    }
+    const existing = groups.get(key);
+    if (existing) {
+      existing.variants.push({ ...p, size });
+    } else {
+      groups.set(key, { ...p, name: key, variants: [{ ...p, size }] });
+    }
+  }
+  return [...groups.values()].map((p) => {
+    const variants = p.variants.slice().sort((a, b) => {
+      const ai = SIZE_KEYS.indexOf(a.size); const bi = SIZE_KEYS.indexOf(b.size);
+      return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi) || a.id - b.id;
+    });
+    const defaultVariant = variants.find((v) => v.size === 'S') || variants[0];
+    return {
+      ...p,
+      id: defaultVariant.id,
+      price: defaultVariant.price,
+      variants,
+      defaultVariant,
+    };
+  });
+}
+
+function sizeLabel(size) {
+  return ({ S: 'S', D: 'D', T: 'T', Q: 'Q' })[size] || size;
+}
+
+function selectedVariant() {
+  if (!modalProduct) return null;
+  return modalProduct.variants?.find((v) => v.size === selectedSize) || modalProduct.defaultVariant || modalProduct;
+}
+
+
 
 /* ---------- favorites (localStorage) ---------- */
 function loadFavs() {
@@ -249,26 +305,60 @@ function paintModal() {
   const p = modalProduct;
   if (!p) return;
   const name = pname(p);
-  els.img.src = p.image || 'images/placeholder.svg';
+  const variant = selectedVariant();
+  els.img.src = variant?.image || p.image || 'images/placeholder.svg';
   els.img.alt = name;
   els.img.onerror = () => { els.img.onerror = null; els.img.src = 'images/placeholder.svg'; };
   els.cat.textContent = pcat(p) + (p.featured ? ' · ★ ' + t('chip.featured') : '');
   els.name.textContent = name;
   els.desc.textContent = pdesc(p);
-  els.price.textContent = money(p.price);
 
+  const variants = (p.variants || []).filter((v) => v.size);
+  els.sizes.hidden = variants.length < 2;
+  els.sizes.innerHTML = variants.length < 2 ? '' : variants.map((v) =>
+    `<button type="button" class="pm__size ${v.size === selectedSize ? 'is-active' : ''}" data-size="${v.size}">
+      <span>${esc(sizeLabel(v.size))}</span><b>${money(v.price)}</b>
+    </button>`).join('');
+
+  els.additions.innerHTML = additions.length
+    ? additions.map((a) => {
+        const qty = selectedAdditions.get(a.id) || 0;
+        return `<div class="pm__extra" data-extra-id="${a.id}">
+          <div><strong>${esc(pname(a))}</strong><small>${money(a.price)}</small></div>
+          <div class="pm__extra-qty">
+            <button type="button" data-extra-dec aria-label="Decrease">−</button>
+            <b>${qty}</b>
+            <button type="button" data-extra-inc aria-label="Increase">+</button>
+          </div>
+        </div>`;
+      }).join('')
+    : `<p class="pm__extras-empty">${esc(isRTL() ? 'لا توجد إضافات مضافة حالياً.' : 'No additions are configured.')}</p>`;
+
+  els.price.textContent = money(variant?.price ?? p.price);
   if (p.badge) {
     els.badge.textContent = p.badge;
     els.badge.hidden = false;
-  } else {
-    els.badge.hidden = true;
-  }
+  } else els.badge.hidden = true;
+  updateModalTotal();
+}
+
+function updateModalTotal() {
+  const variant = selectedVariant();
+  const base = Number(variant?.price ?? modalProduct?.price ?? 0);
+  const extras = [...selectedAdditions.entries()].reduce((sum, [id, qty]) => {
+    const a = additions.find((x) => x.id === id);
+    return sum + (a ? Number(a.price) * qty : 0);
+  }, 0);
+  els.addTotal.textContent = money((base + extras) * modalQty);
 }
 
 function openProduct(id) {
   const p = products.find((x) => x.id === id);
   if (!p) return;
   modalProduct = p;
+  const variants = p.variants || [];
+  selectedSize = variants.find((v) => v.size === 'S')?.size || variants[0]?.size || null;
+  selectedAdditions = new Map();
   setModalQty(1);
   paintModal();
   openLayer(els.modal);
@@ -277,7 +367,7 @@ function openProduct(id) {
 function setModalQty(n) {
   modalQty = Math.min(MAX_QTY, Math.max(1, n));
   els.qtyVal.textContent = modalQty;
-  if (modalProduct) els.addTotal.textContent = money(modalProduct.price * modalQty);
+  updateModalTotal();
 }
 
 /* ---------- init ---------- */
@@ -286,6 +376,8 @@ export async function initMenu() {
 
   els = {
     bar: $('categoryBar'),
+    sizes: $('pmSizes'),
+    additions: $('pmAdditions'),
     grid: $('productGrid'),
     search: $('menuSearch'),
     sort: $('menuSort'),
@@ -306,7 +398,8 @@ export async function initMenu() {
   renderSkeletons();
 
   try {
-    [categories, products] = await Promise.all([getCategories(), getProducts()]);
+    [categories, products, additions] = await Promise.all([getCategories(), getProducts(), getAdditions()]);
+    products = groupProducts(products);
     const stat = document.getElementById('statItems');
     if (stat) stat.textContent = '200+';
   } catch (err) {
@@ -329,11 +422,32 @@ export async function initMenu() {
   els.search.addEventListener('input', onSearch);
   els.sort.addEventListener('change', onSort);
 
+  els.bar.classList.add('is-sticky');
+
+  els.bar.addEventListener('click', (e) => {
+    const size = e.target.closest('[data-size]');
+    if (size && modalProduct) { selectedSize = size.dataset.size; paintModal(); return; }
+    const extra = e.target.closest('[data-extra-inc], [data-extra-dec]');
+    if (extra) {
+      const row = extra.closest('[data-extra-id]');
+      const id = Number(row?.dataset.extraId);
+      const current = selectedAdditions.get(id) || 0;
+      const next = extra.hasAttribute('data-extra-inc') ? Math.min(MAX_QTY, current + 1) : Math.max(0, current - 1);
+      if (next) selectedAdditions.set(id, next); else selectedAdditions.delete(id);
+      paintModal();
+    }
+  });
+
   els.minus.addEventListener('click', () => setModalQty(modalQty - 1));
   els.plus.addEventListener('click', () => setModalQty(modalQty + 1));
   els.add.addEventListener('click', () => {
     if (!modalProduct) return;
-    addToCart(modalProduct, modalQty);
+    const variant = selectedVariant();
+    if (variant) addToCart(variant, modalQty);
+    for (const [id, qty] of selectedAdditions.entries()) {
+      const extra = additions.find((x) => x.id === id);
+      if (extra && qty > 0) addToCart(extra, qty);
+    }
     closeLayer(els.modal);
   });
 
