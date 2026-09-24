@@ -128,14 +128,23 @@ window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
 /* ---------- burger / mobile menu ---------- */
+function setNavOpen(open) {
+  const header = $('nav');
+  const burger = $('burger');
+  if (!header || !burger) return;
+  header.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', String(open));
+}
+
 document.addEventListener('click', (e) => {
   const burger = e.target.closest?.('#burger');
   if (!burger) return;
+  e.preventDefault();
+  e.stopPropagation();
   const header = $('nav');
   if (!header) return;
-  const open = header.classList.toggle('open');
-  burger.setAttribute('aria-expanded', String(open));
-});
+  setNavOpen(!header.classList.contains('open'));
+}, true);
 
 document.addEventListener('click', (e) => {
   const link = e.target.closest?.('#navLinks a');
@@ -154,8 +163,7 @@ document.addEventListener('click', (e) => {
   const target = hash && hash.startsWith('#') && document.querySelector(hash);
   if (!target) return;
   e.preventDefault();
-  nav.classList.remove('open');
-  $('burger').setAttribute('aria-expanded', 'false');
+  setNavOpen(false);
   const off = document.body.dataset.navSticky === 'off' ? 0 : NAV_OFFSET;
   const top = target.getBoundingClientRect().top + window.scrollY - off;
   window.scrollTo({ top, behavior: 'smooth' });
@@ -198,8 +206,7 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (!closeTop() && nav.classList.contains('open')) {
-      nav.classList.remove('open');
-      $('burger').setAttribute('aria-expanded', 'false');
+      setNavOpen(false);
     }
   }
 });
