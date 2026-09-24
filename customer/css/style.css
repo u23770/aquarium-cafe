@@ -1927,9 +1927,8 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
    - Home / Menu / Contact are opened from the burger menu.
    ═══════════════════════════════════════════════════════════════ */
 
-/* Keep only the requested visible header controls. The install control
-   remains in the DOM/JS but is not displayed inside the main header. */
-.nav .install-btn { display: none !important; }
+/* Keep the PWA install control available in the header. */
+.nav .install-btn { display: inline-flex !important; }
 
 /* Brand remains visible and scales without overflowing small screens. */
 .nav {
@@ -1975,9 +1974,12 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
 
 /* The navigation links are always inside the burger menu. */
 .nav__links {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100dvh;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1987,6 +1989,7 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
   padding: 5rem 1.5rem 2rem;
   background: var(--c-navbar);
   transform: translateY(-100%);
+  overflow-y: auto;
   visibility: hidden;
   pointer-events: none;
   transition: transform .5s var(--ease), visibility .5s;
@@ -2006,7 +2009,9 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
 
 /* Requested outside order:
    burger → sign in → cart → language. */
-.nav__actions {
+ .nav__actions {
+  position: relative;
+  z-index: 20;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
