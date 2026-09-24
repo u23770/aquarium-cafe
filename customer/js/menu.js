@@ -185,7 +185,7 @@ function visibleProducts() {
     );
   }
 
-  if (sortMode === 'price-asc') list.sort((a, b) => a.price - b.price || a.id - b.id);
+  if (sortMode === 'price-asc') list.sort((a, b) => (finitePrice(a.price) ?? Number.POSITIVE_INFINITY) - (finitePrice(b.price) ?? Number.POSITIVE_INFINITY) || a.id - b.id);
   else if (sortMode === 'price-desc') list.sort((a, b) => b.price - a.price || a.id - b.id);
   else if (sortMode === 'name') list.sort((a, b) => pname(a).localeCompare(pname(b), isRTL() ? 'ar' : 'en'));
   return list;
