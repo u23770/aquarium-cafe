@@ -1929,7 +1929,7 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
 
 /* Keep only the requested visible header controls. The install control
    remains in the DOM/JS but is not displayed inside the main header. */
-/*.nav .install-btn { display: none !important; }
+.nav .install-btn { display: none !important; }
 
 /* Brand remains visible and scales without overflowing small screens. */
 .nav {
