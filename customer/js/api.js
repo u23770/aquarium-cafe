@@ -28,8 +28,10 @@ const mapProduct = (p) => ({
   name_ar: p.name_ar ?? '',
   description: p.description,
   description_ar: p.description_ar ?? '',
-  price: +p.price,
-  prices: p.prices && typeof p.prices === 'object' ? p.prices : null,
+  price: p.price == null || p.price === '' ? null : Number(p.price),
+  prices: p.prices && typeof p.prices === 'object'
+    ? Object.fromEntries(Object.entries(p.prices).map(([k, v]) => [k, v == null || v === '' ? null : Number(v)]))
+    : null,
   image: p.image,
   badge: p.badge,
   featured: !!p.featured,
