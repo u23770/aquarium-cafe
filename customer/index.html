@@ -60,7 +60,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600;1,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preload" as="image" href="images/hero-sea.jpg" fetchpriority="high" />
-  <link rel="preload" as="image" href="images/logo.svg" type="image/svg+xml" />
   <link rel="modulepreload" href="../shared/i18n.js" />
   <link rel="modulepreload" href="js/main.js" />
   <link rel="modulepreload" href="js/lang.js" />
@@ -117,7 +116,7 @@
     <symbol id="i-logout" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></g></symbol>
   </svg>
 
-  <div class="preloader" id="preloader" aria-hidden="true"><div class="preloader__inner"><span class="preloader__mark"><img class="preloader__logo" src="images/logo.svg" alt="" width="74" height="74" fetchpriority="high" decoding="async" /></span><p class="preloader__word" id="preWord">AQUARIUM</p><div class="preloader__bar"><span></span></div></div></div>
+  <div class="preloader" id="preloader" aria-hidden="true"><div class="preloader__inner"><span class="preloader__mark"><svg class="icon"><use href="#i-fish"/></svg></span><p class="preloader__word" id="preWord">AQUARIUM</p><div class="preloader__bar"><span></span></div></div></div>
 
   <header class="nav" id="nav" data-responsive>
     <a href="#hero" class="brand" data-scroll aria-label="Restaurant home" data-i18n-aria="nav.brandHome"><span class="brand__mark"><svg class="icon"><use href="#i-fish"/></svg></span><span class="brand__text" data-brand-name>AQUARIUM<small data-brand-sub>CAFÉ &amp; RESTAURANT</small></span></a>
