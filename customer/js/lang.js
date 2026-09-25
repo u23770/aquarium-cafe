@@ -53,6 +53,11 @@ export const dictionary = {
     'hero.statHours': '8 AM – 2 AM',
     'hero.statOpen': 'Open daily',
 
+    /* ---- SEO intro ---- */
+    'seo.eyebrow': '— Aquarium in Hurghada —',
+    'seo.title': 'Aquarium Cafe & Restaurant in Hurghada',
+    'seo.sub': 'Aquarium Cafe & Restaurant is a sea-view restaurant in Hurghada, behind the General Hospital. Explore our seafood, pizza, sandwiches, coffee, smoothies and desserts, then order for home delivery across Hurghada.',
+
     /* ---- menu section ---- */
     'menu.eyebrow': '— The Menu —',
     'menu.titleHtml': 'From the <em>sea &amp; the bar</em>',
@@ -392,6 +397,11 @@ export const dictionary = {
     'hero.statItems': 'صنف في المنيو',
     'hero.statHours': '٨ ص – ٢ ص',
     'hero.statOpen': 'مفتوحين كل يوم',
+
+    /* ---- SEO intro ---- */
+    'seo.eyebrow': '— أكواريوم في الغردقة —',
+    'seo.title': 'أكواريوم كافيه ومطعم في الغردقة',
+    'seo.sub': 'أكواريوم كافيه ومطعم هو مطعم بإطلالة على البحر في الغردقة، خلف المستشفى العام. تصفّح السي فود والبيتزا والسندوتشات والقهوة والسموزي والحلويات، واطلب توصيل لحد البيت داخل الغردقة.',
 
     /* ---- menu section ---- */
     'menu.eyebrow': '— المنيو —',
