@@ -8,28 +8,28 @@
 
 :root {
   /* ── colors (Colors panel) ── */
-  --c-primary:     #0d7d9e;
-  --c-secondary:   #0b5b78;
-  --c-accent:      #23b5d3;
-  --c-bg:          #f3fafc;
-  --c-section:     #e4f3f7;
-  --c-card:        #ffffff;
-  --c-btn:         #0d7d9e;
-  --c-btn-hover:   #0a647f;
-  --c-text:        #2b5261;
-  --c-heading:     #09384c;
-  --c-border:      #d3e8ee;
-  --c-footer:      #09384c;
-  --c-navbar:      #09384c;
+  --c-primary:     #6f4e37;
+  --c-secondary:   #8a6244;
+  --c-accent:      #b98a55;
+  --c-bg:          #faf5ec;
+  --c-section:     #f1e7d4;
+  --c-card:        #fffdf8;
+  --c-btn:         #6f4e37;
+  --c-btn-hover:   #5a3e2b;
+  --c-text:        #41332a;
+  --c-heading:     #241709;
+  --c-border:      #e6d9c3;
+  --c-footer:      #241709;
+  --c-navbar:      #241709;
   --c-overlay:     #241709;
 
   /* derived (computed by theme.js) */
-  --nav-bg:        rgba(9, 56, 76, .88);
-  --nav-text:      #ffffff;
-  --hero-bg:       #06293a;
-  --hero-overlay:  rgba(6, 41, 58, .55);
-  --on-dark:       #ffffff;
-  --on-dark-dim:   rgba(255, 255, 255, .72);
+  --nav-bg:        rgba(36, 23, 9, .86);
+  --nav-text:      #f6ecdd;
+  --hero-bg:       #241709;
+  --hero-overlay:  rgba(27, 17, 8, .62);
+  --on-dark:       #f6ecdd;
+  --on-dark-dim:   rgba(246, 236, 221, .72);
 
   /* fixed brand-safe hues */
   --c-gold:        #d9b98c;
@@ -37,10 +37,10 @@
   --c-danger:      #b3564a;
 
   /* ── typography (Typography panel) ── */
-  --font-head: 'Poppins', 'Segoe UI', sans-serif;
-  --font-body: 'Inter', 'Segoe UI', sans-serif;
+  --font-head: 'Playfair Display', Georgia, serif;
+  --font-body: 'Manrope', 'Segoe UI', sans-serif;
   --fs-body: 16px;
-  --fs-h1: 58px;
+  --fs-h1: 62px;
   --fs-h2: 36px;
   --fs-h3: 20px;
   --fw-head: 700;
@@ -51,7 +51,7 @@
   /* ── layout (Layout panel) ── */
   --container-w: 1200px;
   --gutter: 18px;
-  --section-pad: 92px;
+  --section-pad: 96px;
   --radius: 20px;
   --shadow-1: 0 16px 38px -16px rgb(23 15 8 / .30);
   --shadow-soft: 0 10px 30px -14px rgb(23 15 8 / .18);
@@ -155,7 +155,6 @@ body.feat-no-order #cartBtn { display: none !important; }
   animation: preBreathe 1.6s ease-in-out infinite;
 }
 .preloader__mark .icon { width: 34px; height: 34px; }
-.preloader__logo { width: 74px; height: 74px; display: block; }
 .preloader__word {
   margin-top: 1.1rem;
   font-family: var(--font-head);
