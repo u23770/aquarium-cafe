@@ -351,7 +351,7 @@ export async function getAutoDiscounts() {
   const rows = await run(
     supabase
       .from('discounts')
-      .select('id, name, type, code, value_type, value, min_order, max_discount, max_uses, used_count, starts_at, expires_at, target_id')
+      .select('id, name, type, code, value_type, value, min_order, max_discount, max_uses, max_uses_per_user, used_count, starts_at, expires_at, target_id')
       .is('code', null)
       .eq('active', true)
       .lte('starts_at', now),
