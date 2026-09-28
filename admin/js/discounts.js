@@ -318,7 +318,6 @@ function openForm(d) {
   $('dfUsesPerUser').value = d?.max_uses_per_user != null ? String(d.max_uses_per_user) : '';
   $('dfPriority').value = d?.priority != null ? String(d.priority) : '0';
   $('dfFreeDelivery').checked = !!d?.free_delivery;
-  $('dfStackable').checked = !!d?.stackable;
   $('dfExpiry').value = d?.expires_at ? new Date(d.expires_at).toISOString().slice(0, 10) : '';
   $('dfActive').checked = d ? !!d.active : true;
   $('dfError').textContent = '';
@@ -352,7 +351,6 @@ async function saveForm() {
     max_uses_per_user: $('dfUsesPerUser').value === '' ? null : $('dfUsesPerUser').value,
     priority: $('dfPriority').value === '' ? 0 : $('dfPriority').value,
     free_delivery: $('dfFreeDelivery').checked,
-    stackable: $('dfStackable').checked,
     expires_at: $('dfExpiry').value ? new Date($('dfExpiry').value + 'T23:59:59').toISOString() : null,
     target_id: (type === 'product' || type === 'category') ? $('dfTarget').value : null,
     active: $('dfActive').checked,
