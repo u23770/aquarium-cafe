@@ -130,6 +130,9 @@ export async function renderDiscounts(view) {
           <div class="field-2col">
             <label class="field"><span>${esc(t('dc.maxUses'))} <small class="opt">${esc(t('g.optional'))}</small></span>
               <input id="dfUses" type="number" min="1" step="1" placeholder="∞">
+            <label class="field"><span>${esc(t("dc.maxUsesPerUser"))} <small class="opt">${esc(t("g.optional"))}</small></span>
+              <input id="dfUsesPerUser" type="number" min="1" step="1" placeholder="∞">
+            </label>
             </label>
             <label class="field"><span>${esc(t('dc.expiry'))} <small class="opt">${esc(t('g.optional'))}</small></span>
               <input id="dfExpiry" type="date">
