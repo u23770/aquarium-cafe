@@ -136,6 +136,7 @@ export async function renderDiscounts(view) {
             </label>
             <label class="field"><span>${esc(t('dc.expiry'))} <small class="opt">${esc(t('g.optional'))}</small></span>
               <input id="dfExpiry" type="date">
+            <label class="field"><span>${esc(t("dc.priority"))}</span><input id="dfPriority" type="number" min="0" step="1" placeholder="0"></label>
             </label>
           </div>
 
@@ -315,6 +316,9 @@ function openForm(d) {
   $('dfCap').value = d?.max_discount != null ? String(+d.max_discount) : '';
   $('dfUses').value = d?.max_uses != null ? String(d.max_uses) : '';
   $('dfUsesPerUser').value = d?.max_uses_per_user != null ? String(d.max_uses_per_user) : '';
+  $('dfPriority').value = d?.priority != null ? String(d.priority) : '0';
+  $('dfFreeDelivery').checked = !!d?.free_delivery;
+  $('dfStackable').checked = !!d?.stackable;
   $('dfExpiry').value = d?.expires_at ? new Date(d.expires_at).toISOString().slice(0, 10) : '';
   $('dfActive').checked = d ? !!d.active : true;
   $('dfError').textContent = '';
@@ -346,6 +350,9 @@ async function saveForm() {
     max_discount: $('dfCap').value === '' ? null : $('dfCap').value,
     max_uses: $('dfUses').value === '' ? null : $('dfUses').value,
     max_uses_per_user: $('dfUsesPerUser').value === '' ? null : $('dfUsesPerUser').value,
+    priority: $('dfPriority').value === '' ? 0 : $('dfPriority').value,
+    free_delivery: $('dfFreeDelivery').checked,
+    stackable: $('dfStackable').checked,
     expires_at: $('dfExpiry').value ? new Date($('dfExpiry').value + 'T23:59:59').toISOString() : null,
     target_id: (type === 'product' || type === 'category') ? $('dfTarget').value : null,
     active: $('dfActive').checked,
