@@ -128,17 +128,27 @@ export async function renderDiscounts(view) {
           </label>
 
           <div class="field-2col">
-            <label class="field"><span>${esc(t('dc.maxUses'))} <small class="opt">${esc(t('g.optional'))}</small></span>
+            <label class="field"><span>${esc(t("dc.maxUses"))} <small class="opt">${esc(t("g.optional"))}</small></span>
               <input id="dfUses" type="number" min="1" step="1" placeholder="∞">
+            </label>
             <label class="field"><span>${esc(t("dc.maxUsesPerUser"))} <small class="opt">${esc(t("g.optional"))}</small></span>
               <input id="dfUsesPerUser" type="number" min="1" step="1" placeholder="∞">
             </label>
-            </label>
-            <label class="field"><span>${esc(t('dc.expiry'))} <small class="opt">${esc(t('g.optional'))}</small></span>
+          </div>
+
+          <div class="field-2col">
+            <label class="field"><span>${esc(t("dc.expiry"))} <small class="opt">${esc(t("g.optional"))}</small></span>
               <input id="dfExpiry" type="date">
-            <label class="field"><span>${esc(t("dc.priority"))}</span><input id="dfPriority" type="number" min="0" step="1" placeholder="0"></label>
+            </label>
+            <label class="field"><span>${esc(t("dc.priority"))}</span>
+              <input id="dfPriority" type="number" min="0" step="1" placeholder="0">
             </label>
           </div>
+
+          <label class="switch-row">
+            <span class="switch"><input type="checkbox" id="dfFreeDelivery" /><i></i></span>
+            <span>${esc(t("dc.freeDelivery"))}</span>
+          </label>
 
           <label class="switch-row">
             <span class="switch"><input type="checkbox" id="dfActive" checked /><i></i></span>
