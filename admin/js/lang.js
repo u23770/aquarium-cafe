@@ -259,6 +259,7 @@ export const dictionary = {
     'dc.targetCategory': 'Applies to category',
     'dc.noTargets': 'Nothing to choose yet',
     'dc.maxUses': 'Max uses',
+    'dc.maxUsesPerUser': 'Max uses per customer',
     'dc.expiry': 'Expiry date',
     'dc.activeNow': 'Active',
     'dc.save': 'Save discount',
