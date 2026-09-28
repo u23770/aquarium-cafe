@@ -970,6 +970,11 @@ function cleanDiscount(body, { partial = false } = {}) {
     if (v != null && (!Number.isInteger(v) || v <= 0)) throw new Error('Max uses must be a positive integer.');
     d.max_uses = v;
   }
+  if (!partial || body.max_uses_per_user !== undefined) {
+    const v = body.max_uses_per_user === '' || body.max_uses_per_user == null ? null : Math.trunc(Number(body.max_uses_per_user));
+    if (v != null && (!Number.isInteger(v) || v <= 0)) throw new Error('Per-user limit must be a positive integer.');
+    d.max_uses_per_user = v;
+  }
   if (body.active !== undefined) d.active = !!body.active;
   if (body.starts_at !== undefined) d.starts_at = body.starts_at || new Date().toISOString();
   if (body.expires_at !== undefined) d.expires_at = body.expires_at || null;
