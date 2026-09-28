@@ -953,7 +953,8 @@ function cleanDiscount(body, { partial = false } = {}) {
   }
   if (!partial || body.value !== undefined) {
     const v = Number(body.value);
-    if (!Number.isFinite(v) || v <= 0 || v > 100000) throw new Error('Value must be positive.');
+    if (!Number.isFinite(v) || v < 0 || v > 100000 || (v === 0 && !body.free_delivery))
+      throw new Error('Value must be positive unless this is a free-delivery offer.');
     d.value = Math.round(v * 100) / 100;
   }
   if (!partial || body.min_order !== undefined) {
@@ -974,6 +975,12 @@ function cleanDiscount(body, { partial = false } = {}) {
     const v = body.max_uses_per_user === '' || body.max_uses_per_user == null ? null : Math.trunc(Number(body.max_uses_per_user));
     if (v != null && (!Number.isInteger(v) || v <= 0)) throw new Error('Per-user limit must be a positive integer.');
     d.max_uses_per_user = v;
+  }
+  if (body.free_delivery !== undefined) d.free_delivery = !!body.free_delivery;
+  if (body.priority !== undefined) {
+    const v = Math.trunc(Number(body.priority));
+    if (!Number.isInteger(v) || v < 0 || v > 100000) throw new Error('Priority must be between 0 and 100000.');
+    d.priority = v;
   }
   if (body.active !== undefined) d.active = !!body.active;
   if (body.starts_at !== undefined) d.starts_at = body.starts_at || new Date().toISOString();
