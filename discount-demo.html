@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Promotion Engine Demo — Aquarium</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#172033;--muted:#687386;--line:#e5e9f0;--accent:#0b7cff;--good:#12834b;--warn:#a15c00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:22px}.hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}
+h1{margin:0 0 5px;font-size:27px}.muted{color:var(--muted)}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:#eaf3ff;color:#075fc2;font-weight:700;font-size:12px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 4px 18px #1720330a}
+h2{font-size:17px;margin:0 0 14px}.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
+input,select{width:100%;border:1px solid #d8dee8;border-radius:10px;padding:10px;background:#fff;color:var(--ink)}label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.wide{grid-column:1/-1}
+.item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.qty{display:flex;align-items:center;gap:7px}.qty button{border:1px solid var(--line);background:#fff;border-radius:8px;width:30px;height:30px}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px 13px;font-weight:700}.primary{background:var(--accent);color:#fff}.ghost{background:#eef2f7;color:var(--ink)}.success{background:#e8f7ef;color:var(--good)}
+.summary .line{display:flex;justify-content:space-between;padding:7px 0}.summary .total{font-size:20px;font-weight:800;border-top:1px solid var(--line);margin-top:7px;padding-top:12px}
+.badge{font-size:11px;padding:3px 7px;border-radius:999px;background:#edf7f1;color:var(--good);font-weight:800}.off{background:#f3f4f6;color:#697386}
+.note{margin-top:12px;padding:10px 12px;border-radius:10px;background:#f7f9fc;color:var(--muted);font-size:12px}
+.scenario{margin-top:18px}.scenario button{margin:5px 5px 0 0}.result{margin-top:10px;padding:11px;border-radius:10px;background:#f4f8ff}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.hero{display:block}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div><span class="pill">SAFE DEMO — separate branch</span><h1>Promotion Engine</h1><div class="muted">Talabat-style promotion behavior, adapted for one restaurant.</div></div>
+    <button class="ghost" onclick="resetDemo()">Reset demo</button>
+  </div>
+  <div class="grid">
+    <section class="card">
+      <h2>Customer & eligibility</h2>
+      <div class="controls">
+        <div><label>Customer status</label><select id="customer" onchange="render()"><option value="new">New customer</option><option value="returning" selected>Returning customer</option></select></div>
+        <div><label>Membership</label><select id="pro" onchange="render()"><option value="none" selected>No membership</option><option value="pro">Restaurant Pro</option></select></div>
+        <div><label>Delivery fee</label><input id="fee" type="number" value="35" min="0" step="1" oninput="render()"></div>
+        <div><label>Free delivery threshold</label><input id="freeAbove" type="number" value="300" min="0" step="1" oninput="render()"></div>
+      </div>
+
+      <h2 style="margin-top:20px">Cart</h2>
+      <div id="cart"></div>
+
+      <h2 style="margin-top:20px">Promotions</h2>
+      <div class="controls">
+        <div><label>Automatic offer</label><select id="auto" onchange="render()">
+          <option value="none">None</option><option value="global10" selected>10% off order</option>
+          <option value="cat20">20% off Seafood category</option><option value="item50">50 EGP off Shrimp</option>
+        </select></div>
+        <div><label>Coupon</label><select id="coupon" onchange="render()">
+          <option value="none" selected>None</option><option value="SAVE15">SAVE15 — 15% off, min 250</option>
+          <option value="NEW100">NEW100 — 100 EGP off, first order</option>
+        </select></div>
+      </div>
+      <div class="scenario">
+        <b>Test cases</b><br>
+        <button class="ghost" onclick="caseBestAuto()">Best automatic</button>
+        <button class="ghost" onclick="caseCoupon()">Coupon + loyalty</button>
+        <button class="ghost" onclick="caseFreeDelivery()">Free delivery</button>
+        <button class="ghost" onclick="caseMembership()">Membership + offer</button>
+      </div>
+      <div class="note">This page is a simulation only. It does not touch Supabase, customer accounts, orders, or the production site.</div>
+    </section>
+
+    <aside class="card summary">
+      <h2>Checkout calculation</h2>
+      <div id="summary"></div>
+      <div class="row"><span>Stacking mode</span><span id="stack" class="badge"></span></div>
+      <div class="row"><span>Free delivery promotion</span><span id="fd" class="badge"></span></div>
+      <div class="row"><span>Membership benefit</span><span id="member" class="badge"></span></div>
+      <div class="result" id="explain"></div>
+    </aside>
+  </div>
+</div>
+<script>
+const products=[
+ {id:'fish',name:'Grilled Fish',cat:'Seafood',price:220,qty:1},
+ {id:'shrimp',name:'Shrimp Plate',cat:'Seafood',price:180,qty:1},
+ {id:'pizza',name:'Margherita Pizza',cat:'Pizza',price:120,qty:1}
+];
+function money(n){return new Intl.NumberFormat('en-EG',{style:'currency',currency:'EGP',maximumFractionDigits:2}).format(n)}
+function subtotal(){return products.reduce((s,p)=>s+p.price*p.qty,0)}
+function calc(){
+ const sub=subtotal(), auto=document.getElementById('auto').value, coupon=document.getElementById('coupon').value;
+ const customer=document.getElementById('customer').value, pro=document.getElementById('pro').value;
+ let candidates=[];
+ if(auto==='global10') candidates.push({label:'10% order discount',amount:sub*.10});
+ if(auto==='cat20') candidates.push({label:'20% Seafood discount',amount:products.filter(p=>p.cat==='Seafood').reduce((s,p)=>s+p.price*p.qty,0)*.20});
+ if(auto==='item50') candidates.push({label:'50 EGP Shrimp offer',amount:Math.min(50,products.find(p=>p.id==='shrimp').price)});
+ let selected=candidates.sort((a,b)=>b.amount-a.amount)[0]||{label:'No automatic offer',amount:0};
+ let couponData=null;
+ if(coupon==='SAVE15' && sub>=250) couponData={label:'SAVE15',amount:sub*.15};
+ if(coupon==='NEW100' && customer==='new') couponData={label:'NEW100',amount:Math.min(100,sub)};
+ // In this demo explicit coupon replaces automatic order discount, matching our current engine's non-stacking behavior.
+ let discount=couponData||selected;
+ let loyalty=pro==='pro'?Math.min(30,Math.max(sub-discount.amount,0)*.05):0;
+ const threshold=+document.getElementById('freeAbove').value||0;
+ let fee=+document.getElementById('fee').value||0;
+ const freeDelivery=pro==='pro' || (threshold>0 && sub>=threshold);
+ if(freeDelivery) fee=0;
+ const net=Math.max(sub-discount.amount-loyalty,0);
+ const vat=Math.round(net*.14*100)/100;
+ const total=Math.round((net+fee+vat)*100)/100;
+ return {sub,discount,loyalty,fee,vat,total,freeDelivery,pro,couponData,selected};
+}
+function render(){
+ document.getElementById('cart').innerHTML=products.map(p=>'<div class="item"><div><b>'+p.name+'</b><div class="muted">'+p.cat+' · '+money(p.price)+'</div></div><div class="qty"><button onclick="change(\''+p.id+'\',-1)">−</button><b>'+p.qty+'</b><button onclick="change(\''+p.id+'\',1)">+</button></div></div>').join('');
+ const c=calc(), s=document.getElementById('summary');
+ s.innerHTML='<div class="line"><span>Subtotal</span><b>'+money(c.sub)+'</b></div>'+
+ '<div class="line"><span>'+c.discount.label+'</span><b>− '+money(c.discount.amount)+'</b></div>'+
+ '<div class="line"><span>Loyalty / membership</span><b>− '+money(c.loyalty)+'</b></div>'+
+ '<div class="line"><span>Delivery</span><b>'+money(c.fee)+'</b></div>'+
+ '<div class="line"><span>VAT (14%)</span><b>'+money(c.vat)+'</b></div>'+
+ '<div class="line total"><span>Total</span><b>'+money(c.total)+'</b></div>';
+ document.getElementById('stack').textContent=c.couponData?'Coupon replaces auto offer':'Highest automatic offer';
+ document.getElementById('fd').textContent=c.freeDelivery?'Applied':'Not applied';
+ document.getElementById('fd').className='badge '+(c.freeDelivery?'':'off');
+ document.getElementById('member').textContent=c.pro?'5% loyalty-style benefit':'None';
+ document.getElementById('member').className='badge '+(c.pro?'':'off');
+ document.getElementById('explain').textContent=
+ 'Server-side target for the real system: recalculate every amount at checkout, enforce eligibility, usage limits and dates, then commit the final order atomically.';
+}
+function change(id,d){const p=products.find(x=>x.id===id);p.qty=Math.max(1,Math.min(5,p.qty+d));render()}
+function setv(id,v){document.getElementById(id).value=v}
+function caseBestAuto(){setv('auto','cat20');setv('coupon','none');setv('customer','returning');setv('pro','none');render()}
+function caseCoupon(){setv('auto','global10');setv('coupon','SAVE15');setv('customer','returning');setv('pro','none');render()}
+function caseFreeDelivery(){setv('auto','global10');setv('coupon','none');setv('customer','returning');setv('pro','none');setv('freeAbove','300');products[0].qty=2;render()}
+function caseMembership(){setv('auto','cat20');setv('coupon','none');setv('customer','returning');setv('pro','pro');render()}
+function resetDemo(){products.forEach(p=>p.qty=1);setv('auto','global10');setv('coupon','none');setv('customer','returning');setv('pro','none');setv('fee',35);setv('freeAbove',300);render()}
+render();
+</script>
+</body>
+</html>
