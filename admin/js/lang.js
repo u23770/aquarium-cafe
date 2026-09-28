@@ -1029,6 +1029,7 @@ export const dictionary = {
     'dc.targetCategory': 'بيخصم على فئة',
     'dc.noTargets': 'مفيش حاجة للاختيار لسه',
     'dc.maxUses': 'أقصى استخدام',
+    'dc.maxUsesPerUser': 'أقصى استخدام لكل عميل',
     'dc.expiry': 'تاريخ الانتهاء',
     'dc.activeNow': 'شغال',
     'dc.save': 'احفظ الخصم',
