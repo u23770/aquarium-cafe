@@ -57,7 +57,6 @@ function cleanDiscount(body, { partial = false } = {}) {
     d.max_uses_per_user = v;
   }
   if (body.free_delivery !== undefined) d.free_delivery = !!body.free_delivery;
-  if (body.stackable !== undefined) d.stackable = !!body.stackable;
   if (body.priority !== undefined) {
     const v = Math.trunc(Number(body.priority));
     if (!Number.isInteger(v) || v < 0 || v > 100000) throw new Error('Priority must be between 0 and 100000.');
