@@ -2,7 +2,6 @@
 -- Adds independent free-delivery benefits, priority, and redemption history.
 -- Applied to production separately after verification.
 alter table public.discounts add column if not exists free_delivery boolean not null default false;
-alter table public.discounts add column if not exists stackable boolean not null default false;
 alter table public.discounts add column if not exists priority integer not null default 0;
 create index if not exists idx_discounts_active_priority on public.discounts(active, priority desc, starts_at, expires_at);
 
@@ -24,9 +23,17 @@ create index if not exists idx_discount_redemptions_discount
 alter table public.discount_redemptions enable row level security;
 revoke all on public.discount_redemptions from anon, authenticated;
 grant select on public.discount_redemptions to authenticated;
-create policy "discount_redemptions: admin read"
-  on public.discount_redemptions for select to authenticated
-  using ((select is_admin()));
+do $ begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname='public' and tablename='discount_redemptions'
+      and policyname='discount_redemptions: admin read'
+  ) then
+    create policy "discount_redemptions: admin read"
+      on public.discount_redemptions for select to authenticated
+      using ((select is_admin()));
+  end if;
+end $;
 
 
 -- Authoritative checkout enforcement functions (production-verified).
