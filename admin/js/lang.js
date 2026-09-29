@@ -8,6 +8,7 @@
 
 export const dictionary = {
   en: {
+    'nav.commission': 'Commission',
     /* ---- shell ---- */
     'side.tag': 'ADMIN',
     'side.gStudio': 'Studio',
@@ -790,6 +791,7 @@ export const dictionary = {
 
   /* ════════════════════ ARABIC ════════════════════ */
   ar: {
+    'nav.commission': 'العمولات',
     /* ---- shell ---- */
     'side.tag': 'الإدارة',
     'side.gStudio': 'الاستوديو',
