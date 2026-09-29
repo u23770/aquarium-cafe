@@ -53,13 +53,16 @@ export async function renderContent(view) {
   /* About */
   wrap.appendChild(C.group(t('ct.about'), 'i-leaf', [
     b('textControl', 'content.about.title', { label: t('ct.title') }),
+    b('textControl', 'content.about.title_ar', { label: 'العنوان (العربية)' }),
     b('textControl', 'content.about.text', { label: t('ct.story'), area: true, rows: 5 }),
+    b('textControl', 'content.about.text_ar', { label: 'النص (العربية)', area: true, rows: 5 }),
     b('imageControl', 'content.about.imageUrl', { label: t('ct.aboutImg'), hint: t('ct.aboutImgHint') }),
   ]));
 
   /* Contact */
   wrap.appendChild(C.group(t('ct.contact'), 'i-phone', [
     b('textControl', 'content.contact.address', { label: t('ct.address') }),
+    b('textControl', 'content.contact.address_ar', { label: 'العنوان (العربية)' }),
     b('textControl', 'content.contact.email', { label: t('ct.email'), placeholder: 'hello@aquariumcafe.com' }),
     b('textControl', 'content.contact.whatsapp', { label: t('ct.wa'), placeholder: 'https://wa.me/201002345678' }),
     b('textControl', 'content.contact.mapsUrl', { label: t('ct.maps') }),
@@ -78,7 +81,9 @@ export async function renderContent(view) {
       items: content.hours,
       fields: [
         { key: 'days', label: t('ct.days'), ph: t('ct.daysPh') },
+        { key: 'days_ar', label: 'الأيام (العربية)', ph: 'مثال: كل يوم' },
         { key: 'time', label: t('ct.hoursLb'), ph: t('ct.hoursPh') },
+        { key: 'time_ar', label: 'المواعيد (العربية)', ph: 'مثال: 8:00 صباحًا – 2:00 صباحًا' },
       ],
       addLabel: t('ct.addHours'),
       singular: t('ct.hoursRow'),
@@ -92,7 +97,9 @@ export async function renderContent(view) {
       items: content.branches,
       fields: [
         { key: 'name', label: t('ct.branch'), ph: t('ct.branchPh') },
+        { key: 'name_ar', label: 'اسم الفرع (العربية)', ph: 'مثال: التراس الرئيسي' },
         { key: 'address', label: t('ct.address'), ph: t('ct.branchAddrPh'), flex: 2 },
+        { key: 'address_ar', label: 'العنوان (العربية)', ph: 'مثال: خلف المستشفى العام، الغردقة', flex: 2 },
         { key: 'phone', label: t('ct.phones'), ph: t('ct.branchPhonePh') },
       ],
       addLabel: t('ct.addBranch'),
@@ -118,12 +125,19 @@ export async function renderContent(view) {
       singular: t('ct.phrase'),
       onChange: (v) => emit('content.highlights', v.filter?.((x) => x !== undefined) ?? v),
     }),
+    C.listEditor({
+      items: content.highlights_ar || [],
+      addLabel: 'إضافة عبارة',
+      singular: 'عبارة عربية',
+      onChange: (v) => emit('content.highlights_ar', v.filter?.((x) => x !== undefined) ?? v),
+    }),
     note(t('ct.highlightsHint')),
   ]));
 
   /* Footer */
   wrap.appendChild(C.group(t('ct.footer'), 'i-layout', [
     b('textControl', 'content.footerAbout', { label: t('ct.footerAbout'), area: true, rows: 3, hint: t('ct.footerAboutHint') }),
+    b('textControl', 'content.footerAbout_ar', { label: 'نبذة الفوتر (العربية)', area: true, rows: 3 }),
   ]));
 
   view.innerHTML = '';
