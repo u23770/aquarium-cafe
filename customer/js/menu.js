@@ -378,7 +378,7 @@ function paintModal() {
           </div>
         </div>`;
       }).join('')
-    : `<p class="pm__extras-empty">${esc(isRTL() ? 'لا توجد إضافات مضافة حالياً.' : 'No additions are configured.')}</p>`;
+    : `<p class="pm__extras-empty">${esc(t('menu.noAdditions'))}</p>`;
 
   els.price.textContent = money(variant?.price ?? p.price);
   if (p.badge) {
