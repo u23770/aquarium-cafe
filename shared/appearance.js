@@ -24,6 +24,7 @@
 export function defaultSettings() {
   return {
     cafeName: 'Aquarium Cafe & Restaurant',
+    cafeName_ar: 'أكواريوم كافيه ومطعم',
     slogan: 'Sea View · Seafood · Coffee & Shisha',
     slogan_ar: 'إطلالة بحرية · مأكولات بحرية · قهوة وشيشة',
     description:
@@ -247,6 +248,7 @@ export function settingsFromRows(rows, base = defaultSettings()) {
   const m = Object.fromEntries((rows || []).map((r) => [r.key, r.value]));
   const out = { ...base };
   if (m.cafe_name != null)   out.cafeName   = m.cafe_name;
+  if (m.cafe_name_ar != null) out.cafeName_ar = m.cafe_name_ar;
   if (m.slogan != null)      out.slogan     = m.slogan;
   if (m.slogan_ar != null)   out.slogan_ar  = m.slogan_ar;
   if (m.description != null) out.description = m.description;
