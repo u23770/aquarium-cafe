@@ -344,6 +344,31 @@ export async function validateCoupon({ code, items, userId }) {
   return res || { ok: false, key: 'invalid' };
 }
 
+/** Menu-facing automatic discounts.
+ * Only returns offers that can be represented safely as item-level
+ * old/new prices. Checkout remains authoritative in Postgres.
+ */
+export async function getMenuDiscounts() {
+  const now = new Date().toISOString();
+  const rows = await run(
+    supabase
+      .from('discounts')
+      .select('id, name, type, value_type, value, min_order, max_discount, free_delivery, priority, used_count, starts_at, expires_at, target_id')
+      .is('code', null)
+      .eq('active', true)
+      .lte('starts_at', now),
+    OFFLINE
+  );
+  return (rows || []).filter((d) => {
+    if (d.expires_at && d.expires_at <= now) return false;
+    if (d.max_uses != null && d.used_count >= d.max_uses) return false;
+    if (d.min_order > 0 || d.free_delivery) return false;
+    if ((d.type === 'global' || d.type === 'category') && d.value_type === 'fixed') return false;
+    if (d.type === 'global' && d.max_discount != null) return false;
+    return ['product', 'category', 'global'].includes(d.type);
+  });
+}
+
 /** Active, code-less discounts — read-only auto-discount PREVIEW at checkout.
     (place_delivery_order recomputes them authoritatively.) */
 export async function getAutoDiscounts() {
