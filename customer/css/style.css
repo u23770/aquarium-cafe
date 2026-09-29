@@ -2234,3 +2234,40 @@ body.anim-off .tk__step.active .tk__step-icon { animation: none; }
     padding-inline: .3rem;
   }
 }
+
+/* ── menu promotions: old price + discounted price ── */
+.price-off {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .35rem .55rem;
+  line-height: 1.15;
+}
+.price-off__old {
+  color: color-mix(in srgb, var(--c-text) 52%, transparent);
+  font-size: .78em;
+  font-weight: 600;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  white-space: nowrap;
+}
+.price-off__new {
+  color: var(--c-success);
+  font: inherit;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.price-off__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.35rem;
+  padding: .12rem .42rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c-success) 14%, transparent);
+  color: var(--c-success);
+  font-family: var(--font-body);
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
