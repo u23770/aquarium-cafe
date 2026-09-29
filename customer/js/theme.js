@@ -44,12 +44,7 @@ const NAV_KEYS = {
     dictionary labels take over in AR. Safe to call after every re-render. */
 export function applyNavLang() {
   document.querySelectorAll('[data-i18n-nav]').forEach((a) => {
-    const key = a.dataset.i18nNav;
-    if (getLang() === 'ar') {
-      a.textContent = t(key);
-    } else if (a.dataset.dbLabel != null) {
-      a.textContent = a.dataset.dbLabel;
-    }
+    if (a.dataset.dbLabel != null) a.textContent = a.dataset.dbLabel;
   });
 }
 
