@@ -21,6 +21,15 @@ import { getAppearance, subscribeAppearance } from './api.js';
 import { setCurrency, esc, initReveals } from './ui.js';
 import { t, getLang } from '../shared/i18n.js';
 
+const localized = (obj, field, fallback = '') => {
+  if (!obj) return fallback;
+  if (getLang() === 'ar') {
+    const ar = obj[`${field}_ar`];
+    if (ar != null && String(ar).trim()) return ar;
+  }
+  return obj[field] ?? fallback;
+};
+
 /* nav/footer anchors that map to dictionary keys (instant EN⇄AR) */
 const NAV_KEYS = {
   '#hero': 'nav.home',
@@ -152,9 +161,11 @@ function applyTheme(t) {
 function applySettings(s) {
   const name = s.cafeName?.trim() || 'Aquarium Cafe & Restaurant';
 
-  document.title = `${name}${s.slogan ? ' — ' + s.slogan : ''}`;
+  const slogan = getLang() === 'ar' ? (s.slogan_ar || s.slogan) : s.slogan;
+  const description = getLang() === 'ar' ? (s.description_ar || s.description) : s.description;
+  document.title = `${name}${slogan ? ' — ' + slogan : ''}`;
   const meta = $('metaDesc');
-  if (meta && s.description) meta.setAttribute('content', s.description);
+  if (meta && description) meta.setAttribute('content', description);
 
   document.querySelectorAll('[data-brand-name]').forEach((el) => {
     if (el.firstChild) el.firstChild.nodeValue = name.toUpperCase();
@@ -197,7 +208,7 @@ function applyContent(ct, s) {
     .map((n, i) => {
       const href = String(n.href || '#');
       const anchor = href.startsWith('#') ? href.slice(1) : '';
-      return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : 'target="_blank" rel="noopener"'} ${anchor ? `data-link="${esc(anchor)}"` : ''} class="${i === 0 ? 'is-active' : ''}">${esc(n.label || 'Link')}</a>`;
+      return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : 'target="_blank" rel="noopener"'} ${anchor ? `data-link="${esc(anchor)}"` : ''} class="${i === 0 ? 'is-active' : ''}">${esc(localized(n, 'label', 'Link'))}</a>`;
     })
     .join('');
   const nav = $('navLinks');
@@ -216,7 +227,7 @@ function applyContent(ct, s) {
       .map((n) => {
         const href = String(n.href || '#');
         const anchor = href.startsWith('#');
-        return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : 'target="_blank" rel="noopener"'}>${esc(n.label || 'Link')}</a>`;
+        return `<a href="${esc(href)}" ${anchor ? 'data-scroll' : 'target="_blank" rel="noopener"'}>${esc(localized(n, 'label', 'Link'))}</a>`;
       })
       .join('');
     fNav.querySelectorAll('a').forEach((a) => {
@@ -229,16 +240,16 @@ function applyContent(ct, s) {
 
   /* --- hero --- */
   const h = ct.hero || {};
-  const slogan = s.slogan || '';
+  const sloganText = getLang() === 'ar' ? (s.slogan_ar || s.slogan || '') : (s.slogan || '');
   const heroSlogan = $('heroSlogan');
-  if (heroSlogan) heroSlogan.textContent = slogan;
+  if (heroSlogan) heroSlogan.textContent = sloganText;
   const heroTitle = $('heroTitle');
-  if (heroTitle) heroTitle.textContent = h.title || '';
+  if (heroTitle) heroTitle.textContent = localized(h, 'title');
   const heroSub = $('heroSub');
-  if (heroSub) heroSub.textContent = h.subtitle || '';
+  if (heroSub) heroSub.textContent = localized(h, 'subtitle');
   const heroBtn = $('heroBtn');
   if (heroBtn) {
-    $('heroBtnText').textContent = h.buttonText || 'Explore';
+    $('heroBtnText').textContent = localized(h, 'buttonText', 'Explore');
     const link = String(h.buttonLink || '#menu');
     heroBtn.setAttribute('href', link);
     if (link.startsWith('#')) {
@@ -256,17 +267,19 @@ function applyContent(ct, s) {
   /* --- highlights strip --- */
   const track = $('highlightsTrack');
   if (track) {
-    const items = (Array.isArray(ct.highlights) ? ct.highlights : []).filter(Boolean);
-    const seq = items.length ? items : ['Aquarium Cafe & Restaurant'];
+    const items = getLang() === 'ar' && Array.isArray(ct.highlights_ar) && ct.highlights_ar.length
+      ? ct.highlights_ar.filter(Boolean)
+      : (Array.isArray(ct.highlights) ? ct.highlights : []).filter(Boolean);
+    const seq = items.length ? items : [getLang() === 'ar' ? 'أكواريوم كافيه ومطعم' : 'Aquarium Cafe & Restaurant'];
     track.innerHTML = [...seq, ...seq].map((t) => `<span>${esc(t)}</span><i>✦</i>`).join('');
   }
 
   /* --- about --- */
   if (ct.about) {
     const at = $('aboutTitle');
-    if (at) at.textContent = ct.about.title || '';
+    if (at) at.textContent = localized(ct.about, 'title');
     const ap = $('aboutText');
-    if (ap) ap.textContent = ct.about.text || '';
+    if (ap) ap.textContent = localized(ct.about, 'text');
     const ai = $('aboutImg');
     if (ai && ct.about.imageUrl) ai.src = resolveSrc(ct.about.imageUrl);
   }
@@ -274,9 +287,10 @@ function applyContent(ct, s) {
   /* --- contact --- */
   const k = ct.contact || {};
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
-  set('cAddress', k.address || '');
-  set('cAddress2', k.address || '');
-  set('fAddress', k.address || '');
+  const address = localized(k, 'address');
+  set('cAddress', address);
+  set('cAddress2', address);
+  set('fAddress', address);
 
   const phones = Array.isArray(k.phones) ? k.phones.filter(Boolean) : [];
   const phoneLinks = phones
@@ -313,7 +327,7 @@ function applyContent(ct, s) {
 
   /* working hours */
   const hourRows = (Array.isArray(ct.hours) ? ct.hours : [])
-    .map((r, i) => `<p${i ? ' class="dim"' : ''}>${esc(r.days)} · ${esc(r.time)}</p>`)
+     .map((r, i) => `<p${i ? ' class="dim"' : ''}>${esc(localized(r, 'days'))} · ${esc(localized(r, 'time'))}</p>`)
     .join('');
   const cHours = $('cHours');
   if (cHours) cHours.innerHTML = hourRows;
@@ -330,8 +344,8 @@ function applyContent(ct, s) {
       .map(
         (b) => `
       <div class="branch">
-        <b>${esc(b.name || '')}</b>
-        <p>${esc(b.address || '')}</p>
+        <b>${esc(localized(b, 'name'))}</b>
+        <p>${esc(localized(b, 'address'))}</p>
         ${b.phone ? `<a href="tel:${esc(String(b.phone).replace(/[^\d+]/g, ''))}"><svg class="icon"><use href="#i-phone"/></svg> ${esc(b.phone)}</a>` : ''}
       </div>`
       )
@@ -339,10 +353,10 @@ function applyContent(ct, s) {
   }
 
   /* footer */
-  set('fDescription', s.description || ct.footerAbout || '');
+  set('fDescription', getLang() === 'ar' ? (s.description_ar || ct.footerAbout_ar || s.description || ct.footerAbout || '') : (s.description || ct.footerAbout || ''));
   const copy = $('fCopyright');
   if (copy)
-    copy.innerHTML = esc(String(s.copyright || '').replace('{year}', new Date().getFullYear()));
+    copy.innerHTML = esc(String((getLang() === 'ar' ? (s.copyright_ar || s.copyright) : s.copyright) || '').replace('{year}', new Date().getFullYear()));
 }
 
 /* ═══════════════ 4 · sections (order & visibility) ═══════════════ */
@@ -416,6 +430,8 @@ export function initAppearance() {
   }
 
   loadAppearance();
+
+  document.addEventListener('lang:changed', () => applyAll(appearance));
 
   if (!PREVIEW) {
     let t = null;
