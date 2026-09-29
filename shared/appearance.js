@@ -25,9 +25,13 @@ export function defaultSettings() {
   return {
     cafeName: 'Aquarium Cafe & Restaurant',
     slogan: 'Sea View · Seafood · Coffee & Shisha',
+    slogan_ar: 'إطلالة بحرية · مأكولات بحرية · قهوة وشيشة',
     description:
       'A family terrace directly on the Hurghada waterfront — fresh seafood, generous shisha, fresh juices and real coffee, with an indoor aquarium and a kids\u2019 play corner.',
+    description_ar:
+      'تراس عائلي مباشرةً على واجهة الغردقة البحرية — مأكولات بحرية طازجة، شيشة، عصائر طازجة وقهوة، مع حوض أسماك وركن ألعاب للأطفال.',
     copyright: '© {year} Aquarium Cafe & Restaurant — on the Hurghada corniche, behind the General Hospital.',
+    copyright_ar: '© {year} أكواريوم كافيه ومطعم — على كورنيش الغردقة خلف المستشفى العام.',
     logoUrl: 'images/logo.svg',
     faviconUrl: 'images/logo.svg',
     currency: 'EGP',
@@ -116,24 +120,31 @@ export function defaultContent() {
   return {
     hero: {
       title:      'Dine where the sea meets your table',
+      title_ar:   'استمتع بوجبتك حيث يلتقي البحر بمائدتك',
       subtitle:
         'Fresh seafood, creamy smoothies, generous shisha and slow coffee — a family terrace on the Hurghada corniche, behind the General Hospital.',
+      subtitle_ar:
+        'مأكولات بحرية طازجة، سموذي كريمي، شيشة وقهوة على مهل — تراس عائلي على كورنيش الغردقة خلف المستشفى العام.',
       buttonText: 'Explore the menu',
+      buttonText_ar: 'استكشف المنيو',
       buttonLink: '#menu',
       imageUrl:   'images/hero-sea.jpg',
     },
     navItems: [
-      { label: 'Home',    href: '#hero' },
-      { label: 'Menu',    href: '#menu' },
-      { label: 'Gallery', href: '#gallery' },
-      { label: 'About',   href: '#about' },
-      { label: 'Reviews', href: '#reviews' },
-      { label: 'Contact', href: '#contact' },
+      { label: 'Home', label_ar: 'الرئيسية',    href: '#hero' },
+      { label: 'Menu', label_ar: 'المنيو',    href: '#menu' },
+      { label: 'Gallery', label_ar: 'المعرض', href: '#gallery' },
+      { label: 'About', label_ar: 'عن المطعم',   href: '#about' },
+      { label: 'Reviews', label_ar: 'التقييمات', href: '#reviews' },
+      { label: 'Contact', label_ar: 'تواصل معنا', href: '#contact' },
     ],
     about: {
       title: 'A terrace on the water, since day one',
+      title_ar: 'تراس على البحر منذ اليوم الأول',
       text:
         'Aquarium is where Hurghada families come to breathe. Our wooden terrace sits directly above the Red Sea, an aquarium tank glows inside, and the little ones have their own play corner while you finish your shisha. The kitchen moves between the day\u2019s fresh catch, stone-oven pizza and proper espresso — and the smoothie bar never stops. Morning coffee here is quiet; evenings are pure Red Sea.',
+      text_ar:
+        'أكواريوم هو المكان الذي تأتي إليه عائلات الغردقة للاستمتاع. تراسنا الخشبي يطل مباشرةً على البحر الأحمر، وداخل المطعم حوض أسماك وركن ألعاب للصغار. يقدم المطبخ صيد اليوم والبيتزا المخبوزة في الفرن وقهوة الإسبريسو، بينما يقدم بار السموذي مشروباته طوال اليوم. قهوة الصباح هادئة هنا، والمساء بطابع البحر الأحمر.',
       imageUrl: 'images/seafood.jpg',
     },
     highlights: [
@@ -144,25 +155,28 @@ export function defaultContent() {
       'Family Friendly',
       'Behind the General Hospital · Hurghada',
     ],
+    highlights_ar: ['تراس بإطلالة بحرية','مأكولات بحرية طازجة','لاونج شيشة','عصائر وسموذي طازج','مناسب للعائلات','خلف المستشفى العام · الغردقة'],
     contact: {
       address:
         'Behind the General Hospital (El Mustashfa El Aam), Hurghada, Red Sea — plus code 7R69+JH',
+      address_ar: 'خلف المستشفى العام، الغردقة، البحر الأحمر — كود الموقع 7R69+JH',
       phones:   ['+20 10 13913636'],
       whatsapp: 'https://wa.me/201013913636',
       email:    'aquariumseaview@gmail.com',
       mapsUrl:  'https://maps.app.goo.gl/D1q6Viif77U9MWqm8',
     },
     hours: [
-      { days: 'Every day', time: '8:00 AM – 2:00 AM' },
+      { days: 'Every day', days_ar: 'كل يوم', time: '8:00 AM – 2:00 AM', time_ar: '8:00 صباحًا – 2:00 صباحًا' },
     ],
     branches: [
-      { name: 'Aquarium — Main Terrace', address: 'Behind the General Hospital, Hurghada', phone: '+20 10 13913636' },
+      { name: 'Aquarium — Main Terrace', name_ar: 'أكواريوم — التراس الرئيسي', address: 'Behind the General Hospital, Hurghada', address_ar: 'خلف المستشفى العام، الغردقة', phone: '+20 10 13913636' },
     ],
     // v4: socials live in the social_links TABLE (Admin → Socials).
     // This object stays as a graceful fallback for old databases.
     socials: {},
     footerAbout:
       'Fresh seafood, shisha and slow coffee right on the Hurghada waterfront — bring the family, stay for the sunset.',
+    footerAbout_ar: 'مأكولات بحرية طازجة وشيشة وقهوة على واجهة الغردقة البحرية — تعال مع العائلة واستمتع بالغروب.',
   };
 }
 
@@ -234,8 +248,11 @@ export function settingsFromRows(rows, base = defaultSettings()) {
   const out = { ...base };
   if (m.cafe_name != null)   out.cafeName   = m.cafe_name;
   if (m.slogan != null)      out.slogan     = m.slogan;
+  if (m.slogan_ar != null)   out.slogan_ar  = m.slogan_ar;
   if (m.description != null) out.description = m.description;
+  if (m.description_ar != null) out.description_ar = m.description_ar;
   if (m.copyright != null)   out.copyright  = m.copyright;
+  if (m.copyright_ar != null) out.copyright_ar = m.copyright_ar;
   if (m.logo_url != null)    out.logoUrl    = m.logo_url;
   if (m.favicon_url != null) out.faviconUrl = m.favicon_url;
   if (m.currency != null)    out.currency   = m.currency || base.currency;
@@ -268,8 +285,11 @@ export function settingsToRows(s) {
   const rows = [
     { key: 'cafe_name',   value: String(s.cafeName ?? '').slice(0, 80) },
     { key: 'slogan',      value: String(s.slogan ?? '').slice(0, 160) },
+    { key: 'slogan_ar',   value: String(s.slogan_ar ?? '').slice(0, 160) },
     { key: 'description', value: String(s.description ?? '').slice(0, 1000) },
+    { key: 'description_ar', value: String(s.description_ar ?? '').slice(0, 1000) },
     { key: 'copyright',   value: String(s.copyright ?? '').slice(0, 200) },
+    { key: 'copyright_ar', value: String(s.copyright_ar ?? '').slice(0, 200) },
     { key: 'logo_url',    value: String(s.logoUrl ?? '').slice(0, 500) },
     { key: 'favicon_url', value: String(s.faviconUrl ?? '').slice(0, 500) },
     { key: 'currency',    value: String(s.currency ?? 'EGP').slice(0, 12) },
