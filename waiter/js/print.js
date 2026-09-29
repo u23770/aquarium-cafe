@@ -8,6 +8,7 @@
 //  Values are read only from the authoritative order snapshot.
 // ============================================================
 import { esc, money, moneyEgp, exactTime } from './ui.js';
+import { getLang } from '../shared/i18n.js';
 
 const $ = (id) => document.getElementById(id);
 const RESTAURANT_NAME = 'Aquarium Cafe & Restaurant';
@@ -170,19 +171,18 @@ function languageColumn(o, lang) {
 }
 
 function sheetHTML(o) {
+  const lang = getLang();
   return `
-    <div class="ps-page" dir="ltr">
+    <div class="ps-page" dir="${lang === 'ar' ? 'rtl' : 'ltr'}">
       <div class="ps-header">
-        <div class="ps-header-side ps-header-en">${esc(RESTAURANT_NAME)}<small>Order Receipt</small></div>
-        <img class="ps-logo" src="${LOGO_SRC}" alt="Aquarium Cafe & Restaurant" onerror="this.remove()" />
-        <div class="ps-header-side ps-header-ar" lang="ar" dir="rtl">أكواريوم كافيه ومطعم<small>إيصال الطلب</small></div>
+        <div class="ps-header-side">${esc(lang === 'ar' ? 'أكواريوم كافيه ومطعم' : RESTAURANT_NAME)}<small>${esc(lang === 'ar' ? 'إيصال الطلب' : 'Order Receipt')}</small></div>
+        <img class="ps-logo" src="${LOGO_SRC}" alt="${esc(lang === 'ar' ? 'أكواريوم كافيه ومطعم' : RESTAURANT_NAME)}" onerror="this.remove()" />
       </div>
       ${buildMapsQrHTML(o.mapsLink)}
       <div class="ps-columns">
-        ${languageColumn(o, 'en')}
-        ${languageColumn(o, 'ar')}
+        ${languageColumn(o, lang)}
       </div>
-      <div class="ps-foot">Thank you for your order! · شكرًا لطلبك!</div>
+      <div class="ps-foot">${esc(lang === 'ar' ? 'شكرًا لطلبك!' : 'Thank you for your order!')}</div>
     </div>`;
 }
 
