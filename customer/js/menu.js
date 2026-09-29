@@ -5,7 +5,7 @@
 //  from the dictionary; product/category names switch with the
 //  language through pickLang().
 // ============================================================
-import { getCategories, getProducts, getAdditions } from './api.js';
+import { getCategories, getProducts, getAdditions, getMenuDiscounts } from './api.js';
 import { addToCart } from './cart.js';
 import { money, esc, openLayer, closeLayer, observeReveals, toast } from './ui.js';
 import { t, pickLang, isRTL } from '../shared/i18n.js';
@@ -19,6 +19,7 @@ let additions = [];
 let activeSlug = 'all';
 let query = '';
 let sortMode = 'default';
+let menuDiscounts = [];
 
 let modalProduct = null;
 let modalQty = 1;
@@ -178,6 +179,51 @@ function visibleProducts() {
   return list;
 }
 
+/* ---------- menu discount display ---------- */
+function menuDiscountForProduct(p) {
+  const price = Number(p?.price ?? 0);
+  if (!(price > 0)) return null;
+
+  const candidates = menuDiscounts.filter((d) => {
+    if (d.type === 'product') return Number(d.target_id) === Number(p.id);
+    if (d.type === 'category') return Number(d.target_id) === Number(p.category_id);
+    return d.type === 'global' && d.value_type === 'percent';
+  });
+
+  let best = null;
+  for (const d of candidates) {
+    let amount = 0;
+    if (d.value_type === 'percent') {
+      amount = Math.round(price * Number(d.value) / 100 * 100) / 100;
+      if (d.max_discount != null) amount = Math.min(amount, Number(d.max_discount));
+    } else {
+      amount = Math.min(Number(d.value), price);
+    }
+    amount = Math.min(Math.max(amount, 0), price);
+    if (!(amount > 0)) continue;
+
+    const salePrice = Math.round((price - amount) * 100) / 100;
+    const pct = Math.round((amount / price) * 100);
+    if (!best ||
+        amount > best.amount ||
+        (amount === best.amount && Number(d.priority || 0) > Number(best.discount.priority || 0))) {
+      best = { amount, salePrice, percent: pct, discount: d };
+    }
+  }
+  return best;
+}
+
+function priceMarkup(p) {
+  const d = p?.menuDiscount;
+  if (!d || !(d.salePrice < Number(p.price))) return money(p.price);
+
+  return `<span class="price-off">
+    <span class="price-off__old">${esc(money(p.price))}</span>
+    <span class="price-off__new">${esc(money(d.salePrice))}</span>
+    <span class="price-off__badge">-${d.percent}%</span>
+  </span>`;
+}
+
 /* ---------- product grid ---------- */
 function cardHTML(p, i) {
   const fav = favs.has(p.id);
@@ -200,7 +246,7 @@ function cardHTML(p, i) {
       <h3 class="card__name">${esc(name)}</h3>
       <p class="card__desc">${esc(pdesc(p))}</p>
       <div class="card__foot">
-        <span class="card__price">${money(p.price)}</span>
+        <span class="card__price">${priceMarkup(p)}</span>
         <button class="card__add" data-add="${p.id}" aria-label="${esc(t('card.addAria', { name }))}">
           <svg class="icon"><use href="#i-plus"/></svg>
         </button>
@@ -398,8 +444,9 @@ export async function initMenu() {
   renderSkeletons();
 
   try {
-    [categories, products, additions] = await Promise.all([getCategories(), getProducts(), getAdditions()]);
+    [categories, products, additions, menuDiscounts] = await Promise.all([getCategories(), getProducts(), getAdditions(), getMenuDiscounts()]);
     products = groupProducts(products);
+    products = products.map((p) => ({ ...p, menuDiscount: menuDiscountForProduct(p) }));
     const stat = document.getElementById('statItems');
     if (stat) stat.textContent = '200+';
   } catch (err) {
