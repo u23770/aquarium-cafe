@@ -44,9 +44,7 @@ function cardHTML(r, i) {
 function updateReviewIntro() {
   const subtitle = document.querySelector('[data-i18n-html="rv.subHtml"]');
   if (!subtitle) return;
-  subtitle.textContent = isRTL()
-    ? 'آراء حقيقية من ضيوفنا — نعرضها بعد موافقة الفريق.'
-    : 'Real reviews from our guests — shown after team approval.';
+  subtitle.textContent = t('rv.subHtml').replace(/<[^>]*>/g, '');
 }
 
 /* The hero shows the restaurant's Google rating only.
@@ -54,7 +52,7 @@ function updateReviewIntro() {
 function updateGoogleRatingLabel() {
   const el = document.querySelector('[data-i18n="hero.statRating"]');
   if (!el) return;
-  el.textContent = isRTL() ? 'تقييم Google' : 'Google rating';
+  el.textContent = t('hero.statRating');
 }
 
 async function render() {
