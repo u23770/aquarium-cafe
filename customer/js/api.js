@@ -353,7 +353,7 @@ export async function getMenuDiscounts() {
   const rows = await run(
     supabase
       .from('discounts')
-      .select('id, name, type, value_type, value, min_order, max_discount, free_delivery, priority, used_count, starts_at, expires_at, target_id')
+      .select('id, name, type, value_type, value, min_order, max_discount, max_uses, free_delivery, priority, used_count, starts_at, expires_at, target_id')
       .is('code', null)
       .eq('active', true)
       .lte('starts_at', now),
