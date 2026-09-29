@@ -444,7 +444,12 @@ export async function initMenu() {
   renderSkeletons();
 
   try {
-    [categories, products, additions, menuDiscounts] = await Promise.all([getCategories(), getProducts(), getAdditions(), getMenuDiscounts()]);
+    [categories, products, additions, menuDiscounts] = await Promise.all([
+      getCategories(),
+      getProducts(),
+      getAdditions(),
+      getMenuDiscounts().catch(() => []),
+    ]);
     products = groupProducts(products);
     products = products.map((p) => ({ ...p, menuDiscount: menuDiscountForProduct(p) }));
     const stat = document.getElementById('statItems');
