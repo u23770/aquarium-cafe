@@ -43,9 +43,8 @@ const NAV_KEYS = {
 /** Switch known nav/footer labels with the language — DB labels win in EN,
     dictionary labels take over in AR. Safe to call after every re-render. */
 export function applyNavLang() {
-  document.querySelectorAll('[data-i18n-nav]').forEach((a) => {
-    if (a.dataset.dbLabel != null) a.textContent = a.dataset.dbLabel;
-  });
+  // Navigation labels are rendered from the bilingual CMS object in applyContent().
+  // Do not overwrite the selected language after rendering.
 }
 
 export const PREVIEW = new URLSearchParams(location.search).has('preview');
@@ -154,7 +153,7 @@ function applyTheme(t) {
 
 /* ═══════════════ 2 · identity & feature switches ═══════════════ */
 function applySettings(s) {
-  const name = s.cafeName?.trim() || 'Aquarium Cafe & Restaurant';
+  const name = (getLang() === 'ar' ? (s.cafeName_ar || s.cafeName) : s.cafeName)?.trim() || 'Aquarium Cafe & Restaurant';
 
   const slogan = getLang() === 'ar' ? (s.slogan_ar || s.slogan) : s.slogan;
   const description = getLang() === 'ar' ? (s.description_ar || s.description) : s.description;
