@@ -41,6 +41,7 @@ export const dictionary = {
     'top.saving': 'Saving…',
     'top.saveFailed': 'Save failed',
 
+    'pt.commissionStatement': 'Commission Statement',
     'pt.overview': 'Overview',
     'pt.customizer': 'Website Customizer',
     'pt.content': 'Website Content',
@@ -824,6 +825,7 @@ export const dictionary = {
     'top.saving': 'بيتحفظ…',
     'top.saveFailed': 'الحفظ فشل',
 
+    'pt.commissionStatement': 'كشف حساب العمولة',
     'pt.overview': 'نظرة عامة',
     'pt.customizer': 'تخصيص الموقع',
     'pt.content': 'محتوى الموقع',
