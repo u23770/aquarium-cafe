@@ -76,6 +76,7 @@ export const dictionary = {
     'chip.favorites': 'Favorites',
     'chip.featured': 'Featured',
     'menu.noResultsTitle': 'Nothing matches that',
+    'menu.noAdditions': 'No additions are configured.',
     'menu.noResultsSub': 'Try another word — or clear the search.',
     'menu.favEmptyTitle': 'No favorites yet',
     'menu.favEmptySub': 'Tap the ♥ on any dish you love.',
