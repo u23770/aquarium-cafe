@@ -27,7 +27,7 @@ const $ = (id) => document.getElementById(id);
 /* Browser notification permission is requested only after a staff gesture. */
 $('notifyBtn')?.addEventListener('click', async () => {
   try {
-    if (waiterSWError) throw new Error('The notification background service could not start. Refresh the page and try again.');
+    if (waiterSWError) throw new Error(t('err.notificationService'));
     const reg = waiterSWRegistration || await waiterSWReady;
     await reg.update().catch(() => {});
     await registerPush('waiter', null, reg);

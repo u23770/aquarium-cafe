@@ -74,7 +74,7 @@ function paintCommissionNav() {
   }
 
   const label = link.querySelector('[data-commission-label]');
-  if (label) label.textContent = document.documentElement.lang === 'ar' ? 'العمولات' : 'Commission';
+  if (label) label.textContent = t('nav.commission');
 }
 
 document.addEventListener('lang:changed', () => {
@@ -113,9 +113,7 @@ async function navigate() {
   );
 
   const title = $('pageTitle');
-  title.textContent = currentKey === 'commission'
-    ? (document.documentElement.lang === 'ar' ? 'كشف حساب العمولة' : 'Commission Statement')
-    : t(route.titleKey);
+  title.textContent = currentKey === 'commission' ? t('pt.commissionStatement') : t(route.titleKey);
 
   title.style.animation = 'none';
   void title.offsetWidth;

@@ -8,6 +8,7 @@
 
 export const dictionary = {
   en: {
+    'nav.commission': 'Commission',
     /* ---- shell ---- */
     'side.tag': 'ADMIN',
     'side.gStudio': 'Studio',
@@ -40,6 +41,7 @@ export const dictionary = {
     'top.saving': 'Saving…',
     'top.saveFailed': 'Save failed',
 
+    'pt.commissionStatement': 'Commission Statement',
     'pt.overview': 'Overview',
     'pt.customizer': 'Website Customizer',
     'pt.content': 'Website Content',
@@ -790,6 +792,7 @@ export const dictionary = {
 
   /* ════════════════════ ARABIC ════════════════════ */
   ar: {
+    'nav.commission': 'العمولات',
     /* ---- shell ---- */
     'side.tag': 'الإدارة',
     'side.gStudio': 'الاستوديو',
@@ -822,6 +825,7 @@ export const dictionary = {
     'top.saving': 'بيتحفظ…',
     'top.saveFailed': 'الحفظ فشل',
 
+    'pt.commissionStatement': 'كشف حساب العمولة',
     'pt.overview': 'نظرة عامة',
     'pt.customizer': 'تخصيص الموقع',
     'pt.content': 'محتوى الموقع',

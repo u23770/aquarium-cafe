@@ -6,6 +6,7 @@
 
 export const dictionary = {
   en: {
+    'err.notificationService': 'The notification service could not start. Refresh the page and try again.',
     'app.tag': 'WAITER',
     'top.live': 'Live',
     'top.offline': 'Offline',
@@ -139,6 +140,7 @@ export const dictionary = {
   },
 
   ar: {
+    'err.notificationService': 'تعذر تشغيل خدمة الإشعارات. حدّث الصفحة وحاول مرة أخرى.',
     'app.tag': 'الويتر',
     'top.live': 'لايف',
     'top.offline': 'مفيش اتصال',
