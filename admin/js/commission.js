@@ -198,7 +198,7 @@ async function buildStatement(from, to) {
     p_period_end: pEnd
   });
 
-  const orders = await run(
+  const loyaltyRows = await run(\n    supabase.from('loyalty_settings').select('value').eq('key', 'config').maybeSingle(),\n    OFFLINE\n  );\n  const loyaltyPointValue = moneyValue(loyaltyRows?.value?.point_value_egp);\n\n  const orders = await run(
     supabase.from('delivery_orders')
       .select('id, created_at, subtotal, discount_amount, delivery_fee, vat_amount, loyalty_redeemed, status')
       .gte('created_at', pStart)
