@@ -27,7 +27,7 @@ const copy = () => isArabic() ? {
   invalid: 'اختر فترة صحيحة لا تتجاوز 32 يومًا.',
   loading: 'جارٍ إنشاء الكشف…', error: 'تعذر إنشاء الكشف.',
   refresh: 'تحديث', generatedAt: 'تاريخ الإصدار', statementNo: 'رقم الكشف',
-  note: 'يتم احتساب العمولة 5% على قيمة الطلب بعد الخصم + رسوم التوصيل. ضريبة القيمة المضافة 14% لا تدخل في العمولة، والطلبات الملغاة/المرتجعة مستبعدة.'
+  note: 'يتم احتساب العمولة 5% على قيمة الطلب بعد جميع الخصومات، بما فيها نقاط الولاء، + رسوم التوصيل. ضريبة القيمة المضافة 14% لا تدخل في العمولة، والطلبات الملغاة/المرتجعة مستبعدة.'
 } : {
   title: 'Commission Statement',
   subtitle: 'Detailed commission report for the selected period',
@@ -44,7 +44,7 @@ const copy = () => isArabic() ? {
   invalid: 'Choose a valid period of 32 days or less.',
   loading: 'Generating statement…', error: 'Could not generate the statement.',
   refresh: 'Refresh', generatedAt: 'Generated', statementNo: 'Statement No.',
-  note: 'The 5% commission is calculated on the order value after discount plus delivery fees. 14% VAT is excluded, and cancelled/refunded orders are not counted.'
+  note: 'The 5% commission is calculated on the order value after all discounts, including loyalty points, plus delivery fees. 14% VAT is excluded, and cancelled/refunded orders are not counted.'
 };
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -200,7 +200,7 @@ async function buildStatement(from, to) {
 
   const orders = await run(
     supabase.from('delivery_orders')
-      .select('id, created_at, subtotal, discount_amount, delivery_fee, vat_amount, status')
+      .select('id, created_at, subtotal, discount_amount, delivery_fee, vat_amount, loyalty_redeemed, status')
       .gte('created_at', pStart)
       .lt('created_at', pEnd)
       .order('created_at', { ascending: true }),
