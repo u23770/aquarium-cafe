@@ -244,7 +244,7 @@ function renderStatement(view, data) {
         const excluded = o.status === 'Cancelled';
         const subtotal = moneyValue(o.subtotal);
         const discount = moneyValue(o.discount_amount);
-        const deliveryFee = moneyValue(o.delivery_fee);\n        const commissionBase = excluded ? 0 : Math.max(subtotal - discount, 0) + deliveryFee;
+        const pointsRedeemed = moneyValue(o.loyalty_redeemed);\n        const deliveryFee = moneyValue(o.delivery_fee);\n        const loyaltyDiscount = pointsRedeemed * moneyValue(data.loyaltyPointValue);\n        const commissionBase = excluded ? 0 : Math.max(subtotal - discount - loyaltyDiscount, 0) + deliveryFee;
         const commission = excluded ? 0 : Math.round(commissionBase * RATE * 100) / 100;
 
         return `<tr>
