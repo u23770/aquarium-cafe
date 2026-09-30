@@ -483,7 +483,7 @@ export async function saveKVConfig(table, config) {
   // RLS grants UPDATE only on the config row (single-operator model),
   // so upsert (which also needs INSERT rights) would fail — plain update.
   const row = await run(
-    supabase.from(table).update({ value: config }).eq('key', 'config').select('key'),
+    supabase.from(table).update({ value: config }).eq('key', 'config'),
     OFFLINE
   );
   if (Array.isArray(row) && row.length === 0)
