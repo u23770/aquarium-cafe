@@ -283,7 +283,7 @@ function goStep(n) {
   paintStep();
 }
 
-function zoneName(z) { return pickLang(z, 'name_en'); }
+function zoneName(z) { return pickLang(z, 'name'); }
 
 function paintZones() {
   if (!zones.length) {
