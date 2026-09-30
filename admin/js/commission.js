@@ -27,7 +27,7 @@ const copy = () => isArabic() ? {
   invalid: 'اختر فترة صحيحة لا تتجاوز 32 يومًا.',
   loading: 'جارٍ إنشاء الكشف…', error: 'تعذر إنشاء الكشف.',
   refresh: 'تحديث', generatedAt: 'تاريخ الإصدار', statementNo: 'رقم الكشف',
-  note: 'يتم احتساب العمولة على المجموع الفرعي بعد الخصم فقط. رسوم التوصيل والضريبة لا تدخل في العمولة، والطلبات الملغاة مستبعدة.'
+  note: 'يتم احتساب العمولة 5% على قيمة الطلب بعد الخصم + رسوم التوصيل. ضريبة القيمة المضافة 14% لا تدخل في العمولة، والطلبات الملغاة/المرتجعة مستبعدة.'
 } : {
   title: 'Commission Statement',
   subtitle: 'Detailed commission report for the selected period',
@@ -44,7 +44,7 @@ const copy = () => isArabic() ? {
   invalid: 'Choose a valid period of 32 days or less.',
   loading: 'Generating statement…', error: 'Could not generate the statement.',
   refresh: 'Refresh', generatedAt: 'Generated', statementNo: 'Statement No.',
-  note: 'Commission is calculated on subtotal after discount only. Delivery fees and VAT are excluded, and cancelled orders are not counted.'
+  note: 'The 5% commission is calculated on the order value after discount plus delivery fees. 14% VAT is excluded, and cancelled/refunded orders are not counted.'
 };
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -244,8 +244,8 @@ function renderStatement(view, data) {
         const excluded = o.status === 'Cancelled';
         const subtotal = moneyValue(o.subtotal);
         const discount = moneyValue(o.discount_amount);
-        const commissionBase = excluded ? 0 : Math.max(subtotal - discount, 0);
-        const commission = excluded ? 0 : commissionBase * RATE;
+        const deliveryFee = moneyValue(o.delivery_fee);\n        const commissionBase = excluded ? 0 : Math.max(subtotal - discount, 0) + deliveryFee;
+        const commission = excluded ? 0 : Math.round(commissionBase * RATE * 100) / 100;
 
         return `<tr>
           <td><strong>${esc(shortId(o.id))}</strong></td>
