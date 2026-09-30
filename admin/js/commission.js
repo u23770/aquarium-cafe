@@ -216,7 +216,7 @@ async function buildStatement(from, to) {
   const rows = Array.isArray(orders) ? orders : [];
   const eligible = rows.filter((o) => o.status !== 'Cancelled');
   const gross = rows.reduce((s, o) => s + moneyValue(o.subtotal), 0);
-  const discounts = rows.reduce((s, o) => s + moneyValue(o.discount_amount), 0);
+  const discounts = rows.reduce((s, o) => s + moneyValue(o.discount_amount) + moneyValue(o.loyalty_redeemed) * loyaltyPointValue, 0);
   const delivery = rows.reduce((s, o) => s + moneyValue(o.delivery_fee), 0);
   const vat = rows.reduce((s, o) => s + moneyValue(o.vat_amount), 0);
 
@@ -250,7 +250,7 @@ function renderStatement(view, data) {
     ? data.rows.map((o) => {
         const excluded = o.status === 'Cancelled';
         const subtotal = moneyValue(o.subtotal);
-        const discount = moneyValue(o.discount_amount);
+        const discount = moneyValue(o.discount_amount) + moneyValue(o.loyalty_redeemed) * moneyValue(data.loyaltyPointValue);
         const pointsRedeemed = moneyValue(o.loyalty_redeemed);
         const deliveryFee = moneyValue(o.delivery_fee);
         const loyaltyDiscount = pointsRedeemed * moneyValue(data.loyaltyPointValue);
