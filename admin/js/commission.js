@@ -228,6 +228,7 @@ async function buildStatement(from, to) {
     discounts,
     delivery,
     vat,
+    loyaltyPointValue,
     cancelled: rows.length - eligible.length,
     from,
     to
