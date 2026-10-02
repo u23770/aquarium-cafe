@@ -11,7 +11,7 @@ import { esc, money, moneyEgp, exactTime } from './ui.js';
 
 const $ = (id) => document.getElementById(id);
 const RESTAURANT_NAME = 'Aquarium Cafe & Restaurant';
-const LOGO_SRC = '../customer/images/logo.svg';
+const LOGO_SRC = new URL('../../customer/images/logo.svg', import.meta.url).href;
 
 const LABELS = {
   en: {
@@ -315,12 +315,27 @@ export function printDeliveryOrder(o) {
   }
   installPrintStyles();
   sheet.innerHTML = sheetHTML(o);
+
+  const printWhenReady = async () => {
+    const logo = sheet.querySelector('.ps-logo');
+    if (logo && !logo.complete) {
+      await new Promise((resolve) => {
+        logo.addEventListener('load', resolve, { once: true });
+        logo.addEventListener('error', resolve, { once: true });
+      });
+    }
+    if (logo?.decode) {
+      try { await logo.decode(); } catch {}
+    }
+    window.print();
+  };
+
   const cleanup = () => {
     document.getElementById('aquariumPrintRuntimeStyles')?.remove();
     sheet.innerHTML = '';
     window.removeEventListener('afterprint', cleanup);
   };
   window.addEventListener('afterprint', cleanup, { once: true });
-  requestAnimationFrame(() => window.print());
+  requestAnimationFrame(() => { printWhenReady(); });
   return true;
 }
