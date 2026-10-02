@@ -62,6 +62,7 @@ function trapLayerKeydown(e) {
 }
 
 document.addEventListener('keydown', trapLayerKeydown);
+document.querySelectorAll('.modal[aria-hidden="true"], .drawer[aria-hidden="true"], .overlay[aria-hidden="true"]').forEach((el) => { el.inert = true; });
 
 export function lockScroll(on) {
   locks = Math.max(0, locks + (on ? 1 : -1));
