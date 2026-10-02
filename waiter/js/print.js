@@ -66,43 +66,11 @@ function buildMapsQrHTML(mapsLink) {
     return `
       <div class="ps-location-qr">
         <div class="ps-location-qr__code">${tag}</div>
-        <div class="ps-location-qr__label">Scan for exact location · امسح للموقع بالضبط</div>
+        <div class="ps-location-qr__text"><b>Google Maps</b><span>موقع Google Maps</span><small>Scan for exact location · امسح للوصول للموقع</small></div>
       </div>`;
   } catch {
     return '';
   }
-}
-
-function itemRows(items, lang) {
-  return (Array.isArray(items) ? items : []).map((it) => {
-    const name = lang === 'ar' ? (it.name_ar || it.name || '—') : (it.name || it.name_ar || '—');
-    return `
-      <tr>
-        <td class="ps-item-name">${esc(name)}</td>
-        <td class="ps-item-qty">${esc(it.quantity ?? '')}</td>
-        <td class="ps-item-price">${money(it.price)}</td>
-        <td class="ps-item-line">${money(it.lineTotal)}</td>
-      </tr>`;
-  }).join('');
-}
-
-function driverRows(o, lang) {
-  const l = LABELS[lang];
-  const name = o.driverName || o.tempDriverName || '';
-  const phone = o.driverPhone || o.tempDriverPhone || '';
-  if (!name) return `<div class="ps-row"><span>${esc(l.driver)}</span><b>${esc(l.notAssigned)}</b></div>`;
-  return `
-    <div class="ps-row"><span>${esc(l.driver)}</span><b>${esc(name)}</b></div>
-    ${phone ? `<div class="ps-row"><span>${esc(l.driverPhone)}</span><b>${esc(phone)}</b></div>` : ''}`;
-}
-
-function sectionHTML(title, body, extra = '') {
-  return `<section class="ps-section ${extra}"><h4>${esc(title)}</h4>${body}</section>`;
-}
-
-function row(label, value, block = false) {
-  if (value == null || String(value).trim() === '') return '';
-  return `<div class="ps-row${block ? ' ps-row--block' : ''}"><span>${esc(label)}</span><b>${esc(value)}</b></div>`;
 }
 
 function bilingualRow(enLabel, value, arLabel, options = {}) {
