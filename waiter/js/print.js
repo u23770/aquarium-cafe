@@ -11,7 +11,7 @@ import { esc, money, moneyEgp, exactTime } from './ui.js';
 
 const $ = (id) => document.getElementById(id);
 const RESTAURANT_NAME = 'Aquarium Cafe & Restaurant';
-const LOGO_SRC = new URL('../images/logo.svg', import.meta.url).href;
+const LOGO_SRC = new URL('../images/pwa-logo.png', import.meta.url).href;
 
 const LABELS = {
   en: {
