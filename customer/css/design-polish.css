@@ -819,3 +819,35 @@
 [dir="rtl"] .preloader__word {
   direction: ltr;
 }
+/* ---------- navigation reliability ---------- */
+@media (max-width: 760px) {
+  .nav {
+    position: fixed !important;
+  }
+
+  .nav__links {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw;
+    min-height: 100svh;
+    height: 100svh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    overflow-y: auto;
+    padding: calc(var(--nav-h) + 2rem) 1.5rem 2rem;
+  }
+
+  .nav__links a[data-scroll] {
+    position: relative;
+    display: block;
+    width: auto;
+  }
+
+  .nav__actions,
+  .brand {
+    position: relative;
+    z-index: 3;
+  }
+}
