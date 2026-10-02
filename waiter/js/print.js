@@ -8,7 +8,6 @@
 //  Values are read only from the authoritative order snapshot.
 // ============================================================
 import { esc, money, moneyEgp, exactTime } from './ui.js';
-import { getLang } from '../shared/i18n.js';
 
 const $ = (id) => document.getElementById(id);
 const RESTAURANT_NAME = 'Aquarium Cafe & Restaurant';
@@ -65,9 +64,9 @@ function buildMapsQrHTML(mapsLink) {
     qr.make();
     const tag = qr.createSvgTag({ scalable: true });
     return `
-      <div class="ps-qr">
-        <div class="ps-qr__code">${tag}</div>
-        <div class="ps-qr__label">Scan for exact location · امسح للموقع بالضبط</div>
+      <div class="ps-location-qr">
+        <div class="ps-location-qr__code">${tag}</div>
+        <div class="ps-location-qr__label">Scan for exact location · امسح للموقع بالضبط</div>
       </div>`;
   } catch {
     return '';
@@ -106,7 +105,7 @@ function row(label, value, block = false) {
   return `<div class="ps-row${block ? ' ps-row--block' : ''}"><span>${esc(label)}</span><b>${esc(value)}</b></div>`;
 }
 
-function languageColumn(o, lang) {
+function languageColumn(o, lang, qrHtml = '') {
   const l = LABELS[lang];
   const [statusEn, statusAr] = statusLabels(o.status);
   const [payEn, payAr] = paymentLabels(o.paymentMethod);
@@ -162,7 +161,7 @@ function languageColumn(o, lang) {
     <div class="ps-lang-col ps-lang-${lang}" lang="${lang}" dir="${lang === 'ar' ? 'rtl' : 'ltr'}">
       ${sectionHTML(l.receipt, meta, 'ps-meta-section')}
       ${sectionHTML(l.customer, customer)}
-      ${sectionHTML(l.delivery, delivery)}
+      ${sectionHTML(l.delivery, delivery + qrHtml)}
       ${sectionHTML(l.items, items, 'ps-items-section')}
       ${sectionHTML(l.total, totals, 'ps-totals')}
       ${sectionHTML(l.payment, row(l.method, payment))}
@@ -171,18 +170,25 @@ function languageColumn(o, lang) {
 }
 
 function sheetHTML(o) {
-  const lang = getLang();
+  const qr = buildMapsQrHTML(o.mapsLink);
   return `
-    <div class="ps-page" dir="${lang === 'ar' ? 'rtl' : 'ltr'}">
+    <div class="ps-page">
       <div class="ps-header">
-        <div class="ps-header-side">${esc(lang === 'ar' ? 'أكواريوم كافيه ومطعم' : RESTAURANT_NAME)}<small>${esc(lang === 'ar' ? 'إيصال الطلب' : 'Order Receipt')}</small></div>
-        <img class="ps-logo" src="${LOGO_SRC}" alt="${esc(lang === 'ar' ? 'أكواريوم كافيه ومطعم' : RESTAURANT_NAME)}" onerror="this.remove()" />
+        <img class="ps-logo" src="${LOGO_SRC}" alt="${esc(RESTAURANT_NAME)}" onerror="this.remove()" />
+        <div class="ps-brand">
+          <strong>${esc(RESTAURANT_NAME)}</strong>
+          <span>أكواريوم كافيه ومطعم</span>
+        </div>
+        <div class="ps-receipt-title">
+          <strong>Order Receipt</strong>
+          <span>إيصال الطلب</span>
+        </div>
       </div>
-      ${buildMapsQrHTML(o.mapsLink)}
       <div class="ps-columns">
-        ${languageColumn(o, lang)}
+        ${languageColumn(o, 'en', qr)}
+        ${languageColumn(o, 'ar', '')}
       </div>
-      <div class="ps-foot">${esc(lang === 'ar' ? 'شكرًا لطلبك!' : 'Thank you for your order!')}</div>
+      <div class="ps-foot">Thank you for your order! · شكرًا لطلبك!</div>
     </div>`;
 }
 
@@ -198,18 +204,19 @@ function installPrintStyles() {
       body > *:not(#printSheet) { display: none !important; }
       #printSheet { display: block !important; position: static !important; width: 100% !important; background: #fff !important; color: #111 !important; }
       #printSheet .ps-page { width: 100%; font-family: Arial, "Noto Sans Arabic", sans-serif; font-size: 9.5px; line-height: 1.3; }
-      #printSheet .ps-header { display: grid; grid-template-columns: 1fr 58px 1fr; align-items: center; gap: 8px; border-bottom: 1.5px solid #111; padding-bottom: 4px; }
-      #printSheet .ps-logo { width: 52px; height: 52px; object-fit: contain; justify-self: center; }
-      #printSheet .ps-header-side { font-weight: 800; font-size: 13px; }
-      #printSheet .ps-header-side small { display: block; font-size: 8px; font-weight: 600; color: #555; margin-top: 1px; }
-      #printSheet .ps-header-ar { text-align: right; }
-      #printSheet .ps-qr { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 5px auto 6px; gap: 1px; text-align: center; }
-      #printSheet .ps-qr__code svg { width: 70px; height: 70px; display: block; }
-      #printSheet .ps-qr__label { font-size: 7.5px; color: #444; }
+      #printSheet .ps-header { display: flex; align-items: center; justify-content: center; gap: 12px; border-bottom: 1.5px solid #111; padding-bottom: 5px; margin-bottom: 6px; }
+      #printSheet .ps-logo { width: 64px; height: 64px; object-fit: contain; flex: 0 0 64px; }
+      #printSheet .ps-brand, #printSheet .ps-receipt-title { display: flex; flex-direction: column; gap: 1px; }
+      #printSheet .ps-brand strong, #printSheet .ps-receipt-title strong { font-size: 12px; }
+      #printSheet .ps-brand span, #printSheet .ps-receipt-title span { font-size: 9px; }
+      #printSheet .ps-receipt-title { text-align: right; }
+      #printSheet .ps-location-qr { margin-top: 4px; padding-top: 3px; border-top: 1px dashed #bbb; display: flex; align-items: center; gap: 6px; }
+      #printSheet .ps-location-qr__code svg { width: 58px; height: 58px; display: block; flex: 0 0 58px; }
+      #printSheet .ps-location-qr__label { font-size: 6.8px; color: #444; }
       #printSheet .ps-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: start; }
       #printSheet .ps-lang-col { min-width: 0; border: 1px solid #ccc; padding: 5px; }
-      #printSheet .ps-lang-en { border-right: 1px solid #bbb; }
-      #printSheet .ps-lang-ar { border-left: 1px solid #bbb; }
+      #printSheet .ps-lang-en { border-right: 1px solid #bbb; direction: ltr; }
+      #printSheet .ps-lang-ar { border-left: 1px solid #bbb; direction: rtl; }
       #printSheet .ps-section { margin: 3px 0 5px; break-inside: avoid; }
       #printSheet .ps-section h4 { font-size: 8px; margin: 0 0 2px; padding-bottom: 1px; border-bottom: 1px solid #ccc; color: #444; font-weight: 800; }
       #printSheet .ps-meta-section h4 { font-size: 9px; color: #111; }
