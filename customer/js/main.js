@@ -130,7 +130,9 @@ onScroll();
 /* ---------- burger / mobile menu ---------- */
 $('burger').addEventListener('click', () => {
   const open = nav.classList.toggle('open');
-  $('burger').setAttribute('aria-expanded', String(open));
+  const burger = $('burger');
+  burger.setAttribute('aria-expanded', String(open));
+  burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 });
 
 /* ---------- smooth scroll with nav offset ---------- */
@@ -143,6 +145,7 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   nav.classList.remove('open');
   $('burger').setAttribute('aria-expanded', 'false');
+  $('burger').setAttribute('aria-label', 'Open menu');
   const off = document.body.dataset.navSticky === 'off' ? 0 : NAV_OFFSET;
   const top = target.getBoundingClientRect().top + window.scrollY - off;
   window.scrollTo({ top, behavior: 'smooth' });
