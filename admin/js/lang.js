@@ -284,6 +284,7 @@ export const dictionary = {
     'dc.saved': '“{name}” saved ✓',
     'dc.added': '“{name}” created',
     'dc.deleted': '“{name}” deleted',
+    'dc.keptHistory': '“{name}” has past uses, so it was disabled instead of deleted. Its history was preserved.',
     'dc.delTitle': 'Delete “{name}”?',
     'dc.delText': 'Customers stop getting it immediately. Orders that used it keep their records.',
 
@@ -1059,6 +1060,7 @@ export const dictionary = {
     'dc.saved': '«{name}» اتحفظ ✓',
     'dc.added': '«{name}» اتعمل',
     'dc.deleted': '«{name}» اتحذف',
+    'dc.keptHistory': '«{name}» اتوقف بدل الحذف لأنه مستخدم قبل كده، وسجل الاستخدام محفوظ.',
     'dc.delTitle': 'تحذف «{name}»؟',
     'dc.delText': 'العملاء هيبطلوا ياخدوه فورًا. الطلبات اللي استخدمته بتحتفظ بسجلاتها.',
 
