@@ -405,34 +405,52 @@ export async function placeDeliveryOrder(payload) {
 /** Edit an existing delivery order while it is still Received/Accepted.
  *  The server reprices the cart and recalculates delivery + VAT.
  */
+const GUEST_TRACK_KEY = 'aquarium_guest_tracking_v1';
+
+function getGuestTrackingToken(orderId) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(GUEST_TRACK_KEY) || 'null');
+    return saved?.id === orderId && typeof saved.token === 'string' ? saved.token : '';
+  } catch {
+    return '';
+  }
+}
+
 export async function editDeliveryOrder(orderId, items) {
+  const token = getGuestTrackingToken(orderId);
+  if (token) return rpc('edit_guest_order', { p_order_id: orderId, p_token: token, p_items: items });
   return rpc('edit_delivery_order', { p_order_id: orderId, p_items: items });
 }
 
 /** Cancel an existing delivery order while it is still Received/Accepted. */
 export async function cancelDeliveryOrder(orderId) {
+  const token = getGuestTrackingToken(orderId);
+  if (token) return rpc('cancel_guest_order', { p_order_id: orderId, p_token: token });
   return rpc('cancel_delivery_order', { p_order_id: orderId });
 }
 
 /** Fetch one delivery order by its (unguessable) uuid tracking id. */
 export async function getDeliveryOrder(id) {
   try {
-    const row = await run(
-      supabase
-        .from('delivery_orders')
-        .select(`id, customer_name, customer_phone, address, address_detail, maps_link, notes,
-                 payment_method, items, subtotal, delivery_fee, vat_amount, total, status, driver_id,
-                 estimated_minutes, delivery_note, zone_id, subzone_id,
-                 temp_driver_name, temp_driver_phone,
-                 discount_amount, discount_label, coupon_code, loyalty_redeemed, loyalty_earned,
-                 created_at, updated_at,
-                 drivers(name, phone),
-                 delivery_zones(name_en, name_ar),
-                 delivery_subzones(name_en, name_ar)`)
-        .eq('id', id)
-        .single(),
-      OFFLINE
-    );
+    const token = getGuestTrackingToken(id);
+    const row = token
+      ? await rpc('get_guest_order', { p_order_id: id, p_token: token })
+      : await run(
+          supabase
+            .from('delivery_orders')
+            .select(`id, customer_name, customer_phone, address, address_detail, maps_link, notes,
+                     payment_method, items, subtotal, delivery_fee, vat_amount, total, status, driver_id,
+                     estimated_minutes, delivery_note, zone_id, subzone_id,
+                     temp_driver_name, temp_driver_phone,
+                     discount_amount, discount_label, coupon_code, loyalty_redeemed, loyalty_earned,
+                     created_at, updated_at,
+                     drivers(name, phone),
+                     delivery_zones(name_en, name_ar),
+                     delivery_subzones(name_en, name_ar)`)
+            .eq('id', id)
+            .single(),
+          OFFLINE
+        );
     return { ...mapDelivery(row), driver: row.drivers ? { name: row.drivers.name, phone: row.drivers.phone } : null };
   } catch (err) {
     if (err.code === 'PGRST116') throw new Error('Order not found — check the tracking link.');
@@ -442,6 +460,8 @@ export async function getDeliveryOrder(id) {
 
 /** Timestamped journey of one delivery order. */
 export async function getDeliveryHistory(id) {
+  const token = getGuestTrackingToken(id);
+  if (token) return (await rpc('get_guest_order_history', { p_order_id: id, p_token: token })) || [];
   const rows = await run(
     supabase
       .from('delivery_status_history')
