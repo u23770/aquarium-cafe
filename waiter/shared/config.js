@@ -16,7 +16,7 @@ export const SUPABASE_ANON_KEY = 'sb_publishable_9Z4EOWrdMt6uoI60FLQRXw_B2XJNReW
 // Used to resolve the bundled menu images (images/…) stored in the database.
 //   · Same domain / one static host  → keep the relative default.
 //   · Apps split across domains      → full URL, e.g. 'https://cafe.example.com'
-export const CUSTOMER_BASE = '../customer';
+export const CUSTOMER_BASE = 'https://aquarium-cafe-and-restaurant.vercel.app';
 
 // Supabase Storage bucket that powers the Media Library
 // (product photos, logo, favicon, hero & about images —

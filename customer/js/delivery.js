@@ -585,6 +585,12 @@ async function submit(e) {
     });
 
     saveActive(order.id);
+    if (order.trackingToken) {
+      localStorage.setItem('aquarium_guest_tracking_v1', JSON.stringify({
+        id: order.id,
+        token: order.trackingToken,
+      }));
+    }
     document.dispatchEvent(new CustomEvent('delivery:placed')); // cart clears itself
     refreshPill(order.id, order.status);
 
