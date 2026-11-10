@@ -59,6 +59,8 @@ let autoDiscounts = [];     // active code-less discounts (fetched on open)
 
 let trackedId = null;       // uuid currently open in the tracking modal
 let channel = null;         // realtime channel
+let pollTimer = null;        // guest tracking refresh fallback (RLS blocks anon realtime)
+let refreshBusy = false;
 let tickTimer = null;       // elapsed-time ticker
 let placing = false;
 let editBusy = false;
@@ -884,14 +886,27 @@ async function loadTracking(id) {
   return order;
 }
 
-/** Subscribe the open tracking modal to live updates. */
+/** Refresh through the token-protected RPC; anonymous users cannot receive
+ *  postgres_changes events because delivery_orders intentionally has no anon SELECT policy. */
+function refreshTracking(id) {
+  if (refreshBusy) return;
+  refreshBusy = true;
+  loadTracking(id)
+    .catch(() => {})
+    .finally(() => { refreshBusy = false; });
+}
+
+/** Subscribe to realtime and keep a polling fallback for guest sessions. */
 function startLive(id) {
   stopLive();
-  channel = subscribeDeliveryOrder(id, () => {
-    loadTracking(id).catch(() => {});
-  });
+  channel = subscribeDeliveryOrder(id, () => refreshTracking(id));
+  pollTimer = window.setInterval(() => refreshTracking(id), 15000);
 }
 function stopLive() {
+  if (pollTimer !== null) {
+    window.clearInterval(pollTimer);
+    pollTimer = null;
+  }
   if (channel) {
     channel.unsubscribe?.();
     channel = null;
