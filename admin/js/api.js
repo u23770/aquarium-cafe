@@ -1032,19 +1032,7 @@ export async function setDiscountActive(id, active) {
 }
 
 export async function deleteDiscount(id) {
-  try {
-    await run(supabase.from('discounts').delete().eq('id', id), OFFLINE);
-    return { success: true, deleted: Number(id) };
-  } catch (err) {
-    // A redemption row is historical evidence that this discount was used.
-    // PostgreSQL rejects the DELETE with 23503; disable the offer instead,
-    // keeping its primary key and every redemption record intact.
-    if (err?.code !== '23503') throw err;
-
-    await run(
-      supabase.from('discounts').update({ active: false }).eq('id', id).select('id').single(),
-      OFFLINE
-    );
-    return { success: true, disabled: true, id: Number(id) };
-  }
+  // Redemption history is preserved by the database snapshot + ON DELETE SET NULL.
+  await run(supabase.from('discounts').delete().eq('id', id).select('id').single(), OFFLINE);
+  return { success: true, deleted: Number(id) };
 }

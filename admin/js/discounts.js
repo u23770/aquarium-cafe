@@ -250,15 +250,9 @@ async function onAction(e) {
     if (!ok) return;
     try {
       const result = await deleteDiscount(id);
-      if (result.disabled) {
-        d.active = false;
-        paint();
-        toast(t('dc.keptHistory', { name: d.name }));
-      } else {
-        items = items.filter((x) => x.id !== id);
-        paint();
-        toast(t('dc.deleted', { name: d.name }));
-      }
+      items = items.filter((x) => x.id !== id);
+      paint();
+      toast(t('dc.deleted', { name: d.name }));
     } catch (err) {
       toast(err.message, 'error');
     }
