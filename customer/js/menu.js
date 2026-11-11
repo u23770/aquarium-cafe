@@ -120,30 +120,38 @@ function toggleFav(id) {
 
 /* ---------- chips ---------- */
 function renderChips() {
-  const total = 220;
+  const total = products.length;
   const feats = products.filter((p) => p.featured).length;
   els.bar.innerHTML =
-    `<button class="chip" data-slug="all" role="tab">${esc(t('chip.all'))} <small>${total}</small></button>` +
+    `<button class="chip" data-slug="all" role="tab" aria-selected="${activeSlug === 'all'}" aria-controls="productGrid">${esc(t('chip.all'))} <small>${total}</small></button>` +
     (favs.size
-      ? `<button class="chip chip--fav" data-slug="favorites" role="tab"><svg class="icon"><use href="#i-heart"/></svg> ${esc(t('chip.favorites'))} <small>${favs.size}</small></button>`
+      ? `<button class="chip chip--fav" data-slug="favorites" role="tab" aria-selected="${activeSlug === 'favorites'}" aria-controls="productGrid"><svg class="icon"><use href="#i-heart"/></svg> ${esc(t('chip.favorites'))} <small>${favs.size}</small></button>`
       : '') +
     (feats
-      ? `<button class="chip chip--feat" data-slug="featured" role="tab"><svg class="icon"><use href="#i-star"/></svg> ${esc(t('chip.featured'))} <small>${feats}</small></button>`
+      ? `<button class="chip chip--feat" data-slug="featured" role="tab" aria-selected="${activeSlug === 'featured'}" aria-controls="productGrid"><svg class="icon"><use href="#i-star"/></svg> ${esc(t('chip.featured'))} <small>${feats}</small></button>`
       : '') +
     categories
       .map(
         (c) =>
-          `<button class="chip" data-slug="${esc(c.slug)}" role="tab">${esc(pickLang(c, 'name'))} <small>${c.product_count}</small></button>`
+          `<button class="chip" data-slug="${esc(c.slug)}" role="tab" aria-selected="${activeSlug === c.slug}" aria-controls="productGrid">${esc(pickLang(c, 'name'))} <small>${c.product_count}</small></button>`
       )
       .join('');
-  els.bar.querySelector(`[data-slug="${CSS.escape(activeSlug)}"]`)?.classList.add('is-active');
+  els.bar.querySelectorAll('.chip').forEach((chip) => {
+    const selected = chip.dataset.slug === activeSlug;
+    chip.classList.toggle('is-active', selected);
+    chip.setAttribute('aria-selected', String(selected));
+  });
 }
 
 function onChipClick(e) {
   const btn = e.target.closest('.chip');
   if (!btn || btn.dataset.slug === activeSlug) return;
   activeSlug = btn.dataset.slug;
-  els.bar.querySelectorAll('.chip').forEach((c) => c.classList.toggle('is-active', c === btn));
+  els.bar.querySelectorAll('.chip').forEach((c) => {
+    const selected = c === btn;
+    c.classList.toggle('is-active', selected);
+    c.setAttribute('aria-selected', String(selected));
+  });
   renderGrid(true);
 }
 
@@ -453,7 +461,7 @@ export async function initMenu() {
     products = groupProducts(products);
     products = products.map((p) => ({ ...p, menuDiscount: menuDiscountForProduct(p) }));
     const stat = document.getElementById('statItems');
-    if (stat) stat.textContent = '200+';
+    if (stat) stat.textContent = `${products.length}+`;
   } catch (err) {
     els.grid.innerHTML = `
       <div class="menu__empty">

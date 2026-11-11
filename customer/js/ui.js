@@ -35,6 +35,35 @@ export function toast(message) {
 const stack = [];
 let locks = 0;
 
+function focusableIn(el) {
+  return [...el.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+    .filter((node) => !node.hidden && node.getAttribute('aria-hidden') !== 'true' && node.offsetParent !== null);
+}
+
+function trapLayerKeydown(e) {
+  if (e.key !== 'Tab') return;
+  const top = stack[stack.length - 1];
+  if (!top) return;
+  const items = focusableIn(top.el);
+  if (!items.length) {
+    e.preventDefault();
+    top.el.focus({ preventScroll: true });
+    return;
+  }
+  const first = items[0];
+  const last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus({ preventScroll: true });
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus({ preventScroll: true });
+  }
+}
+
+document.addEventListener('keydown', trapLayerKeydown);
+document.querySelectorAll('.modal[aria-hidden="true"], .drawer[aria-hidden="true"], .overlay[aria-hidden="true"]').forEach((el) => { el.inert = true; });
+
 export function lockScroll(on) {
   locks = Math.max(0, locks + (on ? 1 : -1));
   document.body.classList.toggle('locked', locks > 0);
@@ -42,20 +71,33 @@ export function lockScroll(on) {
 
 export function openLayer(el, cls = 'open') {
   if (!el) return;
-  if (!stack.some((x) => x.el === el)) stack.push({ el, cls });
+  if (!stack.some((x) => x.el === el)) stack.push({ el, cls, previousFocus: document.activeElement });
   el.classList.add(cls);
+  el.inert = false;
   el.setAttribute('aria-hidden', 'false');
   lockScroll(true);
+  requestAnimationFrame(() => {
+    const items = focusableIn(el);
+    (items[0] || el).focus({ preventScroll: true });
+  });
 }
 
 export function closeLayer(el, cls = 'open') {
   if (!el) return;
   const i = stack.findIndex((x) => x.el === el);
   if (i > -1) stack.splice(i, 1);
+  const entry = i > -1 ? stack[i] : null;
   el.classList.remove(cls);
   el.setAttribute('aria-hidden', 'true');
+  el.inert = true;
   el.dispatchEvent(new CustomEvent('layer:close'));
   lockScroll(false);
+  requestAnimationFrame(() => {
+    const target = entry?.previousFocus;
+    if (target && typeof target.focus === 'function' && document.contains(target)) {
+      target.focus({ preventScroll: true });
+    }
+  });
 }
 
 export function closeTop() {

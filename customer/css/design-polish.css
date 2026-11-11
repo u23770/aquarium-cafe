@@ -23,6 +23,66 @@
   }
 }
 
+/* ---------- navigation reliability ---------- */
+@media (max-width: 760px) {
+  .nav {
+    position: fixed !important;
+  }
+
+  .nav__links {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw;
+    min-height: 100svh;
+    height: 100svh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    overflow-y: auto;
+    padding: calc(var(--nav-h) + 2rem) 1.5rem 2rem;
+  }
+
+  .nav__links a[data-scroll] {
+    position: relative;
+    display: block;
+    width: auto;
+  }
+
+  .nav__actions,
+  .brand {
+    position: relative;
+    z-index: 3;
+  }
+}
+
+/* ---------- accessibility helpers ---------- */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ---------- long catalog rendering ---------- */
+.card {
+  content-visibility: auto;
+  contain: layout paint;
+  contain-intrinsic-size: 360px 460px;
+}
+
+/* Keep the mobile tracking pill above the footer instead of over it. */
+@media (max-width: 760px) {
+  .track-pill {
+    bottom: calc(5.6rem + env(safe-area-inset-bottom));
+  }
+}
+
 /* ---------- header ---------- */
 .nav {
   border-bottom: 1px solid rgb(255 255 255 / .10);
